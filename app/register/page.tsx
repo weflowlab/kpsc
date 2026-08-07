@@ -83,7 +83,7 @@ export default function RegisterPage() {
       pathname="/register"
       visualTitle="회원관리"
       visualPlaceholder="회원관리 서브 배너"
-      hideSidebar
+      hideSubNav
     >
       <div className="mx-auto max-w-[520px]">
         {/* ================================================================

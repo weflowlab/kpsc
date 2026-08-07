@@ -11,7 +11,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import MobileSliderMenu from "@/components/layout/MobileSliderMenu";
 import Footer from "@/components/layout/Footer";
-import QuickBar from "@/components/layout/QuickBar";
+import KakaoFloat from "@/components/layout/KakaoFloat";
 import TopButton from "@/components/layout/TopButton";
 import LayerPopup from "@/components/layout/LayerPopup";
 
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Footer />
 
         {/* 플로팅 UI */}
-        <QuickBar />
+        <KakaoFloat />
         <TopButton />
         <LayerPopup />
       </body>

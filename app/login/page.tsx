@@ -36,7 +36,7 @@ export default function LoginPage() {
       pathname="/login"
       visualTitle="회원관리"
       visualPlaceholder="회원관리 서브 배너"
-      hideSidebar
+      hideSubNav
     >
       <div className="mx-auto max-w-[420px]">
         {/* ================================================================
