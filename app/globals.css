@@ -1,26 +1,362 @@
+/* ==========================================================================
+   전역 스타일 — 원본 helplus.kr(KPSC) 디자인 토큰을 Tailwind v4 테마로 재구성
+   원본은 레거시 CMS 헤더 + zoomza/excl/money/dae/befooter 5개 블록이 이어붙은
+   구조였으나, 여기서는 하나의 일관된 토큰 체계로 통합했다.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   웹폰트 — Pretendard(본문) / Playfair Display(장식 이탤릭) / Montserrat(영문 제목)
+   CSS @import 는 반드시 다른 규칙보다 먼저 와야 한다.
+   -------------------------------------------------------------------------- */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600;700;900&family=Playfair+Display:ital,wght@1,500;1,700&display=swap");
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* --------------------------------------------------------------------------
+   디자인 토큰
+   -------------------------------------------------------------------------- */
+@theme {
+  /* 브랜드 블루 — 원본 --money-primary-* 계열 */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-300: #93c5fd;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb; /* PRIMARY */
+  --color-brand-900: #1e3a8a;
+
+  /* 히어로 배지 그라데이션 */
+  --color-hero-from: #0072ff;
+  --color-hero-to: #00c6ff;
+
+  /* 레거시 헤더 포인트 컬러 */
+  --color-gnb-hover: #ff5700;
+  --color-gnb-sub-hover: #e67825;
+
+  /* 인디고 액센트 — 카드 오프셋 라인 hover */
+  --color-accent-500: #6366f1;
+  --color-accent-600: #4f46e5;
+
+  /* 중립 — slate 계열 */
+  --color-ink-900: #0f172a;
+  --color-ink-800: #1e293b;
+  --color-ink-500: #64748b;
+  --color-ink-400: #94a3b8;
+  --color-ink-300: #cbd5e1;
+  --color-ink-200: #e2e8f0;
+  --color-ink-100: #f1f5f9;
+  --color-ink-50: #f8fafc;
+
+  /* 섹션 배경 */
+  --color-section: #f8f9fa;
+
+  /* 푸터 */
+  --color-footer-bg: #2a2d34;
+  --color-footer-label: #e4e6eb;
+  --color-footer-text: #b0b3b8;
+  --color-footer-line: #4b515d;
+
+  /* 게시판 (구형 스킨 컬러 유지) */
+  --color-board-head: #f5f4f4;
+  --color-board-line: #dedcdc;
+  --color-board-dark: #1a1a1a;
+  --color-board-tag: #d45111;
+
+  /* 폰트 */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", sans-serif;
+  --font-display: "Playfair Display", serif;
+  --font-mont: "Montserrat", sans-serif;
+
+  /* 라운딩 / 그림자 */
+  --radius-card: 15px;
+  --shadow-card: 0 20px 40px -10px rgba(30, 41, 59, 0.08);
+  --shadow-card-hover: 0 30px 60px -15px rgba(37, 99, 235, 0.15);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* --------------------------------------------------------------------------
+   기본 리셋 / 타이포그래피
+   -------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+  word-break: keep-all; /* 원본 dae- 블록의 한글 어절 단위 줄바꿈 */
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   레이아웃 컨테이너 — 원본 excl/money 1400px, dae 1280px, footer 1200px
+   -------------------------------------------------------------------------- */
+.container-wide {
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.container-mid {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* 섹션 상하 패딩 — 원본 .excl-section-padding (120 / 80 / 40px) */
+.section-pad {
+  padding-block: 40px;
+}
+@media (min-width: 481px) {
+  .section-pad {
+    padding-block: 80px;
+  }
+}
+@media (min-width: 1281px) {
+  .section-pad {
+    padding-block: 120px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   공용 유틸리티
+   -------------------------------------------------------------------------- */
+
+/* 브랜드 그라데이션 텍스트 — 히어로 타이틀 / 통계 숫자 */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-hero-from), var(--color-hero-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Playfair Display 이탤릭 — 카드 번호 / 캡션 장식 */
+.serif-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* Montserrat — 영문 섹션 라벨 / 큰 제목 */
+.font-mont {
+  font-family: var(--font-mont);
+}
+
+/* 카드 우하단 오프셋 라인 — 원본 team.php .offset-line 재현 */
+.offset-line {
+  position: relative;
+}
+.offset-line::after {
+  content: "";
+  position: absolute;
+  inset: 12px -12px -12px 12px;
+  border: 1px solid var(--color-ink-200);
+  border-radius: inherit;
+  transition: transform 0.4s ease, border-color 0.4s ease;
+  pointer-events: none;
+}
+.offset-line:hover::after {
+  transform: translate(-4px, -4px);
+  border-color: var(--color-accent-500);
+}
+
+/* --------------------------------------------------------------------------
+   스크롤 진입 애니메이션
+   원본은 AOS + IntersectionObserver 3벌이 혼재했으나 하나로 통합.
+   Reveal 컴포넌트가 뷰포트 진입 시 .is-visible 을 부여한다.
+   전환값은 원본 excl 블록(1s cubic-bezier(.23,1,.32,1))을 기준으로 삼았다.
+   -------------------------------------------------------------------------- */
+[data-reveal] {
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.23, 1, 0.32, 1),
+    transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: opacity, transform;
+}
+[data-reveal="fade-up"] {
+  transform: translateY(40px);
+}
+[data-reveal="fade-up-sm"] {
+  transform: translateY(15px);
+  transition-duration: 0.7s;
+}
+[data-reveal="fade-left"] {
+  transform: translateX(40px);
+}
+[data-reveal="fade-right"] {
+  transform: translateX(-40px);
+}
+[data-reveal="zoom-out"] {
+  transform: scale(1.08);
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   히어로 배경 크로스페이드 — 원본 zoomza-smoothCrossfade
+   15초 루프 / 3장 / delay 0s · -10s · -5s → 5초 간격 전환 + Ken Burns 줌
+   -------------------------------------------------------------------------- */
+@keyframes hero-crossfade {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  6.66% {
+    opacity: 1;
+    transform: scale(1.01);
+  }
+  26.66% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  33.33% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* 최초 진입 블러 해제 — 원본 zoomza-initialBlurToClear */
+@keyframes hero-initial-blur {
+  from {
+    filter: blur(25px);
+    transform: scale(1.05);
+  }
+  to {
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+/* 텍스트 블록 3D 플립 인 — 원본 zoomza-flashyBoxSlide */
+@keyframes hero-text-slide {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(15deg) translateY(80px) scale(0.9);
+  }
+  6.66% {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1);
+  }
+  26.66% {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1);
+  }
+  33.33% {
+    opacity: 0;
+    transform: perspective(1000px) translateY(-40px) scale(0.95);
+  }
+  100% {
+    opacity: 0;
+    transform: perspective(1000px) translateY(-40px) scale(0.95);
+  }
+}
+
+/* 배지·제목·설명 0.3초 간격 순차 등장 — 원본 zoomza-flashyTextStagger */
+@keyframes hero-text-stagger {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  6.66% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  26.66% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  33.33% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* 패널 부유 — 원본 zoomza-float (±12px, 6초) */
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(-12px);
+  }
+  50% {
+    transform: translateY(12px);
+  }
+}
+
+.hero-slide {
+  animation: hero-crossfade 15s infinite;
+}
+.hero-stage {
+  animation: hero-initial-blur 1.2s ease-out forwards;
+}
+.hero-text {
+  grid-area: 1 / 1;
+  animation: hero-text-slide 15s infinite var(--hero-delay);
+}
+.hero-panel {
+  animation: hero-float 6s ease-in-out infinite;
+}
+.hero-line {
+  animation: hero-text-stagger 15s infinite calc(var(--hero-delay) + var(--hero-step));
+}
+
+/* --------------------------------------------------------------------------
+   모션 최소화 설정 존중
+   원본에는 없던 처리 — 히어로가 CSS 애니메이션 전용이라 반드시 필요하다.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .hero-slide,
+  .hero-stage,
+  .hero-text,
+  .hero-panel,
+  .hero-line {
+    animation: none !important;
+  }
+  /* 첫 슬라이드만 고정 노출 */
+  .hero-slide:first-child,
+  .hero-text:first-child,
+  .hero-line {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   게시판 가로 스크롤 영역
+   -------------------------------------------------------------------------- */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
