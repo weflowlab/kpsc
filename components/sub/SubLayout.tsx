@@ -13,12 +13,13 @@ import type { ReactNode } from "react";
 import SubVisual from "./SubVisual";
 import SubNav from "./SubNav";
 import { findNavGroup, NAV } from "@/lib/site-config";
+import type { SubBannerKey } from "@/lib/images";
 
 type SubLayoutProps = {
   /** 현재 페이지 경로 — 서브메뉴 그룹을 찾는 데 사용 */
   pathname: string;
-  /** 서브 비주얼 배경 플레이스홀더 설명 */
-  visualPlaceholder: string;
+  /** 서브 비주얼 배너 이미지 세트 */
+  banner: SubBannerKey;
   /** 서브메뉴 탭바 숨김 (로그인/회원가입처럼 서브메뉴가 없는 페이지) */
   hideSubNav?: boolean;
   /** 서브 비주얼 제목 직접 지정 (기본값: 대메뉴명) */
@@ -28,7 +29,7 @@ type SubLayoutProps = {
 
 export default function SubLayout({
   pathname,
-  visualPlaceholder,
+  banner,
   hideSubNav = false,
   visualTitle,
   children,
@@ -39,7 +40,7 @@ export default function SubLayout({
   return (
     <>
       {/* 상단 비주얼 */}
-      <SubVisual title={title} placeholder={visualPlaceholder} />
+      <SubVisual title={title} banner={banner} />
 
       {/* 가로 서브메뉴 탭바 — 배너 바로 아래 전체 폭 */}
       {!hideSubNav && group && <SubNav group={group} />}

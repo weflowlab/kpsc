@@ -5,11 +5,12 @@
    원본 재현 포인트
    - 페이지 진입 시 자동 노출, 딤(#000 / opacity .7) 클릭 시 닫힘
    - "오늘 하루 안 보기" 선택 시 쿠키 thisLayerPop=done 을 1일간 저장
-   - PC/모바일 이미지 분기 (.pc_pop / .m_pop) — 여기서는 플레이스홀더로 표시
+   - 원본은 PC/모바일 이미지를 분기하지만 실제 파일이 동일해 한 장만 사용
    ========================================================================== */
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import Placeholder from "@/components/common/Placeholder";
+import Image from "next/image";
+import { POPUP_IMAGE } from "@/lib/images";
 
 const COOKIE_KEY = "thisLayerPop";
 
@@ -90,11 +91,16 @@ export default function LayerPopup() {
       />
 
       {/* 팝업 본체 */}
-      <div className="relative w-full max-w-[380px] overflow-hidden rounded-xl bg-white shadow-2xl">
-        {/* 이미지 자리 — 원본 /upload/...png (대표 인사 카드) */}
-        <div className="aspect-[380/480]">
-          <Placeholder label="대표 인사 카드 이미지 (인물 프로필 + 일러스트 배경)" />
-        </div>
+      <div className="relative w-full max-w-[720px] overflow-hidden rounded-xl bg-white shadow-2xl">
+        {/* 원본 /upload/...png — 대표 인사 카드 */}
+        <Image
+          src={POPUP_IMAGE}
+          alt="KPSC 안내"
+          width={1408}
+          height={768}
+          sizes="(max-width: 768px) 100vw, 720px"
+          className="h-auto w-full"
+        />
 
         {/* 하단 컨트롤 바 */}
         <div className="flex items-center justify-between bg-ink-900 px-4 py-2.5 text-[12px] text-white">

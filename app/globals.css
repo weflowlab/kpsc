@@ -9,6 +9,7 @@
    CSS @import 는 반드시 다른 규칙보다 먼저 와야 한다.
    -------------------------------------------------------------------------- */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url("https://cdn.jsdelivr.net/font-nanum/1.0/nanumgothic/nanumgothic.css");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600;700;900&family=Playfair+Display:ital,wght@1,500;1,700&display=swap");
 
 @import "tailwindcss";
@@ -62,7 +63,12 @@
   --color-board-dark: #1a1a1a;
   --color-board-tag: #d45111;
 
-  /* 폰트 */
+  /* 폰트 — 원본의 폰트 구성을 그대로 따른다
+       · 전역 기본        : 나눔고딕 (헤더/GNB, 게시판 표, 폼 요소)
+       · 모던 섹션        : Pretendard (히어로 / 배너 / 고객지원 / 푸터)
+       · h2·h3, 영문 라벨 : Montserrat (한글은 나눔고딕으로 폴백) */
+  --font-nanum: "Nanum Gothic", "NanumGothic", "나눔고딕", "Apple SD Gothic Neo", "Malgun Gothic",
+    sans-serif;
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
     system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", sans-serif;
   --font-display: "Playfair Display", serif;
@@ -84,10 +90,26 @@ html {
 body {
   background: #ffffff;
   color: var(--color-ink-900);
-  font-family: var(--font-sans);
+  font-family: var(--font-nanum);
   word-break: keep-all; /* 원본 dae- 블록의 한글 어절 단위 줄바꿈 */
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+input,
+textarea,
+select,
+button,
+table,
+td {
+  font-family: inherit;
+}
+
+/* Tailwind v4 는 button 의 기본 커서를 default 로 바꾼다.
+   클릭 가능한 요소는 손가락 커서가 나오도록 되돌린다. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
 }
 
 h1,
@@ -95,6 +117,21 @@ h2,
 h3,
 h4 {
   letter-spacing: -0.02em;
+}
+
+/* 원본 h2, h3 { font-family: 'Montserrat' } — 한글 글리프가 없어 폴백된다.
+   원본의 generic sans 폴백 대신 나눔고딕으로 받아 자형을 맞춘다. */
+h2,
+h3 {
+  font-family: var(--font-mont), var(--font-nanum);
+}
+
+/* Pretendard 를 쓰는 모던 섹션
+   (원본 .zoomza-wrap / .money-wrap / .dae-wrapper / .befooter-standard-footer) */
+.font-pretendard,
+.font-pretendard h2,
+.font-pretendard h3 {
+  font-family: var(--font-sans);
 }
 
 /* --------------------------------------------------------------------------
@@ -326,6 +363,25 @@ h4 {
 }
 
 /* --------------------------------------------------------------------------
+   최상단 이동 버튼 깜빡임
+   -------------------------------------------------------------------------- */
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* steps(1) 로 중간 보간 없이 딱딱 끊어지게 깜빡인다 */
+.animate-blink {
+  animation: blink 0.9s steps(1, end) infinite;
+}
+
+/* --------------------------------------------------------------------------
    모션 최소화 설정 존중
    원본에는 없던 처리 — 히어로가 CSS 애니메이션 전용이라 반드시 필요하다.
    -------------------------------------------------------------------------- */
@@ -342,7 +398,8 @@ h4 {
   .hero-stage,
   .hero-text,
   .hero-panel,
-  .hero-line {
+  .hero-line,
+  .animate-blink {
     animation: none !important;
   }
   /* 첫 슬라이드만 고정 노출 */

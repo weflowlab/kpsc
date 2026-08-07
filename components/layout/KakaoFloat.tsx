@@ -14,6 +14,7 @@
    ========================================================================== */
 
 import { useEffect, useState } from "react";
+import { KakaoIcon } from "@/components/common/BrandIcons";
 
 export default function KakaoFloat() {
   const [shown, setShown] = useState(false);
@@ -30,15 +31,17 @@ export default function KakaoFloat() {
       href="https://pf.kakao.com/_VqFIX"
       target="_blank"
       rel="noreferrer noopener"
-      aria-label="카카오톡 상담 (이미지 자리: 카카오 아이콘)"
-      className="fixed top-[300px] z-[997] flex h-14 w-14 items-center justify-center rounded-xl bg-[#FEE500] text-[11px] font-bold text-[#3C1E1E] shadow-lg"
+      aria-label="카카오톡 상담"
+      title="카카오톡 상담"
+      className="fixed top-[300px] z-[997] block rounded-full shadow-lg hover:scale-105"
       style={{
         right: shown ? 5 : -60,
-        transition: "right 0.35s ease",
-        transitionDelay: shown ? "0.65s" : "0s",
+        /* right 는 원본과 동일한 0.35s, hover 확대는 별도 트랜지션 */
+        transition: "right 0.35s ease, transform 0.3s ease",
+        transitionDelay: shown ? "0.65s, 0s" : "0s, 0s",
       }}
     >
-      TALK
+      <KakaoIcon size={54} className="block" />
     </a>
   );
 }

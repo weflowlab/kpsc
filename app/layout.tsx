@@ -36,13 +36,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className="h-full">
       <body className="flex min-h-full flex-col">
-        {/* 상단 고정 헤더 (높이 70~131px) */}
+        {/* 상단 고정 헤더 (높이 64px / 1024px 이상 130px)
+            투명 헤더이므로 스페이서를 두지 않는다. 각 페이지의 첫 섹션
+            (히어로 · 서브 비주얼)이 헤더 아래로 깔려 배경이 그대로 비친다. */}
         <Header />
 
-        {/* 헤더 고정 높이만큼 본문을 밀어낸다 */}
-        <div className="h-[70px] lg:h-[131px]" aria-hidden />
-
-        {/* 모바일 전용 가로 슬라이더 메뉴 */}
+        {/* 모바일 전용 가로 슬라이더 메뉴 — 헤더 높이(70px)만큼 내려서 배치 */}
         <MobileSliderMenu />
 
         {/* 페이지 본문 */}

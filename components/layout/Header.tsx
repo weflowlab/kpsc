@@ -3,17 +3,42 @@
 /* ==========================================================================
    헤더 / GNB
    원본 재현 포인트
-   - 항상 상단 고정. 스크롤 0 초과 시 배경 rgba(0,0,0,.09) → #fff, 글자 #fff → #222
-   - PC 드롭다운은 "커튼형": 한 항목에 hover 하면 바 전체가 50px → 190px 로
+   - 항상 상단 고정. 최상단에서는 완전 투명(배경이 그대로 비침),
+     스크롤 0 초과 시 배경 #fff, 글자 #fff → #222
+   - PC 드롭다운은 "커튼형": 한 항목에 hover 하면 바 전체가 64px → 210px 로
      확장되며 5개 대메뉴의 서브메뉴가 동시에 노출된다 (원본 helplus.js 동작)
    - 대메뉴 hover 컬러 #FF5700, 서브메뉴 hover 컬러 #E67825
    - 모바일은 햄버거 → 아코디언 슬라이드 다운(한 번에 하나만 열림)
    ========================================================================== */
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NAV, UTIL_NAV, COMPANY } from "@/lib/site-config";
+import { LOGO } from "@/lib/images";
+import { KakaoIcon, NaverBlogIcon } from "@/components/common/BrandIcons";
+
+/* --------------------------------------------------------------------------
+   헤더 우측 SNS 링크
+   원본 PNG(38×38)는 해상도가 낮아 확대 시 깨지므로 SVG 재현본을 쓴다.
+   -------------------------------------------------------------------------- */
+const SNS_LINKS = [
+  {
+    label: "카카오톡 채널",
+    href: "https://pf.kakao.com/_VqFIX",
+    Icon: KakaoIcon,
+  },
+  {
+    label: "네이버 블로그",
+    href: "https://section.blog.naver.com",
+    Icon: NaverBlogIcon,
+  },
+];
+
+/* 메뉴 바 전용 컨테이너 — 로고 행(1200px)보다 살짝 넓게 잡아
+   메뉴 사이 간격만 조금 벌린다. 드롭다운도 같은 폭이라 정렬이 유지된다. */
+const MENU_CONTAINER = "mx-auto w-full max-w-[1280px] px-6";
 
 export default function Header() {
   /* ------------------------------------------------------------------
@@ -45,50 +70,72 @@ export default function Header() {
     setOpenAccordion(null);
   };
 
-  /* 스크롤 상태 또는 커튼이 열렸을 때는 어두운 배경 위 흰 글씨가 아니라 반전 적용 */
-  const solid = scrolled || curtainOpen;
+  /* 배경 반전은 스크롤 여부로만 결정한다.
+     (커튼을 열어도 헤더는 투명을 유지해 뒤 배경이 계속 보이게 한다) */
+  const solid = scrolled;
 
   return (
     <header
       className={[
         "fixed top-0 left-0 z-50 w-full transition-all duration-500",
-        solid ? "bg-white shadow-[0_0_15px_0_#80808040]" : "bg-black/10",
+        solid ? "bg-white shadow-[0_0_15px_0_#80808040]" : "bg-transparent",
       ].join(" ")}
     >
       {/* ================================================================
           1) 로고 행 — 좌측 로고 / 우측 유틸(로그인·회원가입·SNS)
           ================================================================ */}
-      <div className="container-narrow flex h-[70px] items-center justify-between lg:h-[81px]">
+      <div className="container-narrow flex h-[64px] items-center justify-between lg:h-[72px]">
         {/* 로고 — 원본은 흰색/컬러 로고 2장을 opacity 크로스페이드 */}
-        <Link
+        {/* 로고는 Link 대신 a 태그를 써서 클릭 시 페이지를 새로 불러온다.
+            Link 를 쓰면 홈에서 눌렀을 때 클라이언트 라우팅이라 아무 일도
+            일어나지 않는다. 새로고침 동작이 의도이므로 규칙을 끈다. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a
           href="/"
           onClick={closeAll}
           className="flex items-center gap-3"
           aria-label="KPSC 홈"
         >
+          {/* 로고 — 원본과 동일하게 흰색/컬러 두 장을 겹쳐두고 opacity 로
+              크로스페이드한다. 최상단(투명 헤더)에서는 흰색,
+              스크롤 후(흰 배경)에는 컬러 로고가 보인다. */}
           <span
-            aria-hidden
-            className={[
-              "flex h-9 w-9 items-center justify-center rounded-md text-[11px] font-bold transition-colors duration-500",
-              solid ? "bg-brand-600 text-white" : "bg-white/90 text-brand-600",
-            ].join(" ")}
+            className="relative block h-[40px] w-[124px] lg:h-[50px] lg:w-[155px]"
+            /* 원본은 스크롤 시 padding-left:20px 로 로고가 오른쪽으로 밀린다.
+               (transition 0.5s, 스크롤을 올리면 다시 제자리로) */
+            style={{
+              transform: solid ? "translateX(20px)" : "translateX(0)",
+              transition: "transform 0.5s",
+            }}
           >
-            {/* 이미지 자리: KPSC 심볼(악수 실루엣 + 상승 화살표) 146×47 */}
-            LOGO
+            <Image
+              src={LOGO.white}
+              alt=""
+              fill
+              priority
+              sizes="155px"
+              className={[
+                "object-contain object-left transition-opacity duration-500",
+                solid ? "opacity-0" : "opacity-100",
+              ].join(" ")}
+            />
+            <Image
+              src={LOGO.color}
+              alt={COMPANY.name}
+              fill
+              priority
+              sizes="155px"
+              className={[
+                "object-contain object-left transition-opacity duration-500",
+                solid ? "opacity-100" : "opacity-0",
+              ].join(" ")}
+            />
           </span>
-          <span
-            className={[
-              "font-mont text-xl font-bold tracking-tight transition-colors duration-500",
-              solid ? "text-ink-900" : "text-white",
-            ].join(" ")}
-          >
-            {COMPANY.name}
-          </span>
-        </Link>
+        </a>
 
         {/* 우측 유틸 */}
         <div className="flex items-center gap-4">
-          <ul className="hidden items-center gap-4 text-[13px] md:flex">
+          <ul className="hidden items-center gap-4 text-[13px] font-semibold md:flex">
             {UTIL_NAV.map((item) => (
               <li key={item.href}>
                 <Link
@@ -96,7 +143,7 @@ export default function Header() {
                   onClick={closeAll}
                   className={[
                     "transition-colors duration-500 hover:text-[#2E76BC]",
-                    solid ? "text-ink-500" : "text-white/85",
+                    solid ? "text-ink-900" : "text-white/85",
                   ].join(" ")}
                 >
                   {item.label}
@@ -105,21 +152,20 @@ export default function Header() {
             ))}
           </ul>
 
-          {/* SNS 배너 2종 — 원본 index/r_kakao.png, index/r_blog.png */}
+          {/* SNS 배너 2종 — 원본 index/r_kakao.png, index/r_blog.png (새 창) */}
           <div className="hidden items-center gap-2 md:flex">
-            {["카카오톡", "블로그"].map((sns) => (
-              <span
-                key={sns}
-                aria-label={`이미지 자리: ${sns} 배너 아이콘`}
-                className={[
-                  "flex h-8 items-center rounded px-3 text-[11px] font-medium transition-colors duration-500",
-                  solid
-                    ? "bg-ink-100 text-ink-500"
-                    : "bg-white/15 text-white/80 backdrop-blur-sm",
-                ].join(" ")}
+            {SNS_LINKS.map((sns) => (
+              <a
+                key={sns.label}
+                href={sns.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={sns.label}
+                title={sns.label}
+                className="flex items-center transition-transform duration-300 hover:-translate-y-0.5"
               >
-                {sns}
-              </span>
+                <sns.Icon size={40} />
+              </a>
             ))}
           </div>
 
@@ -158,75 +204,74 @@ export default function Header() {
 
       {/* ================================================================
           2) PC GNB 바 — 커튼형 드롭다운
-          바 자체 높이 50px → hover 시 190px 로 확장되며 서브메뉴 동시 노출
+          원본 구조: 메뉴 바 자체는 항상 투명(배경이 비침)이고, 바 위아래의
+          가는 라인만 남는다. hover 하면 "라인 아래로만" 반투명 다크 패널이
+          내려오면서 5개 대메뉴의 서브메뉴가 동시에 노출된다.
           ================================================================ */}
       <nav
-        className="relative hidden border-t lg:block"
+        className="relative hidden border-t border-b lg:block"
         style={{ borderColor: solid ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.2)" }}
         onMouseEnter={() => setCurtainOpen(true)}
         onMouseLeave={() => setCurtainOpen(false)}
       >
-        {/* 커튼 배경판 — 확장 시에만 깔리는 반투명 다크 패널 */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 -z-10 transition-all duration-[250ms] ease-out"
-          style={{
-            height: curtainOpen ? 190 : 50,
-            background: curtainOpen ? "rgba(66,66,66,0.9)" : "transparent",
-            borderBottom: curtainOpen ? "1px solid #6A6969" : "0",
-          }}
-        />
-
-        <div
-          className="container-narrow overflow-hidden transition-all duration-[250ms] ease-out"
-          style={{ height: curtainOpen ? 190 : 50 }}
-        >
-          <ul className="flex">
+        {/* 메뉴 바 — 높이 56px 고정, 배경 없음.
+            로고 행과 같은 컨테이너를 써서 좌우 여백을 맞춘다. */}
+        <div className={MENU_CONTAINER}>
+          {/* 5개 대메뉴를 균등 분할 — 고정폭(250px)을 쓰면 컨테이너를 넘쳐
+              좌우 여백이 어긋나므로 grid 로 같은 폭을 나눠 갖게 한다 */}
+          <ul className="grid grid-cols-5">
             {NAV.map((group) => {
               const active = group.children.some((c) => pathname.startsWith(c.href));
               return (
-                <li key={group.label} className="w-[250px] shrink-0">
+                <li key={group.label} className="text-center">
                   {/* 1depth — 원본은 href="#" 였으나 첫 서브메뉴로 연결 */}
                   <Link
                     href={group.children[0].href}
                     onClick={closeAll}
                     className={[
-                      "block h-[50px] text-[18px] leading-[50px] font-semibold transition-colors duration-500 hover:text-[#FF5700]",
-                      curtainOpen
-                        ? "text-white"
-                        : solid
-                          ? "text-[#222]"
-                          : "text-white",
-                      active && !curtainOpen ? "text-brand-600" : "",
+                      "block h-[56px] text-[18px] leading-[56px] font-extrabold transition-colors duration-500 hover:text-[#FF5700]",
+                      solid ? "text-[#222]" : "text-white",
+                      active ? "text-[#FF5700]" : "",
                     ].join(" ")}
                   >
                     {group.label}
                   </Link>
-
-                  {/* 2depth — 커튼이 열렸을 때만 보인다 */}
-                  <ul
-                    className={[
-                      "mt-6 space-y-2 transition-opacity duration-300",
-                      curtainOpen ? "opacity-100" : "opacity-0",
-                    ].join(" ")}
-                  >
-                    {group.children.map((child) => (
-                      <li key={child.href}>
-                        <Link
-                          href={child.href}
-                          onClick={closeAll}
-                          tabIndex={curtainOpen ? 0 : -1}
-                          className="block py-[3px] text-[14px] text-[#D4D3D3] transition-colors hover:text-[#E67825]"
-                        >
-                          {child.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
                 </li>
               );
             })}
           </ul>
+        </div>
+
+        {/* 드롭다운 패널 — 메뉴 바 아래(top-full)에서만 펼쳐진다 */}
+        <div
+          className="absolute inset-x-0 top-full overflow-hidden transition-all duration-[250ms] ease-out"
+          style={{
+            height: curtainOpen ? 136 : 0,
+            background: "rgba(66,66,66,0.9)",
+            borderBottom: curtainOpen ? "1px solid #6A6969" : "0",
+          }}
+        >
+          <div className={`${MENU_CONTAINER} pt-6`}>
+            {/* 위 메뉴 바와 같은 5분할이라 서브메뉴가 대메뉴 아래로 정렬된다 */}
+            <ul className="grid grid-cols-5">
+              {NAV.map((group) => (
+                <li key={group.label} className="space-y-2 text-center">
+                  {group.children.map((child) => (
+                    <div key={child.href}>
+                      <Link
+                        href={child.href}
+                        onClick={closeAll}
+                        tabIndex={curtainOpen ? 0 : -1}
+                        className="block py-[4px] text-[15px] text-[#D4D3D3] transition-colors hover:text-[#E67825]"
+                      >
+                        {child.label}
+                      </Link>
+                    </div>
+                  ))}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </nav>
 

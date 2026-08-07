@@ -11,7 +11,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
-import Placeholder from "@/components/common/Placeholder";
+import Image from "next/image";
+import { CONTENT_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = { title: "KPSC의 방향성" };
 
@@ -48,7 +49,7 @@ export default function DirectionPage() {
   return (
     <SubLayout
       pathname="/greeting/direction"
-      visualPlaceholder="인사말 서브 배너 (오피스 아키텍처)"
+      banner="organization"
     >
       {/* ================================================================
           1) Intro — 좌측 이미지 + 우측 텍스트
@@ -57,7 +58,13 @@ export default function DirectionPage() {
         {/* 좌측 이미지 */}
         <Reveal type="fade-right">
           <div className="h-[280px] overflow-hidden rounded-2xl shadow-[0_30px_60px_-20px_rgba(15,23,42,0.25)] lg:h-[420px]">
-            <Placeholder label="Vision" />
+            <Image
+              src={CONTENT_IMAGES.direction}
+              alt="Vision"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
           </div>
         </Reveal>
 

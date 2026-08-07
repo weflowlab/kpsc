@@ -53,7 +53,7 @@ export default function ServicesPage() {
   return (
     <SubLayout
       pathname="/services"
-      visualPlaceholder="사업 및 서비스 서브 배너 (에너지 인프라)"
+      banner="services"
     >
       {/* ================================================================
           1) 히어로

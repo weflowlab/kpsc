@@ -12,7 +12,6 @@
 
 import { useState, type FormEvent } from "react";
 import SubLayout from "@/components/sub/SubLayout";
-import Placeholder from "@/components/common/Placeholder";
 
 /* --------------------------------------------------------------------------
    휴대폰 국번 옵션 — 원본 select 값 그대로
@@ -82,7 +81,7 @@ export default function RegisterPage() {
     <SubLayout
       pathname="/register"
       visualTitle="회원관리"
-      visualPlaceholder="회원관리 서브 배너"
+      banner="member"
       hideSubNav
     >
       <div className="mx-auto max-w-[520px]">
@@ -91,10 +90,6 @@ export default function RegisterPage() {
             ================================================================ */}
         <h2 className="text-center text-[24px] font-bold text-ink-900">회원가입</h2>
 
-        {/* 타이틀 이미지 자리 — 원본 join_title.jpg */}
-        <div className="mx-auto mt-6 h-[70px] w-full max-w-[300px]">
-          <Placeholder label="회원가입 타이틀 이미지" />
-        </div>
 
         {/* ================================================================
             가입 폼

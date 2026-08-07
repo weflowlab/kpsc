@@ -9,7 +9,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
-import Placeholder from "@/components/common/Placeholder";
+import Image from "next/image";
+import { CONTENT_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = { title: "인사말" };
 
@@ -17,7 +18,7 @@ export default function GreetingPage() {
   return (
     <SubLayout
       pathname="/greeting"
-      visualPlaceholder="인사말 서브 배너 (오피스 아키텍처)"
+      banner="organization"
     >
       {/* ================================================================
           1) 인사말 본문
@@ -32,7 +33,13 @@ export default function GreetingPage() {
               className="absolute -right-4 -bottom-4 h-full w-full rounded-lg border border-accent-500/40"
             />
             <div className="relative h-[300px] overflow-hidden rounded-lg lg:h-[420px]">
-              <Placeholder label="Office Architecture" />
+              <Image
+                src={CONTENT_IMAGES.greeting}
+                alt="Office Architecture"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
             </div>
           </div>
 

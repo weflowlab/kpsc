@@ -1,7 +1,7 @@
 /* ==========================================================================
    메인(홈) 페이지 콘텐츠 데이터
    원본 helplus.kr 메인 페이지의 텍스트를 그대로 옮긴 정적 데이터.
-   이미지는 실제 파일 대신 플레이스홀더 설명(placeholder)만 보관한다.
+   이미지 경로는 lib/images.ts 에서 별도로 관리한다.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -14,8 +14,6 @@ export type HeroSlide = {
   title: [string, string];
   /** 서브 카피 */
   description: string;
-  /** 배경 이미지 플레이스홀더 설명 */
-  placeholder: string;
 };
 
 export const HERO_SLIDES: HeroSlide[] = [
@@ -23,19 +21,16 @@ export const HERO_SLIDES: HeroSlide[] = [
     badge: "Innovation & Future",
     title: ["미래 에너지를 선도하며,", "지속 가능한 생태계를 구축합니다."],
     description: "단순 발전을 넘어, 친환경 전환으로 대한민국 에너지 자립을 이끕니다.",
-    placeholder: "풍력발전기 / 초원 / 파란 하늘 (2000×1059)",
   },
   {
     badge: "Social Value",
     title: ["이익을 넘어 가치를 나누며,", "지역사회와 함께 상생합니다."],
     description: "에너지 복지를 실현하며 어려운 이웃과 온기를 나눕니다.",
-    placeholder: "잔디 위 유리 지구본 (2000×1059)",
   },
   {
     badge: "Eco-friendly Action",
     title: ["일상 속 작은 실천으로,", "탄소중립의 내일을 약속합니다."],
     description: "일상 속 진정성 있는 실천으로 친환경 미래를 만들어갑니다.",
-    placeholder: "정장 남성의 손 + 파란 에너지 홀로그램 (2000×1059)",
   },
 ];
 
@@ -48,7 +43,6 @@ export type PartnerCard = {
   title: string;
   description: string;
   href: string;
-  placeholder: string;
 };
 
 export const PARTNER_CARDS: PartnerCard[] = [
@@ -58,7 +52,6 @@ export const PARTNER_CARDS: PartnerCard[] = [
     description:
       "친환경 에너지 전환으로 탄소중립을 실천하며, 지속 가능한 미래 에너지 생태계와 국가 에너지 자립을 구축합니다.",
     href: "/about/purpose",
-    placeholder: "빛나는 절전 전구 (747×501)",
   },
   {
     num: "02",
@@ -66,7 +59,6 @@ export const PARTNER_CARDS: PartnerCard[] = [
     description:
       "차세대 친환경 기술 혁신으로 미래 에너지를 선도하며, 수익을 나누어 지역사회와 상생하는 따뜻한 가치를 지향합니다.",
     href: "/about/partners",
-    placeholder: "회로기판 + 지구본 위 나무 (747×501)",
   },
   {
     num: "03",
@@ -74,7 +66,6 @@ export const PARTNER_CARDS: PartnerCard[] = [
     description:
       "확고한 책임 경영과 투명한 운영을 바탕으로, 조합원과 함께 명실상부한 친환경 에너지 리더로 성장해 나아갑니다.",
     href: "/greeting/direction",
-    placeholder: "숲 우거진 나무를 올려다본 풍경 (747×501)",
   },
   {
     num: "04",
@@ -82,7 +73,6 @@ export const PARTNER_CARDS: PartnerCard[] = [
     description:
       "태양광, 풍력 및 효율적인 에너지 저장 시스템(ESS) 구축을 통해, 안전하고 혁신적인 맞춤형 에너지 솔루션을 제공합니다.",
     href: "/services",
-    placeholder: "태양광 패널 발전소 전경 (747×501)",
   },
 ];
 
@@ -99,7 +89,7 @@ export type BannerCard = {
   /** 2줄 구성 설명 */
   description: [string, string];
   href: string;
-  /** 강조(accent) 카드 여부 — 어두운 배경 처리 */
+  /** 강조(accent) 카드 여부 — true 면 어두운 배경 (원본: 01 다크 / 02 라이트) */
   accent: boolean;
 };
 
@@ -110,7 +100,7 @@ export const BANNER_CARDS: BannerCard[] = [
     title: "운영진 소개",
     description: ["흔들림 없는 책임 경영", "고객 성공을 위한 진정한 동행을 시작합니다."],
     href: "/organization/team",
-    accent: false,
+    accent: true,
   },
   {
     watermark: "02",
@@ -118,7 +108,7 @@ export const BANNER_CARDS: BannerCard[] = [
     title: "갤러리",
     description: ["다양한 작품을 기록하고", "감각적인 시선으로 담아낸 결과를 공유합니다."],
     href: "/organization/gallery",
-    accent: true,
+    accent: false,
   },
 ];
 

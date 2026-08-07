@@ -9,7 +9,8 @@
 import type { Metadata } from "next";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
-import Placeholder from "@/components/common/Placeholder";
+import Image from "next/image";
+import { CONTENT_IMAGES } from "@/lib/images";
 import { COMPANY } from "@/lib/site-config";
 
 export const metadata: Metadata = { title: "KPSC와 함께하는 사람들" };
@@ -21,12 +22,12 @@ const PARTNERS = [
   {
     title: "협력파트너사 : 레투코리아",
     desc: "KPSC와 함께 미래에너지 혁신과 더 나은 세상을 위한 변화를 실천하는 국내 No.1 여행캐리어 전문업체입니다.",
-    placeholder: "협력사 이미지 1",
+    image: CONTENT_IMAGES.partner1,
   },
   {
     title: "협력파트너사 : 프린트천국",
     desc: "KPSC와 함께 미래에너지 혁신과 더 나은 세상을 위한 변화를 실천하는 국내 전문 프린트업체입니다.",
-    placeholder: "협력사 이미지 2",
+    image: CONTENT_IMAGES.partner2,
   },
 ];
 
@@ -43,7 +44,7 @@ export default function PartnersPage() {
   return (
     <SubLayout
       pathname="/about/partners"
-      visualPlaceholder="KPSC 소개 서브 배너 (친환경 에너지 전경)"
+      banner="services"
     >
       {/* ================================================================
           1) 히어로 — 텍스트 전용
@@ -68,8 +69,14 @@ export default function PartnersPage() {
             <article className="group h-full overflow-hidden rounded-2xl border border-ink-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
               {/* 상단 이미지 */}
               <div className="h-[220px] overflow-hidden lg:h-[280px]">
-                <div className="h-full w-full transition-transform duration-[600ms] group-hover:scale-105">
-                  <Placeholder label={partner.placeholder} />
+                <div className="relative h-full w-full transition-transform duration-[600ms] group-hover:scale-105">
+                  <Image
+                    src={partner.image}
+                    alt={partner.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover"
+                  />
                 </div>
               </div>
 

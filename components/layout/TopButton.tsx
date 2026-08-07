@@ -3,9 +3,11 @@
 /* ==========================================================================
    최상단 이동 버튼 (#goTopBtn)
    원본 재현 포인트
-   - scrollTop > 0 일 때만 노출 (fade in 300ms / fade out 300ms)
-   - 클릭 시 700ms swing 이징으로 최상단 이동
-   - 원본은 1280px 이하에서 숨김 처리했으나, 접근성을 위해 전 해상도 노출로 변경
+   - scrollTop > 0 일 때만 노출 (fade in / out 300ms)
+   - 원본 #goTopBtn 과 동일하게 right:1% / bottom:0 (화면 하단에 붙음)
+   - 클릭 시 최상단으로 부드럽게 이동
+   - 파란 사각 버튼(44×44, 위쪽 모서리만 라운드) + 흰색 ^(셰브론) 아이콘
+   - 버튼 배경은 고정, ^ 아이콘만 천천히 깜빡인다 (prefers-reduced-motion 이면 정지)
    ========================================================================== */
 
 import { useEffect, useState } from "react";
@@ -26,15 +28,26 @@ export default function TopButton() {
       aria-label="맨 위로 이동"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={[
-        "fixed right-[1%] bottom-6 z-50 flex h-11 w-11 items-center justify-center rounded-full",
-        "bg-ink-900/85 text-white shadow-lg backdrop-blur-sm transition-all duration-300",
-        "hover:bg-brand-600",
+        "fixed right-[1%] bottom-0 z-50 flex h-11 w-11 items-center justify-center rounded-t-md",
+        "bg-brand-600 text-white shadow-lg transition-opacity duration-300 hover:bg-brand-700",
         shown ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
       ].join(" ")}
     >
-      <span aria-hidden className="text-sm leading-none">
-        ▲
-      </span>
+      {/* ^ 셰브론 아이콘 — 이 아이콘만 깜빡인다 */}
+      <svg
+        className="animate-blink"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M5 15l7-7 7 7" />
+      </svg>
     </button>
   );
 }

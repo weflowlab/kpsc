@@ -11,7 +11,6 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import SubLayout from "@/components/sub/SubLayout";
-import Placeholder from "@/components/common/Placeholder";
 
 export default function LoginPage() {
   /* 입력 상태 */
@@ -35,7 +34,7 @@ export default function LoginPage() {
     <SubLayout
       pathname="/login"
       visualTitle="회원관리"
-      visualPlaceholder="회원관리 서브 배너"
+      banner="member"
       hideSubNav
     >
       <div className="mx-auto max-w-[420px]">
@@ -44,10 +43,6 @@ export default function LoginPage() {
             ================================================================ */}
         <h2 className="text-center text-[24px] font-bold text-ink-900">로그인</h2>
 
-        {/* 타이틀 이미지 자리 — 원본 log_title.jpg */}
-        <div className="mx-auto mt-6 h-[70px] w-full max-w-[300px]">
-          <Placeholder label="로그인 타이틀 이미지" />
-        </div>
 
         {/* ================================================================
             로그인 폼

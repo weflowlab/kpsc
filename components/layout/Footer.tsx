@@ -3,7 +3,7 @@
    원본 .befooter-standard-footer 재현
    - 배경 #2A2D34, 라벨 #E4E6EB, 값 #B0B3B8, 구분선 #4B515D
    - PC 그리드 1fr 220px (align-items:flex-end), 모바일 세로 스택
-   - 우측 텍스트 링크 hover 시 화살표가 오른쪽으로 4px 이동 + opacity .4 → 1
+   - 우측 바로가기는 테두리 버튼 형태, hover 시 화살표가 4px 이동 + opacity .4 → 1
    ========================================================================== */
 
 import Link from "next/link";
@@ -18,14 +18,14 @@ function Divider() {
 
 export default function Footer() {
   return (
-    <footer className="mt-auto bg-[#2A2D34] pt-12 pb-28 lg:pt-16 lg:pb-28">
+    <footer className="font-pretendard mt-auto bg-[#2A2D34] pt-12 pb-28 lg:pt-16 lg:pb-28">
       <div className="container-narrow grid gap-12 lg:grid-cols-[1fr_220px] lg:items-end">
         {/* ================================================================
             좌측 — 로고 + 회사 정보 + 카피라이트
             ================================================================ */}
         <div className="flex flex-col gap-6">
           {/* 로고 (원본도 이미지가 아닌 텍스트 워드마크) */}
-          <div className="font-mont text-[1.375rem] leading-relaxed font-bold tracking-[-0.5px] text-white lg:text-2xl">
+          <div className="font-mont text-[1.375rem] leading-relaxed font-extrabold tracking-[-0.5px] text-white lg:text-2xl">
             {COMPANY.name}
           </div>
 
@@ -60,10 +60,15 @@ export default function Footer() {
                 </a>
               </span>
               <Divider />
-              <span>
+              <a
+                href="https://pf.kakao.com/_VqFIX"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="hover:text-white"
+              >
                 <strong className="mr-2 font-semibold text-[#E4E6EB]">카톡</strong>
                 1 : 1 맞춤상담
-              </span>
+              </a>
             </div>
 
             {/* 카피라이트 */}
@@ -82,7 +87,7 @@ export default function Footer() {
             <Link
               key={item.href}
               href={item.href}
-              className="group flex items-center justify-between text-[0.9rem] text-[#B0B3B8] transition-colors hover:text-white"
+              className="group flex items-center justify-between rounded-lg border border-[#4B515D] px-5 py-3.5 text-[0.9rem] text-[#B0B3B8] transition-colors hover:border-[#B0B3B8] hover:text-white"
             >
               {item.label}
               <span

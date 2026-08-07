@@ -48,7 +48,7 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
   return (
     <SubLayout
       pathname={`/news/${board}`}
-      visualPlaceholder="활동 및 소식 서브 배너 (커뮤니케이션 이미지)"
+      banner="news"
     >
       {/* ================================================================
           1) 제목

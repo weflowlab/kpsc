@@ -29,7 +29,7 @@ export default function GalleryPage() {
   return (
     <SubLayout
       pathname="/organization/gallery"
-      visualPlaceholder="조직 구성 서브 배너 (팀 이미지)"
+      banner="organization"
     >
       {/* ================================================================
           1) 카테고리 탭

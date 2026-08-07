@@ -24,7 +24,9 @@ export default function MobileSliderMenu() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-ink-200 bg-white md:hidden">
+    /* 헤더가 fixed 이므로 모바일에서는 헤더 높이(64px)만큼 내려서 겹치지 않게 한다.
+       768px 이상에서는 이 메뉴 자체가 숨겨지므로 여백이 필요 없다. */
+    <div className="mt-[64px] border-b border-ink-200 bg-white md:hidden md:mt-0">
       <div className="flex items-stretch">
         {/* 가로 스와이프 영역 — 스크롤 스냅으로 Owl Carousel 동작 대체 */}
         <ul className="scroll-x flex flex-1 snap-x snap-mandatory gap-1 px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

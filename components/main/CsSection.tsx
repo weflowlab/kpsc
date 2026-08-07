@@ -13,7 +13,7 @@ import { BOARD_PREVIEWS } from "@/lib/content/main";
 
 export default function CsSection() {
   return (
-    <section id="cs" className="bg-section py-8 lg:py-20">
+    <section id="cs" className="font-pretendard bg-section py-8 lg:py-20">
       <div className="container-mid">
         {/* ================================================================
             섹션 헤더
@@ -25,7 +25,7 @@ export default function CsSection() {
           {/* 장식 라인 */}
           <span
             aria-hidden
-            className="mx-auto mt-4 block h-[3px] w-12 rounded-full bg-brand-600"
+            className="mx-auto mt-4 block h-[3px] w-12 rounded-full bg-ink-900"
           />
         </Reveal>
 
@@ -57,7 +57,7 @@ export default function CsSection() {
                         href={post.href}
                         className="group flex items-center justify-between gap-4"
                       >
-                        <span className="truncate text-[14px] text-ink-500 transition-colors group-hover:text-ink-900 lg:text-[15px]">
+                        <span className="truncate text-[14px] text-ink-900 transition-colors group-hover:text-brand-600 lg:text-[15px]">
                           {post.title}
                         </span>
                         <span className="shrink-0 text-[12px] text-ink-400">

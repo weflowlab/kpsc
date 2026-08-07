@@ -5,12 +5,15 @@
    - 카드 4장: PC 4열 → 1280px 이하 2열 → 480px 이하 1열
    - 카드 hover: 부양(-10px) + 이미지 1.1배 줌 + 그레이스케일 해제
      + 아이콘 컬러 반전 + "자세히 보기 →" 좌→우 페이드인 (4중 연출)
+   - 설명 줄 수가 달라도 "자세히 보기"는 모든 카드에서 같은 높이에 뜨도록
+     카드를 세로 flex 로 구성하고 링크를 mt-auto 로 하단 정렬한다.
    ========================================================================== */
 
 import Link from "next/link";
-import Placeholder from "@/components/common/Placeholder";
+import Image from "next/image";
 import Reveal from "@/components/common/Reveal";
 import { PARTNER_CARDS, PARTNERS_HEADING } from "@/lib/content/main";
+import { PARTNER_IMAGES } from "@/lib/images";
 
 export default function PartnersSection() {
   return (
@@ -20,13 +23,13 @@ export default function PartnersSection() {
             섹션 헤더 — 영문 배지 / 국문 제목 / 설명
             ================================================================ */}
         <Reveal className="mb-12 text-center lg:mb-16">
-          <span className="font-mont inline-block rounded-full bg-brand-50 px-4 py-1.5 text-[12px] font-bold tracking-[0.15em] text-brand-600">
+          <span className="font-mont inline-block rounded-full bg-brand-50 px-4 py-1.5 text-[13px] font-extrabold tracking-[0.15em] text-brand-600">
             {PARTNERS_HEADING.label}
           </span>
-          <h2 className="font-mont mt-5 text-[28px] font-bold text-ink-800 lg:text-[48px]">
+          <h2 className="font-mont mt-3 text-[34px] font-extrabold text-ink-800 lg:text-[60px]">
             {PARTNERS_HEADING.title}
           </h2>
-          <p className="mt-3 text-[16px] font-bold text-ink-500 lg:text-[18px]">
+          <p className="mt-1.5 text-[16px] font-bold text-ink-500 lg:text-[18px]">
             {PARTNERS_HEADING.description}
           </p>
         </Reveal>
@@ -39,20 +42,26 @@ export default function PartnersSection() {
             <Reveal as="li" key={card.num} delay={i * 0.1}>
               <Link
                 href={card.href}
-                className="group block h-full overflow-hidden rounded-[10px] border border-ink-200 bg-white transition-all duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-brand-600 hover:shadow-[var(--shadow-card-hover)] xl:hover:-translate-y-[10px]"
+                className="group flex h-full flex-col overflow-hidden rounded-[10px] border border-ink-200 bg-white transition-all duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-brand-600 hover:shadow-[var(--shadow-card-hover)] xl:hover:-translate-y-[10px]"
               >
                 {/* 이미지 박스 — 높이 260px, hover 시 scale 1.1 + 그레이스케일 해제 */}
                 <div className="h-[260px] overflow-hidden">
-                  <div className="h-full w-full grayscale-[10%] transition-all duration-[600ms] group-hover:scale-110 group-hover:grayscale-0">
-                    <Placeholder label={card.placeholder} />
+                  <div className="relative h-full w-full grayscale-[10%] transition-all duration-[600ms] group-hover:scale-110 group-hover:grayscale-0">
+                    <Image
+                      src={PARTNER_IMAGES[i]}
+                      alt={card.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                      className="object-cover"
+                    />
                   </div>
                 </div>
 
                 {/* 텍스트 영역 */}
-                <div className="p-6 lg:p-7">
+                <div className="flex flex-1 flex-col p-6 lg:p-7">
                   {/* 번호 + 아이콘 (hover 시 컬러 반전) */}
                   <div className="mb-4 flex items-center justify-between">
-                    <span className="font-mont text-[24px] font-semibold text-brand-600">
+                    <span className="font-mont text-[26px] font-extrabold text-brand-600">
                       {card.num}
                     </span>
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white">
@@ -68,7 +77,7 @@ export default function PartnersSection() {
                   </p>
 
                   {/* 링크 — 평소 숨김, hover 시 좌→우 슬라이드 인 */}
-                  <span className="mt-4 block -translate-x-[10px] text-[14px] font-bold text-brand-600 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                  <span className="mt-auto block -translate-x-[10px] pt-5 text-[14px] font-bold text-brand-600 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                     자세히 보기 →
                   </span>
                 </div>

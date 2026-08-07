@@ -9,7 +9,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
-import Placeholder from "@/components/common/Placeholder";
+import Image from "next/image";
+import { CONTENT_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = { title: "KPSC의 설립 목적" };
 
@@ -39,7 +40,7 @@ export default function PurposePage() {
   return (
     <SubLayout
       pathname="/about/purpose"
-      visualPlaceholder="KPSC 소개 서브 배너 (친환경 에너지 전경)"
+      banner="services"
     >
       {/* ================================================================
           1) 히어로 — PC 좌측 텍스트 + 우측 이미지 2단
@@ -75,7 +76,13 @@ export default function PurposePage() {
         {/* 우측 이미지 */}
         <Reveal type="fade-left" className="flex-1">
           <div className="h-[260px] overflow-hidden rounded-[30px] lg:h-[400px]">
-            <Placeholder label="신재생 에너지 발전소" />
+            <Image
+              src={CONTENT_IMAGES.purpose}
+              alt="신재생 에너지 발전소"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
           </div>
         </Reveal>
       </section>

@@ -8,17 +8,18 @@
    - 페이지네이션/화살표 없음 (원본에 조작 UI 자체가 없음)
    ========================================================================== */
 
-import Placeholder from "@/components/common/Placeholder";
+import Image from "next/image";
 import { HERO_SLIDES } from "@/lib/content/main";
+import { HERO_IMAGES } from "@/lib/images";
 
 /* 슬라이드별 애니메이션 위상차 — 원본 0s / -10s / -5s */
 const DELAYS = ["0s", "-10s", "-5s"];
 
 export default function Hero() {
   return (
-    <section className="relative h-[70vh] w-full overflow-hidden lg:h-[100vh]">
+    <section className="font-pretendard relative h-[70vh] w-full overflow-hidden lg:h-[100vh]">
       {/* ================================================================
-          배경 레이어 — 3장 크로스페이드 (플레이스홀더)
+          배경 레이어 — 3장 크로스페이드
           ================================================================ */}
       <div className="hero-stage absolute inset-0">
         {HERO_SLIDES.map((slide, i) => (
@@ -28,7 +29,14 @@ export default function Hero() {
             style={{ animationDelay: DELAYS[i] }}
             aria-hidden={i > 0}
           >
-            <Placeholder label={slide.placeholder} dark />
+            <Image
+              src={HERO_IMAGES[i]}
+              alt=""
+              fill
+              sizes="100vw"
+              priority={i === 0}
+              className="object-cover"
+            />
           </div>
         ))}
       </div>
@@ -46,7 +54,9 @@ export default function Hero() {
       {/* ================================================================
           텍스트 패널 — grid 겹침 + 부유(±12px, 6초) 애니메이션
           ================================================================ */}
-      <div className="relative z-10 flex h-full items-center">
+      {/* 투명 헤더가 상단을 덮고 있어 100vh 정중앙에 두면 위로 치우쳐 보인다.
+          헤더 높이의 절반만큼 내려서 눈에 보이는 영역의 가운데에 가깝게 맞춘다. */}
+      <div className="relative z-10 flex h-full items-center pt-[32px] lg:pt-[64px]">
         <div className="container-wide">
           <div className="hero-panel grid">
             {HERO_SLIDES.map((slide, i) => (

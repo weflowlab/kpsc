@@ -91,7 +91,7 @@ export default function TeamPage() {
   return (
     <SubLayout
       pathname="/organization/team"
-      visualPlaceholder="조직 구성 서브 배너 (팀 이미지)"
+      banner="organization"
     >
       {/* ================================================================
           1) 섹션 헤드
