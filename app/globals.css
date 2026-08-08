@@ -38,6 +38,7 @@
   /* 인디고 액센트 — 카드 오프셋 라인 hover */
   --color-accent-500: #6366f1;
   --color-accent-600: #4f46e5;
+  --color-accent-900: #312e81; /* 딥 인디고 — CTA 버튼 텍스트 등 (원본 #312e81) */
 
   /* 중립 — slate 계열 */
   --color-ink-900: #0f172a;
