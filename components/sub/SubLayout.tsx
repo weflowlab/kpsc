@@ -57,7 +57,7 @@ export default function SubLayout({
       {subTitle ? (
         <div className="container-mid pb-12 lg:pb-20">
           {/* 원본 .sub_title: mt 15/53, mb 25px/5%, 22px→28px, 밑줄 2px #D9D9D9 */}
-          <h2 className="mt-[15px] mb-[25px] w-full border-b-2 border-[#D9D9D9] text-center text-[22px] leading-[43px] font-semibold text-[#222] md:mt-[53px] md:mb-[5%] md:text-[28px]">
+          <h2 className="mt-[15px] mb-[25px] w-full border-b-2 border-[#D9D9D9] text-center text-[22px] leading-[43px] font-bold text-[#222] md:mt-[53px] md:mb-[5%] md:text-[28px]">
             {subTitle}
           </h2>
           {children}

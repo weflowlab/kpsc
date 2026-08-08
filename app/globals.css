@@ -218,11 +218,12 @@ h3 {
   inset: 12px -12px -12px 12px;
   border: 1px solid var(--color-ink-200);
   border-radius: inherit;
-  transition: transform 0.4s ease, border-color 0.4s ease;
+  transition: all 0.3s ease;
   pointer-events: none;
 }
+/* 원본: hover 시 프레임이 우하단으로 4px 더 벌어지며 인디고로 변색 */
 .offset-line:hover::after {
-  transform: translate(-4px, -4px);
+  transform: translate(4px, 4px);
   border-color: var(--color-accent-500);
 }
 
