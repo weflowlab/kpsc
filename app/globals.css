@@ -24,6 +24,7 @@
   --color-brand-300: #93c5fd;
   --color-brand-500: #3b82f6;
   --color-brand-600: #2563eb; /* PRIMARY */
+  --color-brand-700: #1d4ed8; /* PRIMARY hover(다크) — 버튼 hover 배경 */
   --color-brand-900: #1e3a8a;
 
   /* 히어로 배지 그라데이션 */
@@ -183,6 +184,16 @@ h3 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* 설립 목적 페이지 전용 그라데이션 — 원본 gee .gradient-text
+   (135deg, #007aff → #8e44ad, weight 800). 메인 페이지의 파랑→하늘과 다르다. */
+.gradient-text-vision {
+  background: linear-gradient(135deg, #007aff, #8e44ad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
 }
 
 /* Playfair Display 이탤릭 — 카드 번호 / 캡션 장식 */

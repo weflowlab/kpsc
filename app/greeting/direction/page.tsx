@@ -49,7 +49,7 @@ export default function DirectionPage() {
   return (
     <SubLayout
       pathname="/greeting/direction"
-      banner="organization"
+      banner="greeting"
     >
       {/* ================================================================
           1) Intro — 좌측 이미지 + 우측 텍스트

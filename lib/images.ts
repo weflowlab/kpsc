@@ -29,14 +29,21 @@ export const PARTNER_IMAGES = [
    원본은 대메뉴 그룹별로 다른 배너를 쓴다.
    -------------------------------------------------------------------------- */
 export const SUB_BANNERS = {
-  /** 조직 구성 (운영진 소개 / 갤러리) */
+  /** KPSC소개 (설립 목적 / 파트너사) — 원본 20260114221127pc_1 / m_1 */
+  about: { pc: "/images/sub/about_pc.webp", mobile: "/images/sub/about_m.webp" },
+  /** 인사말 (인사말 / 방향성) — 원본 20240124180222pc_2 / 20240320190957m_2 */
+  greeting: {
+    pc: "/images/sub/greeting_pc.webp",
+    mobile: "/images/sub/greeting_m.webp",
+  },
+  /** 조직 구성 (운영진 소개 / 갤러리) — 원본 20260114221127pc_3 / m_3 */
   organization: { pc: "/images/sub/org_pc.webp", mobile: "/images/sub/org_m.webp" },
-  /** 사업 및 서비스 */
+  /** 사업 및 서비스 — 원본 20240124180222pc_4 / 20240320190957m_4 */
   services: {
     pc: "/images/sub/services_pc.webp",
     mobile: "/images/sub/services_m.webp",
   },
-  /** 활동 및 소식 (게시판) */
+  /** 활동 및 소식 (게시판) — 원본 20240320190957pc_8 / m_8 */
   news: { pc: "/images/sub/news_pc.webp", mobile: "/images/sub/news_m.webp" },
   /** 회원관리 (로그인 / 회원가입) */
   member: { pc: "/images/sub/member_pc.webp", mobile: "/images/sub/member_m.webp" },
@@ -50,10 +57,14 @@ export type SubBannerKey = keyof typeof SUB_BANNERS;
 export const CONTENT_IMAGES = {
   /** 설립 목적 — 신재생 에너지 발전소 */
   purpose: "/images/content/purpose_1.webp",
-  /** 함께하는 사람들 — 협력사 1 */
+  /** 함께하는 사람들 — 여행 파트너 RETOO[레투코리아] (원본 이미지) */
   partner1: "/images/content/partner_1.webp",
-  /** 함께하는 사람들 — 협력사 2 */
+  /** 함께하는 사람들 — 인쇄 파트너 프린트천국 (원본 이미지) */
   partner2: "/images/content/partner_2.webp",
+  /** 함께하는 사람들 — 홈페이지 파트너 WEFLOW (Unsplash, 원본에 없는 신규) */
+  partner3: "/images/content/partner_3.webp",
+  /** 함께하는 사람들 — 액세서리 파트너 미니미니핸드폰 (Unsplash, 신규) */
+  partner4: "/images/content/partner_4.webp",
   /** 인사말 — Office Architecture */
   greeting: "/images/content/greeting_1.webp",
   /** 방향성 — Vision */
@@ -74,3 +85,8 @@ export const LOGO = {
    레이어 팝업
    -------------------------------------------------------------------------- */
 export const POPUP_IMAGE = "/images/popup.webp";
+
+/* --------------------------------------------------------------------------
+   우측 퀵메뉴 전화 아이콘 (22×22) — 원본 index/right_long_bar_tel.gif
+   -------------------------------------------------------------------------- */
+export const QUICK_TEL_ICON = "/images/quick-tel.webp";

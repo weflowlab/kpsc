@@ -8,6 +8,8 @@
    - 클릭 시 최상단으로 부드럽게 이동
    - 파란 사각 버튼(44×44, 위쪽 모서리만 라운드) + 흰색 ^(셰브론) 아이콘
    - 버튼 배경은 고정, ^ 아이콘만 천천히 깜빡인다 (prefers-reduced-motion 이면 정지)
+   - 원본 z-index:10000 — 헤더(9999)·퀵메뉴(998)보다 항상 위에 온다.
+     여기서는 헤더 z-50 / 퀵메뉴 z-40 이므로 z-[60] 으로 최상위 유지.
    ========================================================================== */
 
 import { useEffect, useState } from "react";
@@ -28,7 +30,7 @@ export default function TopButton() {
       aria-label="맨 위로 이동"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={[
-        "fixed right-[1%] bottom-0 z-50 flex h-11 w-11 items-center justify-center rounded-t-md",
+        "fixed right-[1%] bottom-0 z-[60] flex h-11 w-11 items-center justify-center rounded-t-md",
         "bg-brand-600 text-white shadow-lg transition-opacity duration-300 hover:bg-brand-700",
         shown ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
       ].join(" ")}

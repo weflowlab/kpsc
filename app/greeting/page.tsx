@@ -18,7 +18,7 @@ export default function GreetingPage() {
   return (
     <SubLayout
       pathname="/greeting"
-      banner="organization"
+      banner="greeting"
     >
       {/* ================================================================
           1) 인사말 본문
