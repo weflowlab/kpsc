@@ -100,6 +100,7 @@ export default function LayerPopup() {
           height={768}
           sizes="(max-width: 768px) 100vw, 720px"
           className="h-auto w-full"
+          priority
         />
 
         {/* 하단 컨트롤 바 */}

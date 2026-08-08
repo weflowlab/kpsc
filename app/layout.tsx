@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className="h-full">
+    <html lang="ko" className="h-full" data-scroll-behavior="smooth">
       <body className="flex min-h-full flex-col">
         {/* 상단 고정 헤더 (높이 64px / 1024px 이상 130px)
             투명 헤더이므로 스페이서를 두지 않는다. 각 페이지의 첫 섹션
