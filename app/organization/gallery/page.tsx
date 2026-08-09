@@ -15,6 +15,7 @@ import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
 import BoardSearch from "@/components/board/BoardSearch";
 import CategoryTabs from "@/components/board/CategoryTabs";
+import CountUp from "@/components/board/CountUp";
 
 export const metadata: Metadata = { title: "갤러리" };
 
@@ -47,7 +48,8 @@ export default function GalleryPage() {
           ================================================================ */}
       <div className="flex items-center justify-between pt-[30px] text-[13px] text-[#666]">
         <p>
-          자료수 <b>{ITEMS.length}</b>개, <b>1</b>페이지중 <b>1</b>페이지
+          자료수 <b><CountUp value={ITEMS.length} /></b>개,{" "}
+          <b><CountUp value={1} /></b>페이지중 <b>1</b>페이지
         </p>
         {/* 원본 write.gif 아이콘 버튼 → 글쓰기 페이지 */}
         <Link href="/organization/gallery/write" aria-label="글쓰기">

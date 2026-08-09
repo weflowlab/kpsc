@@ -70,7 +70,7 @@ export const ACTIVITIES: BoardConfig = {
       no: 1,
       uid: 6,
       category: "수다게시판",
-      title: "고객의 소리 [KPSC활동] 게시판 이용안내..",
+      title: "고객의 소리 [KPSC활동] 게시판 이용안내",
       date: "26.06.20",
       author: "KPSC",
       hit: 7,

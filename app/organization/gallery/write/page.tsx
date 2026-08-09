@@ -6,7 +6,7 @@
 import type { Metadata } from "next";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
-import GalleryWriteForm from "@/components/board/GalleryWriteForm";
+import BoardWriteForm from "@/components/board/BoardWriteForm";
 
 export const metadata: Metadata = { title: "갤러리 글쓰기" };
 
@@ -18,7 +18,10 @@ export default function GalleryWritePage() {
     >
       {/* 원본 #board_wrap 의 AOS fade-up — 폼 전체가 아래에서 올라온다 */}
       <Reveal type="fade-up">
-        <GalleryWriteForm />
+        <BoardWriteForm
+          categories={["미술갤러리", "행사갤러리"]}
+          categoryLabel="갤러리"
+        />
       </Reveal>
     </SubLayout>
   );

@@ -127,7 +127,7 @@ export const BOARD_PREVIEWS: BoardPreview[] = [
     moreHref: "/news/activities",
     posts: [
       {
-        title: "고객의 소리 [KPSC활동] 게시판 이용안내..",
+        title: "고객의 소리 [KPSC활동] 게시판 이용안내",
         date: "2026-06-20",
         href: "/news/activities/6",
       },

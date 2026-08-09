@@ -1,7 +1,7 @@
 "use client";
 
 /* ==========================================================================
-   갤러리 글쓰기 폼 (원본 bbs.php?table=gallery&query=write 스킨)
+   게시판 글쓰기 폼 (원본 bbs.php?query=write 스킨 — gallery/default 공용)
    원본 재현 포인트
    - 제목/작성자/이메일: 라벨 60px + 30px 입력(1px #E4E4E4)
    - 옵션: 카테고리 셀렉트(갤러리/미술갤러리/행사갤러리) + 비밀글 체크
@@ -15,13 +15,20 @@
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
 
-const CATEGORIES = ["미술갤러리", "행사갤러리"];
 
 /* 입력 공통 — 원본 인라인 스타일 (30px, 1px #E4E4E4) */
 const FIELD =
   "h-[30px] w-full border border-[#E4E4E4] px-[5px] text-[13px] leading-[30px] outline-none";
 
-export default function GalleryWriteForm() {
+export default function BoardWriteForm({
+  categories,
+  categoryLabel,
+}: {
+  /** 카테고리 셀렉트 옵션 */
+  categories: string[];
+  /** 셀렉트 첫 줄 라벨 (원본 getCategoryForm 의 sbj — 갤러리/구분) */
+  categoryLabel: string;
+}) {
   const [fileName, setFileName] = useState("선택된 파일 없음");
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -59,8 +66,8 @@ export default function GalleryWriteForm() {
               defaultValue=""
               className="h-[30px] w-[280px] max-w-[45vw] border border-[#C0C0C0] px-1 text-[12px] outline-none"
             >
-              <option value="">갤러리</option>
-              {CATEGORIES.map((cat) => (
+              <option value="">{categoryLabel}</option>
+              {categories.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>

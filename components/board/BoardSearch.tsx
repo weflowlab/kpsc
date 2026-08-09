@@ -30,7 +30,7 @@ export default function BoardSearch() {
   };
 
   return (
-    <div className="mx-auto w-[80%] pt-5 min-[481px]:w-[70%] md:w-[60%]">
+    <div className="mx-auto w-[80%] pt-5 min-[481px]:w-[70%] md:w-1/2 xl:w-[65%]">
       <form onSubmit={onSubmit} className="flex">
         {/* 검색 대상 셀렉트 — 원본 .board_search_select */}
         <div className="w-[28%] min-[481px]:w-[25%] md:w-[20%]">
@@ -50,12 +50,13 @@ export default function BoardSearch() {
 
         {/* 검색어 입력 — 원본 .board_search_input (96% 폭) */}
         <div className="w-[50%] min-[481px]:w-[53%] md:w-[60%]">
+          {/* mx-auto 로 양옆 2% 씩 — 셀렉트/버튼과의 간격을 동일하게 */}
           <input
             type="text"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             aria-label="검색어"
-            className="h-[30px] w-[96%] border border-[#E4E4E4] px-2 text-[13px] outline-none"
+            className="mx-auto block h-[30px] w-[96%] border border-[#E4E4E4] px-2 text-[13px] outline-none"
           />
         </div>
 

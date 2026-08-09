@@ -1,19 +1,25 @@
 /* ==========================================================================
    활동 및 소식 > 게시판 리스트  (원본 /bbs.php?table=activities|notice)
-   구성
-     1) 카테고리 탭
-     2) 총계 영역 — Total / Page + 글쓰기 버튼(activities만 노출)
-     3) 테이블형 리스트 — PC는 전체 컬럼, 480px 이하는 제목만 노출
-     4) 페이지네이션
+   구성 — 원본 default 스킨 그대로
+     1) 카테고리 탭 (#item_category, 전체 활성)
+     2) 총계 영역 (.total_wrap 13px #666) + write.gif 버튼(activities만)
+     3) 2px #B2B2B2 라인 → 테이블형 리스트: 55px 행, 헤더 #F5F4F4 / #45545D,
+        분류 [주황 #D45111], 작성자 아이콘, hover 시 #F0EEEE + 볼드(0.8s)
+     4) 1px #E4E4E4 라인 → 페이지네이션(원본 gif)
      5) 검색 폼
+   전체를 fade-up 으로 감싼다 (원본 #board_wrap AOS).
    ========================================================================== */
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import SubLayout from "@/components/sub/SubLayout";
+import Reveal from "@/components/common/Reveal";
 import BoardSearch from "@/components/board/BoardSearch";
-import Pagination from "@/components/board/Pagination";
+import BoardList from "@/components/board/BoardList";
+import CategoryTabs from "@/components/board/CategoryTabs";
+import CountUp from "@/components/board/CountUp";
 import { BOARDS, getBoard } from "@/lib/content/board";
 
 /* --------------------------------------------------------------------------
@@ -41,136 +47,97 @@ export default async function BoardListPage(props: PageProps<"/news/[board]">) {
   const config = getBoard(board);
   if (!config) notFound();
 
+  /* 카테고리 필터 — 원본 bbs.php?category= 동작 재현 */
+  const rawCategory = search?.category;
+  const category =
+    typeof rawCategory === "string" && config.categories.includes(rawCategory)
+      ? rawCategory
+      : "전체";
+  const filtered =
+    category === "전체"
+      ? config.posts
+      : config.posts.filter((post) => post.category === category);
+
   /* 페이지 계산 */
   const page = Math.max(1, Number(search?.p ?? 1) || 1);
-  const totalPages = Math.max(1, Math.ceil(config.posts.length / config.perPage));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / config.perPage));
   const start = (page - 1) * config.perPage;
-  const visible = config.posts.slice(start, start + config.perPage);
+  const visible = filtered.slice(start, start + config.perPage);
+
 
   return (
     <SubLayout
       pathname={`/news/${board}`}
       banner="news"
     >
-      {/* ================================================================
-          1) 카테고리 탭
-          ================================================================ */}
-      <ul className="scroll-x flex gap-2 pb-1">
-        {config.categories.map((cat, i) => (
-          <li key={cat} className="shrink-0">
-            <button
-              type="button"
-              className={[
-                "border px-4 py-2 text-[13px] whitespace-nowrap transition-colors",
-                i === 0
-                  ? "border-[#1A1A1A] bg-[#1A1A1A] text-white"
-                  : "border-ink-200 text-ink-500 hover:border-brand-600 hover:text-brand-600",
-              ].join(" ")}
-            >
-              {cat}
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {/* ================================================================
-          2) 총계 영역
-          ================================================================ */}
-      <div className="mt-6 flex items-center justify-between">
-        <p className="text-[13px] text-ink-500">
-          Total : <strong className="text-ink-900">{config.posts.length}</strong>개 Page
-          : <strong className="text-ink-900">{page}</strong>/{totalPages}
-        </p>
-        {/* 글쓰기 버튼 — 원본은 activities 게시판에서만 노출 */}
-        {config.writable && (
-          <button
-            type="button"
-            className="bg-[#1A1A1A] px-4 py-1.5 text-[12px] text-white transition-colors hover:bg-[#A5A5A5]"
-          >
-            글쓰기
-          </button>
-        )}
-      </div>
-
-      {/* ================================================================
-          3) 테이블형 리스트
-          ================================================================ */}
-      <div className="mt-3 border-t-2 border-ink-900">
-        {/* 헤더 — 모바일에서는 숨김 */}
-        <div className="hidden bg-board-head text-[13px] font-semibold text-ink-700 sm:grid sm:grid-cols-[70px_140px_1fr_100px_90px_70px]">
-          <span className="py-4 text-center">번호</span>
-          <span className="py-4 text-center">분류</span>
-          <span className="py-4 text-center">제목</span>
-          <span className="py-4 text-center">등록일</span>
-          <span className="py-4 text-center">작성자</span>
-          <span className="py-4 text-center">조회수</span>
+      {/* 원본 #board_wrap 의 AOS fade-up
+          key 로 카테고리·페이지가 바뀔 때마다 리마운트 → 진입 애니메이션 재생 */}
+      <Reveal key={`${category}-${page}`} type="fade-up">
+        {/* ================================================================
+            1) 카테고리 탭 — 원본 #item_category (카테고리별 필터 링크)
+            ================================================================ */}
+        <div className="mb-5">
+          <CategoryTabs
+            categories={config.categories}
+            variant="board"
+            activeCategory={category}
+            hrefs={Object.fromEntries(
+              config.categories.map((cat) => [
+                cat,
+                cat === "전체"
+                  ? `/news/${board}`
+                  : `/news/${board}?category=${encodeURIComponent(cat)}`,
+              ])
+            )}
+          />
         </div>
 
-        {/* 데이터 행 */}
-        {visible.length > 0 ? (
-          <ul>
-            {visible.map((post) => (
-              <li
-                key={post.uid}
-                className="border-b border-board-line transition-colors hover:bg-ink-50"
-              >
-                <Link
-                  href={`/news/${board}/${post.uid}`}
-                  className="grid items-center gap-1 px-2 py-4 sm:grid-cols-[70px_140px_1fr_100px_90px_70px] sm:gap-0 sm:px-0"
-                >
-                  {/* 번호 — 모바일 숨김 */}
-                  <span className="hidden text-center text-[13px] text-ink-400 sm:block">
-                    {post.no}
-                  </span>
-
-                  {/* 분류 */}
-                  <span className="text-center text-[12px] font-semibold text-board-tag sm:text-[13px]">
-                    [{post.category}]
-                  </span>
-
-                  {/* 제목 */}
-                  <span className="truncate px-1 text-[14px] text-ink-800 sm:px-3">
-                    {post.title}
-                  </span>
-
-                  {/* 등록일 */}
-                  <span className="text-center text-[12px] text-ink-400 sm:text-[13px]">
-                    {post.date}
-                  </span>
-
-                  {/* 작성자 — 모바일 숨김 */}
-                  <span className="hidden text-center text-[13px] text-ink-500 sm:block">
-                    {post.author}
-                  </span>
-
-                  {/* 조회수 — 모바일 숨김 */}
-                  <span className="hidden text-center text-[13px] text-ink-400 sm:block">
-                    {post.hit}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="border-b border-board-line py-24 text-center text-[14px] text-ink-400">
-            등록된 게시물이 없습니다.
+        {/* ================================================================
+            2) 총계 영역 — 원본 .total_wrap (13px #666, pb 25px)
+            ================================================================ */}
+        <div className="flex items-center justify-between pb-[25px] text-[13px] text-[#666]">
+          <p>
+            Total : <b><CountUp value={filtered.length} /></b>개 Page :{" "}
+            <b><CountUp value={page} /></b>/{totalPages}
           </p>
-        )}
-      </div>
+          {/* 글쓰기 버튼 — 원본은 activities 게시판에서만 노출 */}
+          {config.writable && (
+            <Link href={`/news/${board}/write`} aria-label="글쓰기">
+              <Image
+                src="/images/board/write.gif"
+                alt="글쓰기"
+                width={52}
+                height={20}
+                unoptimized
+              />
+            </Link>
+          )}
+        </div>
 
-      {/* ================================================================
-          4) 페이지네이션
-          ================================================================ */}
-      <Pagination
-        current={page}
-        total={totalPages}
-        href={(p) => `/news/${board}?p=${p}`}
-      />
+        {/* title_board_line — 2px #B2B2B2 */}
+        <div aria-hidden className="h-[2px] w-full bg-[#B2B2B2]" />
 
-      {/* ================================================================
-          5) 검색 폼
-          ================================================================ */}
-      <BoardSearch />
+        {/* ================================================================
+            4) 데이터 행 + 하단 라인 + 페이지네이션 + 다중선택 레이어
+            (체크박스 상태를 공유해야 해서 BoardList 가 함께 렌더링)
+            ================================================================ */}
+        <BoardList
+          board={board}
+          posts={visible}
+          page={page}
+          totalPages={totalPages}
+          pageHrefBase={
+            category === "전체"
+              ? `/news/${board}?`
+              : `/news/${board}?category=${encodeURIComponent(category)}&`
+          }
+        />
+
+        {/* ================================================================
+            5) 검색 폼
+            ================================================================ */}
+        <BoardSearch />
+      </Reveal>
     </SubLayout>
   );
 }
