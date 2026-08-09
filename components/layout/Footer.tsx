@@ -19,8 +19,7 @@ function Divider() {
 export default function Footer() {
   return (
     <footer className="font-pretendard mt-auto bg-[#2A2D34] pt-12 pb-28 lg:pt-16 lg:pb-28">
-      {/* 원본 CSS 는 1200px 이지만 실제 화면 비율에 맞춰 1400px 로 넓힘 */}
-      <div className="container-wide grid gap-12 lg:grid-cols-[1fr_220px] lg:items-end">
+      <div className="container-narrow grid gap-12 lg:grid-cols-[1fr_220px] lg:items-end">
         {/* ================================================================
             좌측 — 로고 + 회사 정보 + 카피라이트
             ================================================================ */}

@@ -4,14 +4,16 @@
    - 서브 비주얼 타이틀 "회원관리", 좌측 서브메뉴 없음(전체폭)
    - 필드: 이름 / 아이디(+중복확인) / 비밀번호 / 비밀번호 재입력 / 이메일
            / 공지메일 수신(기본 체크) / 휴대폰 3분할(국번 select + 4자리 + 4자리)
-   - 약관 동의는 체크박스가 아니라 라디오 2쌍이며, 원본 기본값은
-     "동의하지 않습니다" 쪽에 선택되어 있다 (원본 구조를 그대로 유지)
+   - 약관 동의는 체크박스가 아니라 라디오 2쌍이며, 기본값은 "동의합니다"
+     (클라이언트 요청). 약관 전문은 lib/content/terms.ts 의 전달본 사용
    ========================================================================== */
 
 "use client";
 
+import Image from "next/image";
 import { useState, type FormEvent } from "react";
 import SubLayout from "@/components/sub/SubLayout";
+import { PRIVACY_POLICY, TERMS_OF_SERVICE } from "@/lib/content/terms";
 
 /* --------------------------------------------------------------------------
    휴대폰 국번 옵션 — 원본 select 값 그대로
@@ -38,8 +40,8 @@ export default function RegisterPage() {
     MB_HAND_TEL3: "",
   });
   const [remail, setRemail] = useState(true); // 공지메일 수신 — 원본 기본 checked
-  const [infoAgree, setInfoAgree] = useState("0"); // 개인정보 수집 동의
-  const [joinAgree, setJoinAgree] = useState("0"); // 이용약관 동의
+  const [infoAgree, setInfoAgree] = useState("1"); // 개인정보 수집 동의 (기본 동의)
+  const [joinAgree, setJoinAgree] = useState("1"); // 이용약관 동의 (기본 동의)
   const [error, setError] = useState<string | null>(null);
 
   /* 약관 팝업 */
@@ -84,17 +86,28 @@ export default function RegisterPage() {
       banner="member"
       hideSubNav
     >
-      <div className="mx-auto max-w-[520px]">
+      <div className="mx-auto max-w-[1050px]">
         {/* ================================================================
-            타이틀
+            타이틀 — 원본 .sub_title 형식 (가운데 + 풀폭 밑줄)
             ================================================================ */}
-        <h2 className="text-center text-[24px] font-bold text-ink-900">회원가입</h2>
+        <h2 className="w-full border-b-2 border-[#D9D9D9] text-center text-[22px] leading-[43px] font-bold text-[#222] md:text-[28px]">
+          회원가입
+        </h2>
 
+        {/* 원본 회원가입 타이틀 이미지 — 원본 크기(1050px) 그대로
+            (template/regis/default/image/join_title.jpg) */}
+        <Image
+          src="/images/register-title.webp"
+          alt="노트북과 커피가 있는 책상 이미지"
+          width={1050}
+          height={192}
+          className="mx-auto mt-10 w-full"
+        />
 
         {/* ================================================================
-            가입 폼
+            가입 폼 — 원본처럼 이미지보다 살짝 좁은 폭
             ================================================================ */}
-        <form onSubmit={onSubmit} className="mt-8 space-y-5">
+        <form onSubmit={onSubmit} className="mx-auto mt-8 max-w-[820px] space-y-5">
           {/* 이름 */}
           <div>
             <label htmlFor="MB_NAME" className={labelClass}>
@@ -124,7 +137,7 @@ export default function RegisterPage() {
               />
               <button
                 type="button"
-                className="shrink-0 border border-ink-200 px-4 text-[13px] text-ink-700 transition-colors hover:border-brand-600 hover:text-brand-600"
+                className="shrink-0 border border-ink-200 px-4 text-[13px] text-ink-700 transition-colors hover:border-[#8C0014] hover:bg-[#AE031B] hover:text-white"
               >
                 아이디 중복확인
               </button>
@@ -305,7 +318,7 @@ export default function RegisterPage() {
           {/* 가입 버튼 */}
           <button
             type="submit"
-            className="w-full bg-[#1A1A1A] py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-brand-600"
+            className="w-full bg-[#1A1A1A] py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-[#AE031B]"
           >
             회원가입
           </button>
@@ -334,41 +347,9 @@ export default function RegisterPage() {
               {popup === "privacy" ? "KPSC 개인정보 처리방침" : "KPSC 홈페이지 이용약관"}
             </h3>
 
-            {/* 약관 본문 — 원본 목차 구조 */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 text-[13px] leading-[1.9] text-ink-500">
-              {popup === "privacy" ? (
-                <ul className="space-y-1.5">
-                  {[
-                    "개인정보 수집에 대한 동의",
-                    "수집하는 개인정보의 항목",
-                    "개인정보의 보유기간 및 이용기간",
-                    "목적외 사용 및 제3자에 대한 제공 및 공유",
-                    "개인정보의 열람, 정정",
-                    "동의철회(계정정보 삭제)",
-                    "이용자의 권리와 의무",
-                    "고지의 의무",
-                    "기술적 대책",
-                    "관리적 대책",
-                    "고객센터 안내",
-                  ].map((item) => (
-                    <li key={item}>▣ {item}</li>
-                  ))}
-                </ul>
-              ) : (
-                <ul className="space-y-1.5">
-                  {[
-                    "제1장 총칙 (제1조 목적 / 제2조 용어의 정의 / 제3조 약관의 효력 및 변경 / 제4조 약관 외 준칙)",
-                    "제2장 서비스 이용 계약 (제5조 이용계약의 성립 / 제6조 회원 정보의 변경 / 제7조 개인정보보호 의무)",
-                    "제3장 계약 당사자의 의무 (제8조 KPSC의 의무 / 제9조 회원의 의무)",
-                    "제4장 서비스 이용 (제10조 서비스의 제공 및 중단 / 제11조 정보의 제공 및 광고 게재 / 제12조 게시물의 저작권)",
-                    "제5장 계약 해지 및 이용 제한 (제13조 계약 해지 / 제14조 이용 제한 및 블랙리스트 관리)",
-                    "제15조 SNS 관련 회원 안내",
-                    "제16조 회원가입관리 방안",
-                  ].map((item) => (
-                    <li key={item}>· {item}</li>
-                  ))}
-                </ul>
-              )}
+            {/* 약관 본문 — 전문 (lib/content/terms.ts) */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 text-[13px] leading-[1.9] whitespace-pre-line text-ink-500">
+              {popup === "privacy" ? PRIVACY_POLICY : TERMS_OF_SERVICE}
             </div>
 
             <div className="border-t border-ink-200 px-6 py-4">

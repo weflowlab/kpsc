@@ -9,6 +9,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, type FormEvent } from "react";
 import SubLayout from "@/components/sub/SubLayout";
 
@@ -37,17 +38,27 @@ export default function LoginPage() {
       banner="member"
       hideSubNav
     >
-      <div className="mx-auto max-w-[420px]">
+      <div className="mx-auto max-w-[1050px]">
         {/* ================================================================
-            타이틀
+            타이틀 — 원본 .sub_title 형식 (가운데 + 풀폭 밑줄)
             ================================================================ */}
-        <h2 className="text-center text-[24px] font-bold text-ink-900">로그인</h2>
+        <h2 className="w-full border-b-2 border-[#D9D9D9] text-center text-[22px] leading-[43px] font-bold text-[#222] md:text-[28px]">
+          로그인
+        </h2>
 
+        {/* 원본 로그인 타이틀 이미지 — 원본 크기(1050px) 그대로 */}
+        <Image
+          src="/images/login-title.webp"
+          alt="스마트폰 자물쇠 보안 이미지"
+          width={1050}
+          height={192}
+          className="mx-auto mt-10 w-full"
+        />
 
         {/* ================================================================
-            로그인 폼
+            로그인 폼 — 원본처럼 이미지보다 살짝 좁은 폭
             ================================================================ */}
-        <form onSubmit={onSubmit} className="mt-8 space-y-5">
+        <form onSubmit={onSubmit} className="mx-auto mt-8 max-w-[820px] space-y-5">
           {/* 아이디 */}
           <div>
             <label
@@ -108,7 +119,7 @@ export default function LoginPage() {
           {/* 로그인 버튼 */}
           <button
             type="submit"
-            className="w-full bg-[#1A1A1A] py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-brand-600"
+            className="w-full bg-[#1A1A1A] py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-[#AE031B]"
           >
             로그인
           </button>
@@ -117,7 +128,7 @@ export default function LoginPage() {
         {/* ================================================================
             하단 링크
             ================================================================ */}
-        <div className="mt-6 flex items-center justify-center gap-4 text-[13px]">
+        <div className="mx-auto mt-6 flex max-w-[820px] items-center justify-center gap-4 text-[13px]">
           <button
             type="button"
             onClick={() => setFindOpen(true)}
