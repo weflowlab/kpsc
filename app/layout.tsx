@@ -9,7 +9,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import Header from "@/components/layout/Header";
-import MobileSliderMenu from "@/components/layout/MobileSliderMenu";
 import Footer from "@/components/layout/Footer";
 import KakaoFloat from "@/components/layout/KakaoFloat";
 import TopButton from "@/components/layout/TopButton";
@@ -38,11 +37,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         {/* 상단 고정 헤더 (높이 64px / 1024px 이상 130px)
             투명 헤더이므로 스페이서를 두지 않는다. 각 페이지의 첫 섹션
-            (히어로 · 서브 비주얼)이 헤더 아래로 깔려 배경이 그대로 비친다. */}
+            (히어로 · 서브 비주얼)이 헤더 아래로 깔려 배경이 그대로 비친다.
+            모바일 가로 슬라이더 메뉴도 헤더 안에 포함되어 함께 고정된다. */}
         <Header />
-
-        {/* 모바일 전용 가로 슬라이더 메뉴 — 헤더 높이(70px)만큼 내려서 배치 */}
-        <MobileSliderMenu />
 
         {/* 페이지 본문 */}
         <main className="flex-1">{children}</main>

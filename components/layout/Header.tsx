@@ -18,6 +18,16 @@ import { useEffect, useState } from "react";
 import { NAV, UTIL_NAV, COMPANY } from "@/lib/site-config";
 import { LOGO } from "@/lib/images";
 import { KakaoIcon, NaverBlogIcon } from "@/components/common/BrandIcons";
+import MobileSliderMenu from "@/components/layout/MobileSliderMenu";
+
+/* 모바일 좌측 전화 버튼 아이콘 — 원본 m_top_tel.png 대체 SVG */
+function PhoneIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .7-.2 1l-2.3 2.2z" />
+    </svg>
+  );
+}
 
 /* --------------------------------------------------------------------------
    헤더 우측 SNS 링크
@@ -84,29 +94,41 @@ export default function Header() {
       {/* ================================================================
           1) 로고 행 — 좌측 로고 / 우측 유틸(로그인·회원가입·SNS)
           ================================================================ */}
-      <div className="container-narrow flex h-[64px] items-center justify-between lg:h-[72px]">
+      <div className="container-narrow relative flex h-[64px] items-center justify-between lg:h-[72px]">
+        {/* 모바일 좌측 전화 버튼 — 원본 모바일 헤더와 동일한 위치.
+            투명 헤더 위에서도 보이도록 밝은 반투명 박스에 어두운 글리프를 쓴다. */}
+        <a
+          href={`tel:${COMPANY.tel}`}
+          aria-label="전화 문의"
+          title={COMPANY.tel}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[6px] bg-white/85 text-[#222] shadow-sm backdrop-blur-sm lg:hidden"
+        >
+          <PhoneIcon />
+        </a>
+
         {/* 로고 — 원본은 흰색/컬러 로고 2장을 opacity 크로스페이드 */}
         {/* 로고는 Link 대신 a 태그를 써서 클릭 시 페이지를 새로 불러온다.
             Link 를 쓰면 홈에서 눌렀을 때 클라이언트 라우팅이라 아무 일도
             일어나지 않는다. 새로고침 동작이 의도이므로 규칙을 끈다. */}
+        {/* 모바일은 전화/햄버거 버튼 사이 정중앙, PC 는 원본대로 좌측 정렬 */}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
           href="/"
           onClick={closeAll}
-          className="flex items-center gap-3"
+          className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3 lg:static lg:translate-x-0"
           aria-label="KPSC 홈"
         >
           {/* 로고 — 원본과 동일하게 흰색/컬러 두 장을 겹쳐두고 opacity 로
               크로스페이드한다. 최상단(투명 헤더)에서는 흰색,
               스크롤 후(흰 배경)에는 컬러 로고가 보인다. */}
+          {/* 원본은 스크롤 시 로고가 오른쪽으로 20px 밀린다(transition 0.5s).
+              모바일은 로고가 정중앙 고정이므로 .logo-shift 는 1024px 이상에서만
+              적용된다. (인라인 style 로는 미디어쿼리를 걸 수 없어 클래스 사용) */}
           <span
-            className="relative block h-[40px] w-[124px] lg:h-[50px] lg:w-[155px]"
-            /* 원본은 스크롤 시 padding-left:20px 로 로고가 오른쪽으로 밀린다.
-               (transition 0.5s, 스크롤을 올리면 다시 제자리로) */
-            style={{
-              transform: solid ? "translateX(20px)" : "translateX(0)",
-              transition: "transform 0.5s",
-            }}
+            className={[
+              "logo-shift relative block h-[40px] w-[124px] lg:h-[50px] lg:w-[155px]",
+              solid ? "is-shifted" : "",
+            ].join(" ")}
           >
             <Image
               src={LOGO.white}
@@ -169,29 +191,19 @@ export default function Header() {
             ))}
           </div>
 
-          {/* 모바일 전화 / 햄버거 */}
-          <a
-            href={`tel:${COMPANY.tel}`}
-            className={[
-              "text-sm font-semibold transition-colors duration-500 lg:hidden",
-              solid ? "text-ink-900" : "text-white",
-            ].join(" ")}
-          >
-            전화
-          </a>
+          {/* 모바일 햄버거 — 전화 버튼과 같은 밝은 박스 (원본 모바일 헤더) */}
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
             aria-expanded={mobileOpen}
             aria-label="모바일 대메뉴"
-            className="flex h-9 w-9 flex-col items-center justify-center gap-[5px] lg:hidden"
+            className="flex h-9 w-9 shrink-0 flex-col items-center justify-center gap-[5px] rounded-[6px] bg-white/85 shadow-sm backdrop-blur-sm lg:hidden"
           >
             {[0, 1, 2].map((i) => (
               <span
                 key={i}
                 className={[
-                  "block h-[2px] w-5 transition-all duration-300",
-                  solid ? "bg-ink-900" : "bg-white",
+                  "block h-[2px] w-5 bg-[#222] transition-all duration-300",
                   mobileOpen && i === 0 ? "translate-y-[7px] rotate-45" : "",
                   mobileOpen && i === 1 ? "opacity-0" : "",
                   mobileOpen && i === 2 ? "-translate-y-[7px] -rotate-45" : "",
@@ -276,7 +288,14 @@ export default function Header() {
       </nav>
 
       {/* ================================================================
-          3) 모바일 메뉴 — 슬라이드 다운 아코디언 (한 번에 하나만 열림)
+          3) 모바일 가로 슬라이더 메뉴 (767px 이하)
+          원본과 동일하게 고정 헤더의 일부다. 문서 흐름에서 빠져 있어야
+          히어로/서브 비주얼이 헤더 뒤로 깔리면서 배경이 그대로 비친다.
+          ================================================================ */}
+      <MobileSliderMenu onNavigate={closeAll} />
+
+      {/* ================================================================
+          4) 모바일 메뉴 — 슬라이드 다운 아코디언 (한 번에 하나만 열림)
           ================================================================ */}
       <div
         className={[

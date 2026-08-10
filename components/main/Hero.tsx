@@ -55,8 +55,9 @@ export default function Hero() {
           텍스트 패널 — grid 겹침 + 부유(±12px, 6초) 애니메이션
           ================================================================ */}
       {/* 투명 헤더가 상단을 덮고 있어 100vh 정중앙에 두면 위로 치우쳐 보인다.
-          헤더 높이의 절반만큼 내려서 눈에 보이는 영역의 가운데에 가깝게 맞춘다. */}
-      <div className="relative z-10 flex h-full items-center pt-[32px] lg:pt-[64px]">
+          헤더 높이의 절반만큼 내려서 눈에 보이는 영역의 가운데에 가깝게 맞춘다.
+          (모바일 헤더 = 로고행 64px + 슬라이더 메뉴 41px ≒ 105px) */}
+      <div className="relative z-10 flex h-full items-center pt-[52px] lg:pt-[64px]">
         <div className="container-wide">
           <div className="hero-panel grid">
             {HERO_SLIDES.map((slide, i) => (

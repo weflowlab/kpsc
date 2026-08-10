@@ -32,18 +32,21 @@ export default function CsSection() {
         {/* ================================================================
             게시판 카드 2열
             ================================================================ */}
-        <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+        {/* min-w-0 — 그리드/플렉스 아이템의 기본 min-width:auto 를 풀어 준다.
+            이게 없으면 아래 말줄임(truncate) 제목이 줄어들지 못하고 카드 밖으로
+            삐져나가면서 페이지 전체에 가로 스크롤이 생긴다. */}
+        <div className="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12">
           {BOARD_PREVIEWS.map((board, i) => (
-            <Reveal key={board.title} delay={i * 0.15}>
-              <div className="h-full rounded-[1.5rem] border border-ink-200 bg-white p-6 transition-all duration-[400ms] hover:-translate-y-2 hover:shadow-[0_20px_70px_-10px_rgba(15,23,42,0.15)] lg:p-8">
+            <Reveal key={board.title} delay={i * 0.15} className="min-w-0">
+              <div className="h-full min-w-0 rounded-[1.25rem] border border-ink-200 bg-white p-5 transition-all duration-[400ms] hover:-translate-y-2 hover:shadow-[0_20px_70px_-10px_rgba(15,23,42,0.15)] sm:p-6 lg:rounded-[1.5rem] lg:p-8">
                 {/* 카드 헤더 — 제목 + 더보기 */}
-                <div className="mb-5 flex items-center justify-between border-b border-ink-100 pb-4">
-                  <h4 className="text-[18px] font-bold text-ink-800 lg:text-[20px]">
+                <div className="mb-5 flex items-center justify-between gap-3 border-b border-ink-100 pb-4">
+                  <h4 className="min-w-0 truncate text-[17px] font-bold text-ink-800 sm:text-[18px] lg:text-[20px]">
                     {board.title}
                   </h4>
                   <Link
                     href={board.moreHref}
-                    className="text-[13px] text-ink-400 transition-colors hover:text-ink-900"
+                    className="shrink-0 text-[13px] text-ink-400 transition-colors hover:text-ink-900"
                   >
                     더보기 +
                   </Link>
@@ -52,12 +55,12 @@ export default function CsSection() {
                 {/* 게시물 목록 */}
                 <ul className="space-y-3">
                   {board.posts.map((post) => (
-                    <li key={post.href}>
+                    <li key={post.href} className="min-w-0">
                       <Link
                         href={post.href}
-                        className="group flex items-center justify-between gap-4"
+                        className="group flex items-center justify-between gap-3 sm:gap-4"
                       >
-                        <span className="truncate text-[14px] text-ink-900 transition-colors group-hover:text-brand-600 lg:text-[15px]">
+                        <span className="min-w-0 flex-1 truncate text-[14px] text-ink-900 transition-colors group-hover:text-brand-600 lg:text-[15px]">
                           {post.title}
                         </span>
                         <span className="shrink-0 text-[12px] text-ink-400">

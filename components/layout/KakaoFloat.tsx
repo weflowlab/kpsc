@@ -33,12 +33,14 @@ export default function KakaoFloat() {
       rel="noreferrer noopener"
       aria-label="카카오톡 상담"
       title="카카오톡 상담"
-      className="fixed top-[300px] z-[997] block rounded-full shadow-lg hover:scale-105 min-[1564px]:hidden"
+      className="fixed top-[300px] right-[5px] z-[997] block rounded-full shadow-lg min-[1564px]:hidden"
       style={{
-        right: shown ? 5 : -60,
-        /* right 는 원본과 동일한 0.35s, hover 확대는 별도 트랜지션 */
-        transition: "right 0.35s ease, transform 0.3s ease",
-        transitionDelay: shown ? "0.65s, 0s" : "0s, 0s",
+        /* 숨김을 right:-60px 로 두면 iOS 에서 문서 폭이 늘어나 가로 스크롤이
+           생긴다. right 는 5px 로 고정하고 이동은 transform 으로 처리한다. */
+        transform: shown ? "translateX(0)" : "translateX(120%)",
+        /* 원본과 동일한 0.35s — 들어올 때만 0.65s 지연 */
+        transition: "transform 0.35s ease",
+        transitionDelay: shown ? "0.65s" : "0s",
       }}
     >
       <KakaoIcon size={54} className="block" />

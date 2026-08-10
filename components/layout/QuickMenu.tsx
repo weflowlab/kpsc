@@ -66,10 +66,12 @@ export default function QuickMenu() {
   return (
     <aside
       aria-label="퀵메뉴"
-      className="fixed top-0 z-40 hidden h-screen w-[180px] overflow-hidden bg-[#1E1E1E] min-[1564px]:block"
+      className="fixed top-0 right-0 z-40 hidden h-screen w-[180px] overflow-hidden bg-[#1E1E1E] min-[1564px]:block"
       style={{
-        right: shown ? 0 : -181,
-        transition: "all 0.65s ease",
+        /* 숨김을 right:-181px 로 두면 문서 폭이 늘어나 가로 스크롤이 생긴다.
+           right:0 으로 붙여 두고 이동은 transform 으로 처리한다. */
+        transform: shown ? "translateX(0)" : "translateX(101%)",
+        transition: "transform 0.65s ease",
         transitionDelay: shown ? "0s" : "0.35s",
       }}
     >
