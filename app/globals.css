@@ -99,9 +99,9 @@ body {
   font-family: var(--font-nanum);
   word-break: keep-all; /* 원본 dae- 블록의 한글 어절 단위 줄바꿈 */
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  /* 자식이 넘쳐도 문서가 뷰포트보다 넓어지지 않게 한다 */
-  max-width: 100%;
+  /* 가로 넘침 차단은 html 의 overflow-x: clip 이 담당한다.
+     body 에 overflow-x: hidden 을 걸면 iOS 에서 루트 스크롤러가 바뀌어
+     당겨서 새로고침(pull-to-refresh)이 동작하지 않는다. */
 }
 
 input,

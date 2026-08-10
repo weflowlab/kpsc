@@ -4,9 +4,10 @@
    모바일 가로 슬라이더 메뉴 (.m_main_slider_menu)
    원본 재현 포인트
    - 767px 이하에서만 노출. 고정 헤더의 일부라 흐름에서 빠져 있다.
-   - 원본은 Owl Carousel 의 loop:true 였는데, 클론 슬라이드가 끼어들며
-     끝에서 되감길 때 빈 칸/점프가 생겼다. 여기서는 무한 루프를 쓰지 않고
-     "끝에서 멈추는" 유한 스크롤 스냅으로 대체한다. (양방향 스와이프 정상)
+   - 원본 Owl Carousel 의 loop:true 재현 — 메뉴 5개를 3벌 이어붙이고
+     항상 가운데 벌 안에 머물도록 스크롤 위치를 조용히 되감는다.
+     (한 벌 폭의 0.5~1.5배 범위를 벗어나면 즉시 ±한 벌 폭 만큼 점프.
+     내용이 동일해 사용자는 이어지는 것처럼 느낀다 = 무한 루프)
    - 우측 토글 버튼 클릭 시 하위 메뉴가 그리드로 slideToggle
    ========================================================================== */
 
@@ -17,6 +18,9 @@ import { NAV } from "@/lib/site-config";
 /* 슬라이더에 노출되는 축약 라벨 — 원본 텍스트 그대로 */
 const SLIDER_LABELS = ["KPSC소개", "인사말", "조직 구성", "사업/서비스", "활동/소식"];
 
+/* 무한 루프용 복제 벌 수 — 가운데(1번째) 벌에서 시작한다 */
+const COPIES = 3;
+
 type Props = {
   /** 메뉴 이동 시 헤더의 열린 메뉴를 함께 닫는다 */
   onNavigate?: () => void;
@@ -24,89 +28,52 @@ type Props = {
 
 export default function MobileSliderMenu({ onNavigate }: Props) {
   const [open, setOpen] = useState(false);
-
-  /* 트랙 — 좌우 끝에 닿았는지 여부로 페이드 힌트를 켠다 */
   const trackRef = useRef<HTMLUListElement>(null);
-  const [edge, setEdge] = useState({ left: false, right: false });
 
-  const syncEdge = useCallback(() => {
+  /* 시작 위치를 가운데 벌로 — 양방향 모두 스와이프 여지가 생긴다 */
+  useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    setEdge({ left: el.scrollLeft > 1, right: el.scrollLeft < max - 1 });
+    el.scrollLeft = el.scrollWidth / COPIES;
   }, []);
 
-  useEffect(() => {
-    syncEdge();
-    window.addEventListener("resize", syncEdge);
-    return () => window.removeEventListener("resize", syncEdge);
-  }, [syncEdge]);
-
-  /* 한 번에 트랙 폭의 70% 만큼 이동 — 끝에서는 자연스럽게 멈춘다(루프 없음) */
-  const step = (dir: 1 | -1) => {
+  /* 가운데 벌을 벗어나면 한 벌 폭 만큼 즉시 점프해 무한 루프를 만든다 */
+  const loop = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.7, behavior: "smooth" });
-  };
+    const copyWidth = el.scrollWidth / COPIES;
+    if (el.scrollLeft < copyWidth * 0.5) {
+      el.scrollLeft += copyWidth;
+    } else if (el.scrollLeft > copyWidth * 1.5) {
+      el.scrollLeft -= copyWidth;
+    }
+  }, []);
 
   return (
     <div className="border-b border-ink-200 bg-white md:hidden">
       <div className="relative flex items-stretch">
-        {/* 좌우 페이드 — 더 스와이프할 영역이 남아 있음을 알리는 힌트 */}
-        <span
-          aria-hidden
-          className={[
-            "pointer-events-none absolute inset-y-0 left-0 z-10 w-6 bg-gradient-to-r from-white to-transparent transition-opacity duration-200",
-            edge.left ? "opacity-100" : "opacity-0",
-          ].join(" ")}
-        />
-        <span
-          aria-hidden
-          className={[
-            "pointer-events-none absolute inset-y-0 right-11 z-10 w-6 bg-gradient-to-l from-white to-transparent transition-opacity duration-200",
-            edge.right ? "opacity-100" : "opacity-0",
-          ].join(" ")}
-        />
-
-        {/* 가로 스와이프 영역 — 터치는 네이티브 스크롤, 클릭은 아래 화살표로 */}
+        {/* 가로 스와이프 영역 — 3벌 복제 + 위치 되감기로 끝없이 넘어간다 */}
         <ul
           ref={trackRef}
-          onScroll={syncEdge}
-          className="scroll-x no-scrollbar flex flex-1 snap-x gap-1 overscroll-x-contain px-3 py-2"
+          onScroll={loop}
+          className="scroll-x no-scrollbar flex flex-1 gap-1 overscroll-x-contain px-3 py-1"
         >
-          {NAV.map((group, i) => (
-            <li key={group.label} className="shrink-0 snap-start">
-              <Link
-                href={group.children[0].href}
-                onClick={onNavigate}
-                className="block rounded-full px-3 py-1.5 text-[13px] whitespace-nowrap text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900"
-              >
-                {SLIDER_LABELS[i]}
-              </Link>
-            </li>
-          ))}
+          {Array.from({ length: COPIES }, (_, copy) =>
+            NAV.map((group, i) => (
+              <li key={`${copy}-${group.label}`} className="shrink-0">
+                <Link
+                  href={group.children[0].href}
+                  onClick={onNavigate}
+                  tabIndex={copy === 1 ? 0 : -1}
+                  aria-hidden={copy !== 1}
+                  className="block rounded-full px-3 py-1 text-[13px] whitespace-nowrap text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900"
+                >
+                  {SLIDER_LABELS[i]}
+                </Link>
+              </li>
+            ))
+          )}
         </ul>
-
-        {/* 좌우 이동 버튼 — 스와이프가 어려운 환경(마우스)용 보조 조작.
-            더 이동할 곳이 없으면 비활성화되어 되감기(무한 루프)가 없다. */}
-        <button
-          type="button"
-          onClick={() => step(-1)}
-          disabled={!edge.left}
-          aria-label="메뉴 왼쪽으로"
-          className="z-20 w-6 shrink-0 text-[11px] text-ink-400 disabled:opacity-0"
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          onClick={() => step(1)}
-          disabled={!edge.right}
-          aria-label="메뉴 오른쪽으로"
-          className="z-20 w-6 shrink-0 text-[11px] text-ink-400 disabled:opacity-0"
-        >
-          ›
-        </button>
 
         {/* 토글 버튼 — 원본 m_main_slider_menu_off/on.gif */}
         <button

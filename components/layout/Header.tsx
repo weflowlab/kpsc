@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NAV, UTIL_NAV, COMPANY } from "@/lib/site-config";
 import { LOGO } from "@/lib/images";
+import { openIdPwPopup } from "@/components/layout/IdPwFindPopup";
 import { KakaoIcon, NaverBlogIcon } from "@/components/common/BrandIcons";
 import MobileSliderMenu from "@/components/layout/MobileSliderMenu";
 
@@ -358,13 +359,17 @@ export default function Header() {
             </li>
           ))}
           <li className="border-b border-dotted border-[#ddd]">
-            <Link
-              href="/login"
-              onClick={closeAll}
-              className="block px-5 py-3 text-[14px] text-black hover:bg-[#eee]"
+            {/* 원본처럼 페이지 이동 없이 전역 레이어 팝업을 연다 */}
+            <button
+              type="button"
+              onClick={() => {
+                closeAll();
+                openIdPwPopup();
+              }}
+              className="block w-full px-5 py-3 text-left text-[14px] text-black hover:bg-[#eee]"
             >
               아이디/비번찾기
-            </Link>
+            </button>
           </li>
         </ul>
       </div>

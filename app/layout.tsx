@@ -13,6 +13,7 @@ import Footer from "@/components/layout/Footer";
 import KakaoFloat from "@/components/layout/KakaoFloat";
 import TopButton from "@/components/layout/TopButton";
 import LayerPopup from "@/components/layout/LayerPopup";
+import IdPwFindPopup from "@/components/layout/IdPwFindPopup";
 
 /* --------------------------------------------------------------------------
    메타데이터 — 원본 <title> / og / description 값을 그대로 사용
@@ -50,6 +51,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <KakaoFloat />
         <TopButton />
         <LayerPopup />
+        {/* 아이디/비번찾기 — 어느 페이지에서든 이벤트로 열리는 전역 팝업 */}
+        <IdPwFindPopup />
       </body>
     </html>
   );

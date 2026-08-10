@@ -12,6 +12,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, type FormEvent } from "react";
 import SubLayout from "@/components/sub/SubLayout";
+import { openIdPwPopup } from "@/components/layout/IdPwFindPopup";
 
 export default function LoginPage() {
   /* 입력 상태 */
@@ -19,9 +20,6 @@ export default function LoginPage() {
   const [pw, setPw] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  /* ID/PW 찾기 레이어 팝업 */
-  const [findOpen, setFindOpen] = useState(false);
 
   /* 로그인 검증 — 원본 알럿 문구 그대로 재현 */
   const onSubmit = (e: FormEvent) => {
@@ -131,7 +129,7 @@ export default function LoginPage() {
         <div className="mx-auto mt-6 flex max-w-[820px] items-center justify-center gap-4 text-[13px]">
           <button
             type="button"
-            onClick={() => setFindOpen(true)}
+            onClick={openIdPwPopup}
             className="text-ink-500 hover:text-brand-600"
           >
             ID/PW 찾기
@@ -145,81 +143,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ================================================================
-          ID/PW 찾기 레이어 팝업 (원본 id_pw_layerpopup)
-          ================================================================ */}
-      {findOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="아이디/비밀번호 찾기"
-          className="fixed inset-0 z-[29999] flex items-center justify-center px-4"
-        >
-          {/* 딤 */}
-          <button
-            type="button"
-            aria-label="닫기"
-            onClick={() => setFindOpen(false)}
-            className="absolute inset-0 bg-black/80"
-          />
-
-          <div className="relative w-full max-w-[360px] rounded-lg bg-white p-7">
-            <h3 className="text-[17px] font-bold text-ink-900">아이디/비밀번호 찾기</h3>
-            <p className="mt-2 text-[13px] text-ink-500">
-              회원 가입시 이름 및 휴대폰 번호를 입력해 주세요.
-            </p>
-
-            <div className="mt-5 space-y-4">
-              <div>
-                <label
-                  htmlFor="find-name"
-                  className="mb-1.5 block text-[13px] font-semibold text-ink-900"
-                >
-                  이름
-                </label>
-                <input
-                  id="find-name"
-                  type="text"
-                  maxLength={10}
-                  className="h-9 w-full border border-[#E4E4E4] px-3 text-[14px] outline-none focus:border-brand-600"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="find-hp"
-                  className="mb-1.5 block text-[13px] font-semibold text-ink-900"
-                >
-                  HP
-                </label>
-                <input
-                  id="find-hp"
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={11}
-                  placeholder="숫자만 입력해 주세요."
-                  className="h-9 w-full border border-[#E4E4E4] px-3 text-[14px] outline-none focus:border-brand-600"
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex gap-2">
-              <button
-                type="button"
-                className="flex-1 bg-[#1A1A1A] py-3 text-[14px] text-white transition-colors hover:bg-brand-600"
-              >
-                아이디/비번 찾기
-              </button>
-              <button
-                type="button"
-                onClick={() => setFindOpen(false)}
-                className="border border-ink-200 px-5 text-[14px] text-ink-500"
-              >
-                닫기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </SubLayout>
   );
 }

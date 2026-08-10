@@ -65,24 +65,25 @@ export default function BoardList({
 
   return (
     <>
-      {/* ============ 헤더 행 — 55px, bg #F5F4F4 (모바일 숨김) ============ */}
+      {/* ============ 헤더 행 — 55px, bg #F5F4F4 ============
+          모바일은 원본처럼 번호/제목/작성자만 노출 (분류·조회수·등록일 숨김) */}
       <div
-        className={`hidden h-[55px] items-center bg-[#F5F4F4] text-center text-[15px] font-bold text-[#45545D] sm:grid ${gridCols}`}
+        className={`grid h-[55px] grid-cols-[36px_44px_1fr_90px] items-center bg-[#F5F4F4] text-center text-[14px] font-bold text-[#45545D] sm:text-[15px] ${gridCols}`}
       >
         <span />
         <span>번호</span>
-        <span />
+        <span className="hidden sm:block" />
         <span>제목</span>
         {isNotice ? (
           <>
-            <span>등록일</span>
+            <span className="hidden sm:block">등록일</span>
             <span>작성자</span>
-            <span>조회수</span>
+            <span className="hidden sm:block">조회수</span>
           </>
         ) : (
           <>
-            <span>조회수</span>
-            <span>등록일</span>
+            <span className="hidden sm:block">조회수</span>
+            <span className="hidden sm:block">등록일</span>
             <span>작성자</span>
           </>
         )}
@@ -103,12 +104,13 @@ export default function BoardList({
               )}
 
               {/* 원본처럼 행 자체는 링크가 아니고 제목만 링크 —
-                  체크박스 클릭이 페이지 이동과 얽히지 않는다 */}
+                  체크박스 클릭이 페이지 이동과 얽히지 않는다.
+                  모바일도 원본처럼 55px 표 형태(번호/제목/작성자) 유지 */}
               <div
-                className={`grid items-center gap-1 px-2 py-4 text-[#45545D] duration-[800ms] hover:bg-[#F0EEEE] hover:font-bold hover:text-black sm:h-[55px] sm:gap-0 sm:px-0 sm:py-0 ${gridCols}`}
+                className={`grid h-[55px] grid-cols-[36px_44px_1fr_90px] items-center text-[#45545D] duration-[800ms] hover:bg-[#F0EEEE] hover:font-bold hover:text-black ${gridCols}`}
               >
-                {/* 체크박스 — 모바일 숨김 */}
-                <span className="hidden text-center sm:block">
+                {/* 체크박스 */}
+                <span className="text-center">
                   <input
                     type="checkbox"
                     aria-label={`${post.title} 선택`}
@@ -117,8 +119,8 @@ export default function BoardList({
                   />
                 </span>
 
-                {/* 번호 — 모바일 숨김. 현재 보고 있는 글은 깜빡이는 아이콘 */}
-                <span className="hidden text-center text-[14px] sm:block">
+                {/* 번호 — 현재 보고 있는 글은 깜빡이는 아이콘 */}
+                <span className="text-center text-[13px] sm:text-[14px]">
                   {post.uid === currentUid ? (
                     <Image
                       src="/images/board/ico_now.gif"
@@ -133,15 +135,15 @@ export default function BoardList({
                   )}
                 </span>
 
-                {/* 분류 — 원본 주황(#D45111), 줄바꿈 금지 */}
-                <span className="text-center text-[12px] whitespace-nowrap text-[#D45111] sm:text-[14px]">
+                {/* 분류 — 원본 주황(#D45111), 줄바꿈 금지, 모바일 숨김 */}
+                <span className="hidden text-center whitespace-nowrap text-[#D45111] sm:block sm:text-[14px]">
                   [{post.category}]
                 </span>
 
                 {/* 제목 — 좌측 정렬, 원본처럼 제목만 링크 */}
                 <Link
                   href={`/news/${board}/${post.uid}`}
-                  className="truncate px-1 text-[14px] sm:px-2 sm:text-left"
+                  className="truncate px-1 text-left text-[13px] sm:px-2 sm:text-[14px]"
                 >
                   {post.title}
                 </Link>
