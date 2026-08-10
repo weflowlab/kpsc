@@ -87,8 +87,10 @@
    -------------------------------------------------------------------------- */
 html {
   scroll-behavior: smooth;
-  /* 모바일에서 페이지를 위로 당길 때 새로고침(pull-to-refresh) 방지 */
-  overscroll-behavior-y: none;
+  /* iOS Safari 는 body 의 overflow-x:hidden 만으로는 가로 스크롤을 못 막는다.
+     clip 은 스크롤 컨테이너를 만들지 않아 position:fixed 요소에 영향이 없다.
+     (미지원 브라우저에서는 무시되고 아래 body 규칙이 그대로 동작한다) */
+  overflow-x: clip;
 }
 
 body {
@@ -98,6 +100,8 @@ body {
   word-break: keep-all; /* 원본 dae- 블록의 한글 어절 단위 줄바꿈 */
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* 자식이 넘쳐도 문서가 뷰포트보다 넓어지지 않게 한다 */
+  max-width: 100%;
 }
 
 input,
@@ -208,6 +212,27 @@ h3 {
 /* Montserrat — 영문 섹션 라벨 / 큰 제목 */
 .font-mont {
   font-family: var(--font-mont);
+}
+
+/* 헤더 로고 — 원본은 스크롤 시 로고가 오른쪽으로 20px 밀린다.
+   모바일에서는 로고가 전화/햄버거 버튼 사이 정중앙에 고정돼야 하므로
+   1024px 이상에서만 적용한다. (인라인 style 로는 미디어쿼리 불가) */
+.logo-shift {
+  transition: transform 0.5s;
+}
+@media (min-width: 1024px) {
+  .logo-shift.is-shifted {
+    transform: translateX(20px);
+  }
+}
+
+/* 가로 스와이프 트랙의 스크롤바 숨김 */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* 카드 우하단 오프셋 라인 — 원본 team.php .offset-line 재현 */
