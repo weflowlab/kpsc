@@ -81,7 +81,7 @@ export default function MobileSliderMenu({ onNavigate }: Props) {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="전체 메뉴 펼치기"
-          className="z-20 flex w-11 shrink-0 items-center justify-center border-l border-ink-200 text-ink-400"
+          className="z-20 flex w-11 shrink-0 items-center justify-center text-ink-400"
         >
           <span
             aria-hidden
