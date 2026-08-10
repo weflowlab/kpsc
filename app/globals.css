@@ -87,6 +87,8 @@
    -------------------------------------------------------------------------- */
 html {
   scroll-behavior: smooth;
+  /* 모바일에서 페이지를 위로 당길 때 새로고침(pull-to-refresh) 방지 */
+  overscroll-behavior-y: none;
 }
 
 body {

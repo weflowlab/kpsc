@@ -314,6 +314,7 @@ export default function Header() {
                     <li key={child.href}>
                       <Link
                         href={child.href}
+                        onClick={closeAll}
                         className="block px-8 py-2.5 text-[13px] text-[#666] hover:bg-[#eee]"
                       >
                         {child.label}
@@ -330,6 +331,7 @@ export default function Header() {
             <li key={item.href} className="border-b border-dotted border-[#ddd]">
               <Link
                 href={item.href}
+                onClick={closeAll}
                 className="block px-5 py-3 text-[14px] text-black hover:bg-[#eee]"
               >
                 {item.label}
