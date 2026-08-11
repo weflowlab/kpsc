@@ -60,15 +60,28 @@ export default function Footer() {
                 </a>
               </span>
               <Divider />
-              <a
-                href="https://pf.kakao.com/_VqFIX"
-                target="_blank"
-                rel="noreferrer noopener"
-                className="hover:text-white"
-              >
+              <span>
                 <strong className="mr-2 font-semibold text-[#E4E6EB]">카톡</strong>
-                1 : 1 맞춤상담
-              </a>
+                <a
+                  href="https://pf.kakao.com/_VqFIX"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="hover:text-white"
+                >
+                  KPSC 메인채널
+                </a>
+                <span aria-hidden className="mx-2 text-[#4B515D]">
+                  ·
+                </span>
+                <a
+                  href="https://pf.kakao.com/_KmtfX"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="hover:text-white"
+                >
+                  온라인파트너톡(KPSM)
+                </a>
+              </span>
             </div>
 
             {/* 카피라이트 */}

@@ -14,7 +14,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NAV, UTIL_NAV, COMPANY } from "@/lib/site-config";
 import { LOGO } from "@/lib/images";
 import { openIdPwPopup } from "@/components/layout/IdPwFindPopup";
@@ -60,6 +60,8 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const pathname = usePathname();
+  /* 헤더 바깥 클릭 감지용 — 모바일 메뉴를 닫는다 */
+  const headerRef = useRef<HTMLElement>(null);
 
   /* ------------------------------------------------------------------
      스크롤 감지 — 원본은 scrollTop > 0 기준으로 fixed-default/fixed-on 토글
@@ -81,12 +83,26 @@ export default function Header() {
     setOpenAccordion(null);
   };
 
+  /* ------------------------------------------------------------------
+     모바일 메뉴가 열려 있을 때 헤더 바깥을 터치하면 닫는다 (X 누른 것과 동일)
+     ------------------------------------------------------------------ */
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onOutside = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) closeAll();
+    };
+    /* 캡처 단계 — 본문 요소가 이벤트를 삼켜도 동작하게 한다 */
+    document.addEventListener("pointerdown", onOutside, true);
+    return () => document.removeEventListener("pointerdown", onOutside, true);
+  }, [mobileOpen]);
+
   /* 배경 반전은 스크롤 여부로만 결정한다.
      (커튼을 열어도 헤더는 투명을 유지해 뒤 배경이 계속 보이게 한다) */
   const solid = scrolled;
 
   return (
     <header
+      ref={headerRef}
       className={[
         "fixed top-0 left-0 z-50 w-full transition-all duration-500",
         solid ? "bg-white shadow-[0_0_15px_0_#80808040]" : "bg-transparent",

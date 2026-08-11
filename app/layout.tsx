@@ -23,12 +23,16 @@ export const metadata: Metadata = {
     default: "KPSC",
     template: "KPSC - %s",
   },
-  description: "지속 가능한 미래 에너지 생태계를 구축하는 KPSC협동조합",
+  description: "지속 가능한 미래 에너지 생태계를 구축하는 KPSC",
   keywords: ["에너지", "친환경에너지", "미래에너지"],
+  /* 카카오톡·SNS 공유 미리보기 — 원본 og 이미지에서 '협동조합' 문구를 뺀
+     로고만 남겨 1200×630 으로 재생성했다 (public/og-image.jpg) */
   openGraph: {
-    title: "KPSC협동조합",
+    title: "KPSC",
     description: "미래 에너지 생태계 구축",
     type: "website",
+    siteName: "KPSC",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "KPSC" }],
   },
 };
 

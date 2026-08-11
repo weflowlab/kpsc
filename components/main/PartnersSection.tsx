@@ -50,6 +50,63 @@ export default function PartnersSection() {
     el.scrollTo({ left: item.offsetLeft, behavior: "smooth" });
   };
 
+  /* ------------------------------------------------------------------
+     가로 드래그 — 축(방향) 감지 방식
+     트랙은 touch-action: pan-y 라 세로 제스처는 브라우저가 그대로 처리한다
+     (카드 위에서도 페이지 스크롤 가능). 가로 제스처만 여기서 직접 처리해
+     대각선으로 밀어도 페이지가 위아래로 흔들리지 않는다.
+     드래그 중에는 스냅을 꺼두고, 손을 떼면 가장 가까운 카드로 스냅한다.
+     ------------------------------------------------------------------ */
+  const drag = useRef({ x: 0, y: 0, left: 0, axis: "" as "" | "x" | "y" });
+
+  const onPointerDown = (e: React.PointerEvent<HTMLUListElement>) => {
+    if (e.pointerType === "mouse") return; // 데스크톱은 기본 스크롤 사용
+    const el = trackRef.current;
+    if (!el) return;
+    drag.current = { x: e.clientX, y: e.clientY, left: el.scrollLeft, axis: "" };
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLUListElement>) => {
+    const el = trackRef.current;
+    if (!el || e.pointerType === "mouse") return;
+    const dx = drag.current.x - e.clientX;
+    const dy = drag.current.y - e.clientY;
+
+    /* 첫 유효 이동에서 축을 한 번만 결정한다 (임계 6px) */
+    if (!drag.current.axis) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      drag.current.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      if (drag.current.axis === "x") el.style.scrollSnapType = "none";
+    }
+    if (drag.current.axis !== "x") return;
+    el.scrollLeft = drag.current.left + dx;
+  };
+
+  const endDrag = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    if (drag.current.axis === "x") {
+      el.style.scrollSnapType = "";
+      /* 가장 가까운 카드로 정렬 */
+      const items = Array.from(el.children) as HTMLElement[];
+      const nearest = items.reduce(
+        (best, item, i) =>
+          Math.abs(item.offsetLeft - el.scrollLeft) <
+          Math.abs(items[best].offsetLeft - el.scrollLeft)
+            ? i
+            : best,
+        0
+      );
+      el.scrollTo({ left: items[nearest].offsetLeft, behavior: "smooth" });
+    }
+    drag.current.axis = "";
+  };
+
+  /* 드래그로 끝난 제스처는 카드 링크 클릭으로 이어지지 않게 막는다 */
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (drag.current.axis === "x") e.preventDefault();
+  };
+
   return (
     <section id="services" className="section-pad bg-section">
       <div className="container-wide">
@@ -72,11 +129,19 @@ export default function PartnersSection() {
             카드 트랙 — 모바일 가로 스와이프 / 768px 이상 2열 / 1280px 이상 4열
             ================================================================ */}
         {/* .scroll-x 대신 Tailwind 유틸을 쓴다 — overflow-x 가 md 이상에서
-            visible 로 풀려야 카드 hover 부양/그림자가 잘리지 않는다 */}
+            visible 로 풀려야 카드 hover 부양/그림자가 잘리지 않는다.
+            touch-pan-y — 세로 제스처는 브라우저에 맡기고(카드 위에서도 페이지
+            스크롤 가능) 가로 제스처만 위 포인터 핸들러가 처리한다.
+            (md 이상은 그리드라 기본값으로 되돌린다) */}
         <ul
           ref={trackRef}
           onScroll={syncActive}
-          className="no-scrollbar relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain md:grid md:grid-cols-2 md:gap-[30px] md:overflow-x-visible xl:grid-cols-4"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onClickCapture={onClickCapture}
+          className="no-scrollbar relative flex touch-pan-y snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain md:touch-auto md:grid md:grid-cols-2 md:gap-[30px] md:overflow-x-visible xl:grid-cols-4"
         >
           {PARTNER_CARDS.map((card, i) => (
             <Reveal

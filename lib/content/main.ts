@@ -62,7 +62,7 @@ export const PARTNER_CARDS: PartnerCard[] = [
   },
   {
     num: "03",
-    title: "협동조합의 방향성",
+    title: "KPSC의 방향성",
     description:
       "확고한 책임 경영과 투명한 운영을 바탕으로, 조합원과 함께 명실상부한 친환경 에너지 리더로 성장해 나아갑니다.",
     href: "/greeting/direction",

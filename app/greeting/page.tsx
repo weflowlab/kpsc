@@ -70,7 +70,7 @@ export default function GreetingPage() {
               깊은 감사의 말씀을 드립니다.
             </p>
             <p>
-              우리 조합은{" "}
+              우리 KPSC는{" "}
               <span className="font-semibold text-[#312e81] underline decoration-[#e2e8f0] underline-offset-8">
                 “미래 에너지 실천, 지식을 나누며, 지속가능한 발전”
               </span>
@@ -78,7 +78,7 @@ export default function GreetingPage() {
               본질을 잃지 않고 상생의 길을 모색합니다.
             </p>
             <p>
-              미래 에너지 발전을 함께 이끌어가는 협동의 힘이 곧 우리 조합의 자산입니다.
+              미래 에너지 발전을 함께 이끌어가는 협동의 힘이 곧 우리 KPSC의 자산입니다.
               혼자서는 이룰 수 없는 가치들을 연대와 협력을 통해 현실로 만들어가고
               있습니다.
             </p>
