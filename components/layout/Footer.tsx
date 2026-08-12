@@ -9,10 +9,13 @@
 import Link from "next/link";
 import { COMPANY } from "@/lib/site-config";
 
-/* 값 사이 세로 구분선 — 모바일에서는 숨기고 세로 스택으로 전환 */
-function Divider() {
+/* 회사 정보 한 줄 — 라벨 열(dt)과 값 열(dd)이 그리드로 정렬된다 */
+function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <span aria-hidden className="hidden h-3 w-px bg-[#4B515D] sm:inline-block" />
+    <>
+      <dt className="font-semibold whitespace-nowrap text-[#E4E6EB]">{label}</dt>
+      <dd className="min-w-0">{children}</dd>
+    </>
   );
 }
 
@@ -29,39 +32,24 @@ export default function Footer() {
             {COMPANY.name}
           </div>
 
-          {/* 회사 정보 3줄 */}
-          <div className="flex flex-col gap-2 text-[0.825rem] leading-relaxed text-[#B0B3B8] lg:text-[0.95rem]">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span>
-                <strong className="mr-2 font-semibold text-[#E4E6EB]">대표자명</strong>
-                {COMPANY.ceo}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span>
-                <strong className="mr-2 font-semibold text-[#E4E6EB]">주소</strong>
-                {COMPANY.address}
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span>
-                <strong className="mr-2 font-semibold text-[#E4E6EB]">전화번호</strong>
+          {/* 회사 정보 — 라벨/값 2열 그리드.
+              라벨 열은 가장 긴 라벨(대표자명) 폭에 맞춰지므로 값의 시작선이
+              모든 줄에서 일치하고, gap-y 로 줄 간격도 균일해진다. */}
+          <div className="text-[0.825rem] leading-relaxed text-[#B0B3B8] lg:text-[0.95rem]">
+            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
+              <InfoRow label="대표자명">{COMPANY.ceo}</InfoRow>
+              <InfoRow label="주소">{COMPANY.address}</InfoRow>
+              <InfoRow label="전화번호">
                 <a href={`tel:${COMPANY.tel}`} className="hover:text-white">
                   {COMPANY.tel}
                 </a>
-              </span>
-              <Divider />
-              <span>
-                <strong className="mr-2 font-semibold text-[#E4E6EB]">이메일</strong>
+              </InfoRow>
+              <InfoRow label="이메일">
                 <a href={`mailto:${COMPANY.email}`} className="hover:text-white">
                   {COMPANY.email}
                 </a>
-              </span>
-              <Divider />
-              <span>
-                <strong className="mr-2 font-semibold text-[#E4E6EB]">카톡</strong>
+              </InfoRow>
+              <InfoRow label="카톡">
                 <a
                   href="https://pf.kakao.com/_VqFIX"
                   target="_blank"
@@ -81,11 +69,21 @@ export default function Footer() {
                 >
                   온라인파트너톡(KPSM)
                 </a>
-              </span>
-            </div>
+              </InfoRow>
+              <InfoRow label="블로그">
+                <a
+                  href="https://blog.naver.com/skytravegroupoffice"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="hover:text-white"
+                >
+                  네이버 블로그
+                </a>
+              </InfoRow>
+            </dl>
 
             {/* 카피라이트 */}
-            <p className="mt-4 text-[0.8rem] text-[#4B515D]">{COMPANY.copyright}</p>
+            <p className="mt-6 text-[0.8rem] text-[#4B515D]">{COMPANY.copyright}</p>
           </div>
         </div>
 
