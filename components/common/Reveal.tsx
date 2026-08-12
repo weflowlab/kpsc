@@ -35,18 +35,44 @@ export default function Reveal({
     const el = ref.current;
     if (!el) return;
 
+    let done = false;
+
+    /* 옵저버가 끝내 발화하지 않는 상황(예: 진입 팝업이 body 스크롤을 잠가
+       첫 화면 아래 섹션이 교차 판정을 받지 못하는 경우)에 대비한 직접 검사.
+       한 번이라도 화면 안에 들어와 있으면 그대로 노출한다. */
+    const check = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) show();
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(entry.target); // 1회만 재생
-        }
+        if (entry.isIntersecting) show();
       },
       { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    /* 하이드레이션 직후 레이아웃이 잡힌 뒤 초기 위치를 한 번 보정 */
+    const timer = window.setTimeout(check, 400);
+
+    function show() {
+      if (done) return;
+      done = true; // 1회만 재생
+      setVisible(true);
+      cleanup();
+    }
+
+    function cleanup() {
+      observer.disconnect();
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+      window.clearTimeout(timer);
+    }
+
+    return cleanup;
   }, []);
 
   return (
