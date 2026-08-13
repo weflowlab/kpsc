@@ -95,6 +95,16 @@ export default function Hero() {
                 >
                   {slide.description}
                 </p>
+
+                {/* 보조 설명 — 있는 슬라이드만, stagger +1.1s */}
+                {slide.descriptionSub && (
+                  <p
+                    className="hero-line mx-auto mt-2 max-w-[34ch] text-[13px] tracking-[-0.02em] text-white/70 lg:mt-3 lg:max-w-none lg:text-[17px] lg:tracking-[0.04em]"
+                    style={{ ["--hero-step" as string]: "1.1s" }}
+                  >
+                    {slide.descriptionSub}
+                  </p>
+                )}
               </div>
             ))}
           </div>

@@ -14,6 +14,8 @@ export type HeroSlide = {
   title: [string, string];
   /** 서브 카피 */
   description: string;
+  /** 서브 카피 아래 한 줄 더 (있는 슬라이드만) */
+  descriptionSub?: string;
 };
 
 export const HERO_SLIDES: HeroSlide[] = [
@@ -21,6 +23,8 @@ export const HERO_SLIDES: HeroSlide[] = [
     badge: "Innovation & Future",
     title: ["미래 에너지를 선도하며,", "지속 가능한 생태계를 구축합니다."],
     description: "단순 발전을 넘어, 친환경 전환으로 대한민국 에너지 자립을 이끕니다.",
+    descriptionSub:
+      "KPSC 그룹브랜드는 여행 서비스 제공 및 여러 파트너와 협력하여 여러분에게 더 나은 서비스를 제공하겠습니다.",
   },
   {
     badge: "Social Value",
