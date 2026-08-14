@@ -89,18 +89,35 @@ export default function Hero() {
                 </h2>
 
                 {/* 설명 — stagger +0.8s */}
+                {/* 모바일에서는 쉼표 뒤에서 줄을 바꿔 두 줄로 읽히게 한다
+                    (PC 는 한 줄 그대로 — 쉼표 뒤 공백만 복원) */}
                 <p
                   className="hero-line mt-4 text-[14px] tracking-[-0.02em] text-white/85 lg:mt-6 lg:text-[20px] lg:tracking-[0.04em]"
                   style={{ ["--hero-step" as string]: "0.8s" }}
                 >
-                  {slide.description}
+                  {slide.description.split(", ").map((part, k, arr) => (
+                    <span key={k}>
+                      {part}
+                      {k < arr.length - 1 && (
+                        <>
+                          ,<br className="lg:hidden" />
+                          <span className="hidden lg:inline"> </span>
+                        </>
+                      )}
+                    </span>
+                  ))}
                 </p>
 
-                {/* 보조 설명 — 있는 슬라이드만, stagger +1.1s */}
+                {/* 보조 설명 — 있는 슬라이드만, stagger +1.1s
+                    박스 없이 글자만으로 강조한다. 흰색 100% + 세미볼드에
+                    그림자를 얹어 배경 사진 위에서도 또렷하게 읽히게 한다. */}
                 {slide.descriptionSub && (
                   <p
-                    className="hero-line mx-auto mt-2 max-w-[34ch] text-[13px] tracking-[-0.02em] text-white/70 lg:mt-3 lg:max-w-none lg:text-[17px] lg:tracking-[0.04em]"
-                    style={{ ["--hero-step" as string]: "1.1s" }}
+                    className="hero-line mt-3 text-[13px] leading-[1.5] font-semibold tracking-[-0.04em] text-white lg:mt-6 lg:text-[19px] lg:tracking-[0.02em]"
+                    style={{
+                      ["--hero-step" as string]: "1.1s",
+                      textShadow: "0 2px 10px rgba(0,0,0,0.6)",
+                    }}
                   >
                     {slide.descriptionSub}
                   </p>
