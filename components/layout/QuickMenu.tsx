@@ -12,7 +12,7 @@
    - transition: all 0.65s ease
      · 들어올 때 transition-delay 0s / 나갈 때 0.35s
    - 콘텐츠: QUICK MENU 박스 버튼 4 → 라인 버튼 3 → 2열 그리드 버튼 2
-     → 고객센터 전화 → 상담시간. 수치는 원본 CSS 그대로.
+     → 고객센터 전화 → 운영시간(KPSC/KPSM). 수치는 원본 CSS 그대로.
    - 레이어 순서: 원본은 퀵바(998) < 헤더(#fixed-menu 9999) < 최상단
      버튼(#goTopBtn 10000). 여기서는 헤더가 z-50 이므로 퀵바를 z-40 으로
      내려 헤더/메뉴바를 덮지 않게 한다. (TopButton 은 z-[60])
@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { QUICK_TEL_ICON } from "@/lib/images";
-import { COMPANY } from "@/lib/site-config";
+import { BUSINESS_HOURS, COMPANY } from "@/lib/site-config";
 
 /* 원본 마크업의 링크·라벨 그대로 (라벨은 GNB 와 달리 축약형이다) */
 const BOX_LINKS = [
@@ -66,7 +66,9 @@ export default function QuickMenu() {
   return (
     <aside
       aria-label="퀵메뉴"
-      className="fixed top-0 right-0 z-40 hidden h-screen w-[180px] overflow-hidden bg-[#1E1E1E] min-[1564px]:block"
+      /* 운영시간이 두 벌로 늘어나 화면이 낮으면 아래가 잘린다.
+         no-scrollbar 로 스크롤바는 감추고 세로 스크롤만 허용한다. */
+      className="no-scrollbar fixed top-0 right-0 z-40 hidden h-screen w-[180px] overflow-x-hidden overflow-y-auto bg-[#1E1E1E] min-[1564px]:block"
       style={{
         /* 숨김을 right:-181px 로 두면 문서 폭이 늘어나 가로 스크롤이 생긴다.
            right:0 으로 붙여 두고 이동은 transform 으로 처리한다. */
@@ -75,7 +77,7 @@ export default function QuickMenu() {
         transitionDelay: shown ? "0s" : "0.35s",
       }}
     >
-      <div className="mt-[210px]">
+      <div className="mt-[210px] pb-[40px]">
         {/* ============ QUICK MENU — 박스 버튼 4 ============ */}
         <TitleBar className="ml-[20px]" />
         <div className="pl-[20px] text-[13px] leading-[normal] font-bold text-[#F5F5F5]">
@@ -133,30 +135,35 @@ export default function QuickMenu() {
           </div>
         </div>
 
-        {/* ============ 상담시간 ============ */}
+        {/* ============ 운영시간 — KPSC / KPSM 두 벌 ============
+            바 폭이 140px 뿐이라 라벨 박스를 옆에 두면 시간이 꺾인다.
+            라벨을 윗줄, 시간을 아랫줄로 쌓아 한 줄씩 온전히 보이게 한다. */}
         <div className="mx-auto mt-[27px] w-[140px]">
           <TitleBar />
           <div className="text-[13px] leading-[normal] font-bold text-[#F5F5F5]">
-            상담시간
+            운영시간
           </div>
-          {[
-            { label: "평일", time: "AM 09:00 ~ PM 06:00" },
-            { label: "점심", time: "AM 11:30 ~ PM 02:00" },
-          ].map((row) => (
-            /* items-start — 원본은 float 라 시간이 두 줄로 꺾여도
-               라벨 박스는 22px 높이를 유지한다 (stretch 금지) */
-            <div key={row.label} className="mt-[6px] flex items-start">
-              <div className="w-[30%] bg-[#7F7F7F] text-center text-[12px] leading-[22px] text-[#F5F5F5]">
-                {row.label}
+
+          {BUSINESS_HOURS.map((group) => (
+            <div key={group.brand} className="mt-[10px]">
+              <div className="font-mont text-[12px] leading-[16px] font-bold text-[#FFB200]">
+                {group.brand}
               </div>
-              <div className="w-[70%] pl-2 text-[13px] leading-[22px] text-[#F5F5F5]">
-                {row.time}
+              {group.rows.map((row) => (
+                <div key={row.label} className="mt-[3px]">
+                  <div className="text-[11px] leading-[15px] text-[#BDBDBD]">
+                    {row.label}
+                  </div>
+                  <div className="text-[12px] leading-[16px] text-[#F5F5F5]">
+                    {row.time}
+                  </div>
+                </div>
+              ))}
+              <div className="mt-[4px] text-[11px] leading-[15px] font-bold text-[#FFB200]">
+                {group.note}
               </div>
             </div>
           ))}
-          <div className="mt-[6px] text-[12px] text-[#F5F5F5]">
-            일요일,월요일,공휴일 휴무
-          </div>
         </div>
       </div>
     </aside>

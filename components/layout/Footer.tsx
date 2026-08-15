@@ -6,8 +6,9 @@
    - 우측 바로가기는 테두리 버튼 형태, hover 시 화살표가 4px 이동 + opacity .4 → 1
    ========================================================================== */
 
+import { Fragment } from "react";
 import Link from "next/link";
-import { COMPANY } from "@/lib/site-config";
+import { BUSINESS_HOURS, COMPANY } from "@/lib/site-config";
 
 /* 회사 정보 한 줄 — 라벨 열(dt)과 값 열(dd)이 그리드로 정렬된다 */
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
@@ -81,6 +82,38 @@ export default function Footer() {
                 </a>
               </InfoRow>
             </dl>
+
+            {/* ============================================================
+                운영시간 — KPSC / KPSM 두 벌 (lib/site-config.ts 공용 데이터)
+                ============================================================ */}
+            {/* 제목·카드 간격을 위 회사정보 줄 간격(gap-y-2 = 8px)과 맞춘다 */}
+            <p className="mt-2 font-semibold text-[#E4E6EB]">운영시간 안내</p>
+            <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:max-w-[560px]">
+              {BUSINESS_HOURS.map((group) => (
+                <div
+                  key={group.brand}
+                  className="rounded-lg border border-[#4B515D] px-4 py-3"
+                >
+                  {/* 브랜드명·휴무 안내는 퀵메뉴 바와 같은 포인트 컬러(#FFB200) */}
+                  <p className="font-mont text-[0.8rem] font-bold tracking-[0.05em] text-[#FFB200]">
+                    {group.brand}
+                  </p>
+                  <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-[0.8rem]">
+                    {group.rows.map((row) => (
+                      <Fragment key={row.label}>
+                        <dt className="whitespace-nowrap text-[#E4E6EB]">
+                          {row.label}
+                        </dt>
+                        <dd className="min-w-0">{row.time}</dd>
+                      </Fragment>
+                    ))}
+                  </dl>
+                  <p className="mt-2 text-[0.75rem] font-semibold text-[#FFB200]">
+                    {group.note}
+                  </p>
+                </div>
+              ))}
+            </div>
 
             {/* 카피라이트 */}
             <p className="mt-6 text-[0.8rem] text-[#4B515D]">{COMPANY.copyright}</p>
