@@ -8,7 +8,7 @@
 
 import { Fragment } from "react";
 import Link from "next/link";
-import { BUSINESS_HOURS, COMPANY } from "@/lib/site-config";
+import { BUSINESS_HOURS, COMPANY, CONTACT_EMAILS } from "@/lib/site-config";
 
 /* 회사 정보 한 줄 — 라벨 열(dt)과 값 열(dd)이 그리드로 정렬된다 */
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
@@ -23,7 +23,7 @@ function InfoRow({ label, children }: { label: string; children: React.ReactNode
 export default function Footer() {
   return (
     <footer className="font-pretendard mt-auto bg-[#2A2D34] pt-12 pb-28 lg:pt-16 lg:pb-28">
-      <div className="container-narrow grid gap-12 lg:grid-cols-[1fr_220px] lg:items-end">
+      <div className="container-narrow grid gap-12 lg:grid-cols-[1fr_220px] lg:items-start">
         {/* ================================================================
             좌측 — 로고 + 회사 정보 + 카피라이트
             ================================================================ */}
@@ -45,11 +45,50 @@ export default function Footer() {
                   {COMPANY.tel}
                 </a>
               </InfoRow>
-              <InfoRow label="이메일">
-                <a href={`mailto:${COMPANY.email}`} className="hover:text-white">
-                  {COMPANY.email}
-                </a>
+              {/* 메일 3종 — 모바일에서는 한 줄에 다 못 들어가 줄바꿈이 제각각이라
+                  아예 세 줄로 나눠 라벨/주소 열을 위 항목들과 맞춘다.
+                  (display:contents 라 dt·dd 가 바깥 dl 그리드에 그대로 참여한다) */}
+              <div className="contents lg:hidden">
+                {CONTACT_EMAILS.map((item) => (
+                  <InfoRow key={item.email} label={item.label}>
+                    <a
+                      href={`mailto:${item.email}`}
+                      className="break-all hover:text-white"
+                    >
+                      {item.email}
+                    </a>
+                  </InfoRow>
+                ))}
+              </div>
+
+              {/* PC — 한 줄에 모으고 사이를 세로선으로 구분한다.
+                  첫 항목의 라벨(대표 메일)은 왼쪽 라벨 열이 대신한다. */}
+              <div className="hidden lg:contents">
+              <InfoRow label={CONTACT_EMAILS[0].label}>
+                {CONTACT_EMAILS.map((item, i) => (
+                  <Fragment key={item.email}>
+                    {i > 0 && (
+                      <span
+                        aria-hidden
+                        className="mx-2.5 inline-block h-3 w-px translate-y-[1px] bg-[#4B515D]"
+                      />
+                    )}
+                    <span className="whitespace-nowrap">
+                      {i > 0 && (
+                        <span className="mr-1.5 text-[#E4E6EB]">{item.label}</span>
+                      )}
+                      <a
+                        href={`mailto:${item.email}`}
+                        className="hover:text-white"
+                      >
+                        {item.email}
+                      </a>
+                    </span>
+                  </Fragment>
+                ))}
               </InfoRow>
+              </div>
+
               <InfoRow label="카톡">
                 <a
                   href="https://pf.kakao.com/_VqFIX"
@@ -115,15 +154,15 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* 카피라이트 */}
-            <p className="mt-6 text-[0.8rem] text-[#4B515D]">{COMPANY.copyright}</p>
           </div>
         </div>
 
         {/* ================================================================
             우측 — 바로가기 텍스트 링크 2개
             ================================================================ */}
-        <nav className="flex flex-col gap-3">
+        {/* PC 에서는 좌측 첫 항목(대표자명)과 같은 높이에서 시작한다.
+            63px = 로고 줄높이(1.5rem × 1.625 ≒ 39px) + 로고~정보 간격(gap-6, 24px) */}
+        <nav className="flex flex-col gap-3 lg:mt-[63px]">
           {[
             { label: "KPSC 활동", href: "/news/activities" },
             { label: "공지사항 / 뉴스", href: "/news/notice" },
@@ -143,6 +182,14 @@ export default function Footer() {
             </Link>
           ))}
         </nav>
+
+        {/* ================================================================
+            카피라이트 — 모바일에서는 바로가기 버튼 아래,
+            PC 에서는 두 열 아래 전체 폭에 놓인다 (그리드 마지막 행)
+            ================================================================ */}
+        <p className="text-[0.8rem] text-[#4B515D] lg:col-span-2 lg:-mt-6">
+          {COMPANY.copyright}
+        </p>
       </div>
     </footer>
   );
