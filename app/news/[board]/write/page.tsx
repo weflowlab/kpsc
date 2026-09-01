@@ -9,27 +9,24 @@ import { notFound } from "next/navigation";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
 import BoardWriteForm from "@/components/board/BoardWriteForm";
-import { BOARDS, getBoard } from "@/lib/content/board";
-
-export function generateStaticParams() {
-  return Object.values(BOARDS)
-    .filter((board) => board.writable)
-    .map((board) => ({ board: board.key }));
-}
+import { getBoardMeta } from "@/lib/boards-meta";
+import { getSession } from "@/lib/session";
 
 export async function generateMetadata(
   props: PageProps<"/news/[board]/write">
 ): Promise<Metadata> {
   const { board } = await props.params;
-  const config = getBoard(board);
-  if (!config) return {};
-  return { title: `${config.name} 글쓰기` };
+  const meta = getBoardMeta(board);
+  if (!meta) return {};
+  return { title: `${meta.name} 글쓰기` };
 }
 
 export default async function BoardWritePage(props: PageProps<"/news/[board]/write">) {
   const { board } = await props.params;
-  const config = getBoard(board);
-  if (!config || !config.writable) notFound();
+  const meta = getBoardMeta(board);
+  if (!meta || !meta.writable || board === "gallery") notFound();
+
+  const session = await getSession();
 
   return (
     <SubLayout
@@ -39,8 +36,11 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
       {/* 원본 #board_wrap 의 AOS fade-up */}
       <Reveal type="fade-up">
         <BoardWriteForm
-          categories={config.categories.filter((cat) => cat !== "전체")}
+          board={meta.key}
+          categories={meta.categories}
           categoryLabel="구분"
+          authorName={session?.name ?? null}
+          listHref={`/news/${board}`}
         />
       </Reveal>
     </SubLayout>

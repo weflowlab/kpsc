@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+
+  /* --------------------------------------------------------------------------
+     서버 액션 업로드 용량 — 기본 1MB 라 팝업/갤러리 이미지 업로드가 막힌다.
+     lib/upload.ts 의 이미지 제한(8MB)에 여유를 더해 10MB 로 설정.
+     -------------------------------------------------------------------------- */
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
 };
 
 export default nextConfig;

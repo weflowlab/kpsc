@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import { NAV, UTIL_NAV, COMPANY } from "@/lib/site-config";
 import { LOGO } from "@/lib/images";
 import { openIdPwPopup } from "@/components/layout/IdPwFindPopup";
+import { logout } from "@/app/actions/auth";
 import { KakaoIcon, NaverBlogIcon } from "@/components/common/BrandIcons";
 import MobileSliderMenu from "@/components/layout/MobileSliderMenu";
 
@@ -59,6 +60,10 @@ export default function Header() {
   const [curtainOpen, setCurtainOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  /* 로그인 회원 — 마운트 후 /api/me 로 조회 (null = 비로그인)
+     루트 레이아웃에서 cookies() 를 읽으면 사이트 전체가 동적 렌더링이
+     되므로, 정적 페이지를 유지하려고 클라이언트 fetch 로 처리한다 */
+  const [member, setMember] = useState<{ name: string } | null>(null);
   const pathname = usePathname();
   /* 헤더 바깥 클릭 감지용 — 모바일 메뉴를 닫는다 */
   const headerRef = useRef<HTMLElement>(null);
@@ -72,6 +77,27 @@ export default function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /* ------------------------------------------------------------------
+     로그인 상태 조회 — 2분마다 갱신해 서버에 활동 시각(lastSeenAt)을
+     남긴다 (관리자 회원목록의 온라인 표시용 하트비트 겸용)
+     ------------------------------------------------------------------ */
+  useEffect(() => {
+    const load = () =>
+      fetch("/api/me")
+        .then((r) => (r.ok ? r.json() : null))
+        .then(setMember)
+        .catch(() => setMember(null));
+    load();
+    const timer = setInterval(load, 2 * 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  /* 로그아웃 — 세션 삭제 후 홈으로 전체 로드 */
+  const onLogout = async () => {
+    await logout();
+    window.location.href = "/";
+  };
 
   /* ------------------------------------------------------------------
      메뉴 링크 클릭 시 열려 있던 메뉴를 모두 닫는다.
@@ -175,20 +201,46 @@ export default function Header() {
         {/* 우측 유틸 */}
         <div className="flex items-center gap-4">
           <ul className="hidden items-center gap-4 text-[13px] font-semibold md:flex">
-            {UTIL_NAV.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={closeAll}
+            {member ? (
+              /* 로그인 상태 — 이름 + 로그아웃 */
+              <>
+                <li
                   className={[
-                    "transition-colors duration-500 hover:text-[#2E76BC]",
+                    "transition-colors duration-500",
                     solid ? "text-ink-900" : "text-white/85",
                   ].join(" ")}
                 >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+                  {member.name}님
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={onLogout}
+                    className={[
+                      "transition-colors duration-500 hover:text-[#2E76BC]",
+                      solid ? "text-ink-900" : "text-white/85",
+                    ].join(" ")}
+                  >
+                    로그아웃
+                  </button>
+                </li>
+              </>
+            ) : (
+              UTIL_NAV.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={closeAll}
+                    className={[
+                      "transition-colors duration-500 hover:text-[#2E76BC]",
+                      solid ? "text-ink-900" : "text-white/85",
+                    ].join(" ")}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))
+            )}
           </ul>
 
           {/* SNS 배너 2종 — 원본 index/r_kakao.png, index/r_blog.png (새 창) */}
@@ -362,18 +414,39 @@ export default function Header() {
             );
           })}
 
-          {/* 모바일 전용 유틸 — 원본은 로그인/회원가입/아이디·비번찾기 3개 추가 */}
-          {UTIL_NAV.map((item) => (
-            <li key={item.href} className="border-b border-dotted border-[#ddd]">
-              <Link
-                href={item.href}
-                onClick={closeAll}
-                className="block px-5 py-3 text-[14px] text-black hover:bg-[#eee]"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
+          {/* 모바일 전용 유틸 — 원본은 로그인/회원가입/아이디·비번찾기 3개 추가.
+              로그인 상태에서는 이름 표시 + 로그아웃으로 전환한다 */}
+          {member ? (
+            <>
+              <li className="border-b border-dotted border-[#ddd] px-5 py-3 text-[14px] font-semibold text-black">
+                {member.name}님
+              </li>
+              <li className="border-b border-dotted border-[#ddd]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeAll();
+                    onLogout();
+                  }}
+                  className="block w-full px-5 py-3 text-left text-[14px] text-black hover:bg-[#eee]"
+                >
+                  로그아웃
+                </button>
+              </li>
+            </>
+          ) : (
+            UTIL_NAV.map((item) => (
+              <li key={item.href} className="border-b border-dotted border-[#ddd]">
+                <Link
+                  href={item.href}
+                  onClick={closeAll}
+                  className="block px-5 py-3 text-[14px] text-black hover:bg-[#eee]"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))
+          )}
           <li className="border-b border-dotted border-[#ddd]">
             {/* 원본처럼 페이지 이동 없이 전역 레이어 팝업을 연다 */}
             <button

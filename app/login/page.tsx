@@ -10,9 +10,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import SubLayout from "@/components/sub/SubLayout";
 import { openIdPwPopup } from "@/components/layout/IdPwFindPopup";
+import { login } from "@/app/actions/auth";
+
+/* 아이디 저장 체크 시 사용할 localStorage 키
+   (원본은 비밀번호까지 쿠키에 저장했지만 보안상 아이디만 저장한다) */
+const SAVED_ID_KEY = "kpsc_saved_id";
 
 export default function LoginPage() {
   /* 입력 상태 */
@@ -20,13 +25,43 @@ export default function LoginPage() {
   const [pw, setPw] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  /* 로그인 검증 — 원본 알럿 문구 그대로 재현 */
-  const onSubmit = (e: FormEvent) => {
+  /* 저장된 아이디 복원 — 서버 렌더와의 하이드레이션 불일치를 피하려면
+     마운트 후 한 번 복원하는 방식이어야 해서 effect 내 setState 를 허용한다 */
+  useEffect(() => {
+    const saved = localStorage.getItem(SAVED_ID_KEY);
+    if (saved) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setId(saved);
+      setRemember(true);
+    }
+  }, []);
+
+  /* 로그인 — 클라이언트 검증(원본 알럿 문구) 후 서버 액션 호출 */
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (pending) return;
     if (!id.trim()) return setError("아이디를 입력해 주세요");
     if (!pw.trim()) return setError("패스워드를 입력해 주세요");
     setError(null);
+
+    setPending(true);
+    try {
+      const res = await login({ loginId: id, password: pw });
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+
+      if (remember) localStorage.setItem(SAVED_ID_KEY, id);
+      else localStorage.removeItem(SAVED_ID_KEY);
+
+      /* 헤더(로그인 상태 표시)까지 새로 그리도록 전체 로드로 이동 */
+      window.location.href = "/";
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -117,9 +152,10 @@ export default function LoginPage() {
           {/* 로그인 버튼 */}
           <button
             type="submit"
-            className="w-full bg-[#1A1A1A] py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-[#AE031B]"
+            disabled={pending}
+            className="w-full bg-[#1A1A1A] py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-[#AE031B] disabled:opacity-60"
           >
-            로그인
+            {pending ? "로그인 중..." : "로그인"}
           </button>
         </form>
 

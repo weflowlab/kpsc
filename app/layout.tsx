@@ -14,6 +14,7 @@ import KakaoFloat from "@/components/layout/KakaoFloat";
 import TopButton from "@/components/layout/TopButton";
 import LayerPopup from "@/components/layout/LayerPopup";
 import IdPwFindPopup from "@/components/layout/IdPwFindPopup";
+import SiteChrome from "@/components/layout/SiteChrome";
 
 /* --------------------------------------------------------------------------
    메타데이터 — 원본 <title> / og / description 값을 그대로 사용
@@ -44,19 +45,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             투명 헤더이므로 스페이서를 두지 않는다. 각 페이지의 첫 섹션
             (히어로 · 서브 비주얼)이 헤더 아래로 깔려 배경이 그대로 비친다.
             모바일 가로 슬라이더 메뉴도 헤더 안에 포함되어 함께 고정된다. */}
-        <Header />
+        {/* 사이트 공통 UI — 관리자(/admin)에서는 숨긴다 */}
+        <SiteChrome>
+          <Header />
+        </SiteChrome>
 
         {/* 페이지 본문 */}
         <main className="flex-1">{children}</main>
 
-        <Footer />
+        <SiteChrome>
+          <Footer />
 
-        {/* 플로팅 UI */}
-        <KakaoFloat />
-        <TopButton />
-        <LayerPopup />
-        {/* 아이디/비번찾기 — 어느 페이지에서든 이벤트로 열리는 전역 팝업 */}
-        <IdPwFindPopup />
+          {/* 플로팅 UI */}
+          <KakaoFloat />
+          <TopButton />
+          <LayerPopup />
+          {/* 아이디/비번찾기 — 어느 페이지에서든 이벤트로 열리는 전역 팝업 */}
+          <IdPwFindPopup />
+        </SiteChrome>
       </body>
     </html>
   );

@@ -17,11 +17,11 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Pagination from "@/components/board/Pagination";
-import type { BoardPost } from "@/lib/content/board";
+import type { BoardRow } from "@/lib/boards-meta";
 
 type BoardListProps = {
   board: string;
-  posts: BoardPost[];
+  posts: BoardRow[];
   page: number;
   totalPages: number;
   /** 페이지 링크 접두어 — 뒤에 `p=N` 만 붙인다 (함수는 직렬화 불가) */

@@ -12,14 +12,16 @@
    ========================================================================== */
 
 import { useState, type FormEvent } from "react";
-import { SEARCH_OPTIONS } from "@/lib/content/board";
+import { useRouter } from "next/navigation";
+import { SEARCH_OPTIONS } from "@/lib/boards-meta";
 
-export default function BoardSearch() {
+export default function BoardSearch({ basePath }: { basePath: string }) {
+  const router = useRouter();
   const [where, setWhere] = useState<string>("ALL");
   const [keyword, setKeyword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  /* 검색 실행 — 정적 사이트라 실제 조회 대신 원본 검증 로직만 재현 */
+  /* 검색 실행 — where/keyword 쿼리로 이동해 서버에서 DB 검색 */
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (keyword.trim().length < 2) {
@@ -27,6 +29,8 @@ export default function BoardSearch() {
       return;
     }
     setError(null);
+    const params = new URLSearchParams({ where, keyword: keyword.trim() });
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   return (

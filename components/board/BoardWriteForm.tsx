@@ -9,52 +9,88 @@
    - 비밀번호(.fieldstyle: 45px, #ECEAEA) → 등록 버튼(.board_write_buT:
      #7A7A7A, 45px, hover 시 #E9E9E9 + 검정 글자, 0.7s) → 파일찾기(.filebox:
      #FFD100 라벨 70×30 + "선택된 파일 없음")
-   - DB 미연결: 등록 클릭 시 준비 중 안내만 노출
+   - 등록: 로그인 회원 전용 — createPost 서버 액션으로 DB 저장
    ========================================================================== */
 
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
-
+import { createPost } from "@/app/actions/board";
 
 /* 입력 공통 — 원본 인라인 스타일 (30px, 1px #E4E4E4) */
 const FIELD =
   "h-[30px] w-full border border-[#E4E4E4] px-[5px] text-[13px] leading-[30px] outline-none";
 
 export default function BoardWriteForm({
+  board,
   categories,
   categoryLabel,
+  authorName,
+  listHref,
 }: {
+  /** 게시판 키 — activities | gallery */
+  board: string;
   /** 카테고리 셀렉트 옵션 */
   categories: string[];
   /** 셀렉트 첫 줄 라벨 (원본 getCategoryForm 의 sbj — 갤러리/구분) */
   categoryLabel: string;
+  /** 로그인 회원 이름 — 비로그인이면 null */
+  authorName: string | null;
+  /** 등록 후 돌아갈 목록 경로 */
+  listHref: string;
 }) {
   const [fileName, setFileName] = useState("선택된 파일 없음");
   const [notice, setNotice] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setNotice("게시판 준비 중입니다. 등록 기능은 곧 제공될 예정입니다.");
+    if (pending) return;
+    if (!authorName) {
+      setNotice("회원으로 로그인해야 이용하실 수 있습니다.");
+      return;
+    }
+    setNotice(null);
+    setPending(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      formData.set("board", board);
+      const res = await createPost(formData);
+      if (!res.ok) {
+        setNotice(res.error);
+        return;
+      }
+      /* 목록으로 이동 — 새 글이 바로 보이도록 전체 로드 */
+      window.location.href = listHref;
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
     <form onSubmit={onSubmit} className="mt-5 text-[13px] text-[#656565]">
       {/* ============ 제목 / 작성자 / 이메일 / 옵션 ============ */}
       <div className="space-y-[5px]">
-        {(
-          [
-            ["제 목", "subject", "text"],
-            ["작성자", "name", "text"],
-            ["이메일", "email", "text"],
-          ] as const
-        ).map(([label, id, type]) => (
-          <div key={id} className="flex items-center">
-            <label htmlFor={`write-${id}`} className="w-[60px] shrink-0">
-              {label}
-            </label>
-            <input id={`write-${id}`} name={id} type={type} className={FIELD} />
-          </div>
-        ))}
+        <div className="flex items-center">
+          <label htmlFor="write-subject" className="w-[60px] shrink-0">
+            제 목
+          </label>
+          <input id="write-subject" name="subject" type="text" className={FIELD} />
+        </div>
+        {/* 작성자 — 로그인 회원 이름 고정 */}
+        <div className="flex items-center">
+          <label htmlFor="write-name" className="w-[60px] shrink-0">
+            작성자
+          </label>
+          <input
+            id="write-name"
+            name="name"
+            type="text"
+            readOnly
+            value={authorName ?? ""}
+            placeholder="로그인 후 작성할 수 있습니다."
+            className={`${FIELD} bg-[#F9F9F9]`}
+          />
+        </div>
 
         {/* 옵션 — 카테고리 셀렉트 + 비밀글 체크 */}
         <div className="flex items-center">
@@ -188,17 +224,11 @@ export default function BoardWriteForm({
         />
       </div>
 
-      {/* ============ 비밀번호 + 등록 ============ */}
-      <input
-        type="password"
-        name="password"
-        placeholder="비밀번호"
-        aria-label="비밀번호"
-        className="mt-[10px] h-[45px] w-full border border-[#E4E4E4] bg-[#ECEAEA] pl-[10px] text-[15px] text-[#606060] outline-none placeholder:text-[#606060]"
-      />
+      {/* ============ 등록 ============ */}
       <button
         type="submit"
-        className="mt-[10px] flex w-full cursor-pointer items-center justify-center gap-1.5 border border-[#676767] bg-[#7A7A7A] text-[14px] leading-[45px] font-bold text-white duration-700 hover:border-[#CECECE] hover:bg-[#E9E9E9] hover:text-black"
+        disabled={pending}
+        className="mt-[10px] flex w-full cursor-pointer items-center justify-center gap-1.5 border border-[#676767] bg-[#7A7A7A] text-[14px] leading-[45px] font-bold text-white duration-700 hover:border-[#CECECE] hover:bg-[#E9E9E9] hover:text-black disabled:opacity-60"
       >
         <Image
           src="/images/board/btn_write_icon.gif"
@@ -207,7 +237,7 @@ export default function BoardWriteForm({
           height={13}
           unoptimized
         />
-        등 록
+        {pending ? "등록 중..." : "등 록"}
       </button>
 
       {notice && (
@@ -226,7 +256,9 @@ export default function BoardWriteForm({
         </label>
         <input
           id="write-file"
+          name="file"
           type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
           className="hidden"
           onChange={(e) =>
             setFileName(e.target.files?.[0]?.name ?? "선택된 파일 없음")

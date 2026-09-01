@@ -1,0 +1,169 @@
+// ==========================================================================
+// Prisma 스키마 — 회원(Member) 단일 모델
+// DB 는 Neon(서버리스 Postgres). DATABASE_URL 은 .env 에서 주입한다.
+// Vercel 서버리스 환경이므로 Neon 의 "pooled" 커넥션 문자열(-pooler 호스트)을
+// 사용해야 커넥션 고갈이 나지 않는다.
+// ==========================================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+// Prisma 7: 연결 URL 은 스키마가 아니라 prisma.config.ts(마이그레이션용)와
+// PrismaClient 어댑터(런타임용)에서 지정한다.
+datasource db {
+  provider = "postgresql"
+}
+
+// 회원등급 — 원본 회원그룹 [0]비회원 ~ [4]최고 관리자 등급을 그대로 재현
+// (비회원은 로그인하지 않은 상태이므로 DB 값으로는 1~4만 쓴다)
+enum MemberGrade {
+  NORMAL // [1] 일반회원
+  VIP // [2] VIP 등급
+  VVIP // [3] VVIP 등급
+  ADMIN // [4] 최고 관리자 등급
+}
+
+// 회원구분 — 원본 member.php 의 개인회원/기업회원 셀렉트
+enum MemberType {
+  PERSONAL // 개인회원
+  BUSINESS // 기업회원
+}
+
+// 승인상태 — 원본 승인 셀렉트. 대기 상태면 로그인이 차단된다
+enum MemberStatus {
+  APPROVED // 승인
+  PENDING // 대기
+}
+
+model Member {
+  id        Int         @id @default(autoincrement())
+  loginId   String      @unique @map("login_id") // 원본 MB_ID (영문 시작 4~12자)
+  password  String // bcrypt 해시
+  name      String // 원본 MB_NAME
+  nickname  String? // 원본 닉네임 (없으면 실명 표기)
+  email     String // 원본 MB_EMAIL
+  phone     String // 휴대폰 3분할을 "010-1234-5678" 로 합쳐 저장
+  remail    Boolean     @default(true) // 공지메일 수신 여부
+  grade     MemberGrade @default(NORMAL) // 원본 회원그룹
+  memberType MemberType  @default(PERSONAL) @map("member_type") // 회원구분
+  status    MemberStatus @default(APPROVED) // 승인상태
+  points    Int         @default(0) // 원본 포인트
+  cash      Int         @default(0) // 원본 적립(캐쉬)
+  lastSeenAt DateTime?  @map("last_seen_at") // 마지막 활동 시각 (온라인 표시용)
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  posts       Post[]
+  comments    Comment[]
+  balanceLogs BalanceLog[]
+  loginLogs   LoginLog[]
+
+  @@map("members")
+}
+
+// 접속로그 — 로그인 성공 시마다 기록 (원본 member.php?query=log)
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  memberId  Int      @map("member_id")
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  ip        String
+  userAgent String   @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([memberId])
+  @@map("login_logs")
+}
+
+// 캐쉬/포인트 지급·환급 내역 (원본 member.php?query=cash|point 의 내역 테이블)
+enum BalanceKind {
+  CASH
+  POINT
+}
+
+model BalanceLog {
+  id       Int         @id @default(autoincrement())
+  memberId Int         @map("member_id")
+  member   Member      @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  kind     BalanceKind
+  amount   Int // 음수면 환급(차감)
+  reason   String // 근거자료
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@index([memberId, kind])
+  @@map("balance_logs")
+}
+
+// --------------------------------------------------------------------------
+// 게시판 — notice(공지사항) / activities(고객의 소리) / gallery(갤러리)
+// 게시판 자체는 3개 고정이라 테이블 대신 boardKey 문자열로 구분한다
+// --------------------------------------------------------------------------
+model Post {
+  id       Int    @id @default(autoincrement())
+  boardKey String @map("board_key") // notice | activities | gallery
+  category String // 말머리 (게시판별 카테고리 탭 값)
+  title    String
+
+  // 본문 — 원본 에디터 HTML 을 그대로 저장 (기존 스크래핑 데이터 호환)
+  contentHtml String @map("content_html")
+
+  // 작성자 — 회원 탈퇴 후에도 글이 남도록 이름을 별도 보관
+  authorName String  @map("author_name")
+  memberId   Int?    @map("member_id")
+  member     Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  thumbUrl  String?  @map("thumb_url") // 갤러리 썸네일 (Vercel Blob URL)
+  hit       Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  comments Comment[]
+
+  @@index([boardKey, createdAt])
+  @@map("posts")
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  postId  Int    @map("post_id")
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content String
+
+  authorName String  @map("author_name")
+  memberId   Int?    @map("member_id")
+  member     Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([postId])
+  @@map("comments")
+}
+
+// --------------------------------------------------------------------------
+// 팝업창 — 원본 add_popup.php 의 이벤트윈도우 항목 그대로
+// --------------------------------------------------------------------------
+model Popup {
+  id        Int      @id @default(autoincrement())
+  title     String // 타이틀바 제목
+  startDate DateTime @map("start_date") // 시작일 (이날 00:00부터 노출)
+  endDate   DateTime @map("end_date") // 종료일 (이날 23:59까지 노출)
+  linkUrl   String?  @map("link_url") // 팝업 클릭시 이동 주소
+  newWindow Boolean  @default(false) @map("new_window") // 본 창 / 새 창
+  hideToday Boolean  @default(true) @map("hide_today") // "오늘 하루 보지 않기" 노출 여부
+  pcImage   String   @map("pc_image") // PC 이미지 (Blob URL)
+  mobImage  String?  @map("mob_image") // 모바일 이미지 (없으면 PC 이미지 사용)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("popups")
+}
+
+// --------------------------------------------------------------------------
+// 환경설정 — 약관/개인정보 처리방침 등 key-value 텍스트
+// --------------------------------------------------------------------------
+model SiteSetting {
+  key       String   @id // terms | privacy | ...
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
