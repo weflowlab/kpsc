@@ -34,6 +34,12 @@ export default function PostsTable({
   const [checked, setChecked] = useState<Set<number>>(new Set());
   const [busy, setBusy] = useState(false);
 
+  /* 게시글 공개 URL — 클릭 시 새 창으로 실제 글을 연다 */
+  const publicUrl = (id: number) =>
+    boardKey === "gallery"
+      ? `/organization/gallery/${id}`
+      : `/news/${boardKey}/${id}`;
+
   const toggle = (id: number) => {
     const next = new Set(checked);
     if (next.has(id)) next.delete(id);
@@ -103,7 +109,18 @@ export default function PostsTable({
                 </td>
                 <td className="p-3 text-ink-400">{p.no}</td>
                 <td className="p-3 whitespace-nowrap text-[#D45111]">[{p.category}]</td>
-                <td className="max-w-[320px] truncate p-3 font-medium">{p.title}</td>
+                <td className="max-w-[320px] truncate p-3 font-medium">
+                  {/* 제목 클릭 시 실제 게시글을 새 창으로 연다 */}
+                  <a
+                    href={publicUrl(p.id)}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="hover:text-brand-600 hover:underline"
+                    title="새 창에서 글 보기"
+                  >
+                    {p.title}
+                  </a>
+                </td>
                 {showComments && <td className="p-3 text-center">{p.comments}</td>}
                 <td className="p-3 whitespace-nowrap">{p.authorName}</td>
                 <td className="p-3 text-center">{p.hit}</td>

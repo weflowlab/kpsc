@@ -23,7 +23,10 @@ export default async function AdminPostEditPage(
 
   const id = Number(search?.id) || null;
   const post = id
-    ? await prisma.post.findFirst({ where: { id, boardKey: meta.key } })
+    ? await prisma.post.findFirst({
+        where: { id, boardKey: meta.key },
+        include: { images: { orderBy: { sort: "asc" } } },
+      })
     : null;
   if (id && !post) notFound();
 
@@ -47,6 +50,7 @@ export default async function AdminPostEditPage(
                 contentHtml: post.contentHtml,
                 authorName: post.authorName,
                 thumbUrl: post.thumbUrl,
+                images: post.images.map((img) => img.url),
               }
             : null
         }

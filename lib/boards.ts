@@ -106,6 +106,7 @@ export async function getPost(boardKey: BoardKey, uid: number) {
     where: { id: uid, boardKey },
     include: {
       comments: { orderBy: { createdAt: "asc" } },
+      images: { orderBy: { sort: "asc" } },
     },
   });
   return post;

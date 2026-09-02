@@ -20,6 +20,7 @@ import BoardList from "@/components/board/BoardList";
 import BoardSearch from "@/components/board/BoardSearch";
 import CategoryTabs from "@/components/board/CategoryTabs";
 import CommentSection from "@/components/board/CommentSection";
+import PostActions from "@/components/board/PostActions";
 import CountUp from "@/components/board/CountUp";
 import { getBoardMeta } from "@/lib/boards-meta";
 import { getBoardPage, getPost, getViewer, incrementHit } from "@/lib/boards";
@@ -102,14 +103,19 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
         </div>
 
         {/* ================================================================
-            3) 버튼줄 — 원본 .view-top-bu (gif 버튼)
-            수정/삭제는 관리자 페이지에서 처리하므로 목록보기만 노출한다.
+            3) 버튼줄 — 원본 .view-top-bu (목록보기 / 답글 / 수정 / 삭제)
+            답글: 로그인 회원 · 수정/삭제: 작성자 본인 또는 관리자
             ================================================================ */}
-        <div className="mt-4 flex justify-center gap-1">
-          <Link href={`/news/${board}`} aria-label="목록보기">
-            <Image src="/images/board/vlist.gif" alt="목록보기" width={52} height={20} unoptimized />
-          </Link>
-        </div>
+        <PostActions
+          board={board}
+          uid={post.id}
+          listHref={`/news/${board}`}
+          canReply={meta.writable && viewer != null}
+          canEdit={
+            (viewer != null && post.memberId === viewer.id) ||
+            (viewer?.isAdmin ?? false)
+          }
+        />
 
         {/* ================================================================
             4) 본문 — 원본 .view-editor (mt 30px / mb 100px)

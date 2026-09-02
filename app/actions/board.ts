@@ -38,18 +38,64 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
     return { ok: false, error: "카테고리를 선택해 주세요." };
   if (!content) return { ok: false, error: "본문 내용을 입력해 주세요." };
 
-  /* 갤러리는 이미지 필수 */
-  let thumbUrl: string | null = null;
-  const file = formData.get("file");
-  if (file instanceof File && file.size > 0) {
+  /* 수정 모드 — editUid 가 있으면 기존 글 수정 (작성자 본인만) */
+  const editUid = Number(formData.get("editUid")) || null;
+  const listPath =
+    boardKey === "gallery" ? "/organization/gallery" : `/news/${boardKey}`;
+
+  /* 갤러리는 이미지 필수 — 최대 5장 (앨범형).
+     수정 모드에서는 새 이미지를 안 올리면 기존 이미지 유지 */
+  const MAX_IMAGES = 5;
+  const files = formData
+    .getAll("file")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+  if (files.length > MAX_IMAGES)
+    return { ok: false, error: `이미지는 최대 ${MAX_IMAGES}장까지 첨부할 수 있습니다.` };
+  if (boardKey === "gallery" && !editUid && files.length === 0)
+    return { ok: false, error: "갤러리 게시판은 이미지를 1장 이상 첨부해야 합니다." };
+
+  /* 순서대로 업로드 (하나라도 실패하면 중단) */
+  const urls: string[] = [];
+  for (const file of files) {
     const uploaded = await uploadImage(file, "gallery");
     if (!uploaded.ok) return uploaded;
-    thumbUrl = uploaded.url;
+    urls.push(uploaded.url);
   }
-  if (boardKey === "gallery" && !thumbUrl)
-    return { ok: false, error: "갤러리 게시판은 이미지를 첨부해야 합니다." };
+  const hasNewImages = urls.length > 0;
 
   try {
+    /* -------- 수정 -------- */
+    if (editUid) {
+      const existing = await prisma.post.findUnique({
+        where: { id: editUid },
+        select: { memberId: true, boardKey: true },
+      });
+      if (!existing || existing.boardKey !== boardKey)
+        return { ok: false, error: "글을 찾을 수 없습니다." };
+      if (existing.memberId !== session.memberId)
+        return { ok: false, error: "본인 글만 수정할 수 있습니다." };
+
+      await prisma.post.update({
+        where: { id: editUid },
+        data: {
+          category,
+          title,
+          contentHtml: content,
+          secret,
+          ...(hasNewImages
+            ? {
+                thumbUrl: urls[0],
+                images: { deleteMany: {}, create: urls.map((url, i) => ({ url, sort: i })) },
+              }
+            : {}),
+        },
+      });
+      revalidatePath(listPath);
+      revalidatePath(`${listPath}/${editUid}`);
+      return { ok: true, uid: editUid };
+    }
+
+    /* -------- 신규 -------- */
     const post = await prisma.post.create({
       data: {
         boardKey,
@@ -58,17 +104,54 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
         contentHtml: content,
         authorName: session.name,
         memberId: session.memberId,
-        thumbUrl,
+        thumbUrl: urls[0] ?? null, // 목록 대표 썸네일
         secret,
+        images: {
+          create: urls.map((url, i) => ({ url, sort: i })),
+        },
       },
       select: { id: true },
     });
 
-    revalidatePath(boardKey === "gallery" ? "/organization/gallery" : `/news/${boardKey}`);
+    revalidatePath(listPath);
     return { ok: true, uid: post.id };
   } catch (e) {
     console.error("createPost failed:", e);
     return { ok: false, error: "등록 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." };
+  }
+}
+
+/* --------------------------------------------------------------------------
+   게시글 삭제 — 작성자 본인 또는 관리자
+   -------------------------------------------------------------------------- */
+export async function deletePost(postId: number): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session)
+    return { ok: false, error: "회원으로 로그인해야 이용하실 수 있습니다." };
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { memberId: true, boardKey: true },
+    });
+    if (!post) return { ok: false, error: "글을 찾을 수 없습니다." };
+
+    const me = await prisma.member.findUnique({
+      where: { id: session.memberId },
+      select: { grade: true },
+    });
+    const isAdmin = me?.grade === "ADMIN";
+    if (post.memberId !== session.memberId && !isAdmin)
+      return { ok: false, error: "본인 글만 삭제할 수 있습니다." };
+
+    await prisma.post.delete({ where: { id: postId } });
+    const listPath =
+      post.boardKey === "gallery" ? "/organization/gallery" : `/news/${post.boardKey}`;
+    revalidatePath(listPath);
+    return { ok: true };
+  } catch (e) {
+    console.error("deletePost failed:", e);
+    return { ok: false, error: "삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." };
   }
 }
 

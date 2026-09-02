@@ -236,24 +236,42 @@ export async function adminSavePost(formData: FormData): Promise<
   if (!meta.categories.includes(category))
     return { ok: false, error: "카테고리를 선택해 주세요." };
 
-  /* 갤러리 이미지 (새로 첨부한 경우만 교체) */
-  let thumbUrl: string | undefined;
-  const file = formData.get("file");
-  if (file instanceof File && file.size > 0) {
+  /* 갤러리 이미지 — 새로 첨부한 경우만 교체 (앨범형 최대 5장) */
+  const MAX_IMAGES = 5;
+  const newFiles = formData
+    .getAll("file")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+  if (newFiles.length > MAX_IMAGES)
+    return { ok: false, error: `이미지는 최대 ${MAX_IMAGES}장까지 첨부할 수 있습니다.` };
+  const newUrls: string[] = [];
+  for (const file of newFiles) {
     const uploaded = await uploadImage(file, "gallery");
     if (!uploaded.ok) return uploaded;
-    thumbUrl = uploaded.url;
+    newUrls.push(uploaded.url);
   }
+  const hasNewImages = newUrls.length > 0;
 
   try {
     if (id) {
+      /* 새 이미지를 올렸으면 기존 이미지 전부 교체, 아니면 유지 */
       await prisma.post.update({
         where: { id },
-        data: { title, category, contentHtml, authorName, ...(thumbUrl ? { thumbUrl } : {}) },
+        data: {
+          title,
+          category,
+          contentHtml,
+          authorName,
+          ...(hasNewImages
+            ? {
+                thumbUrl: newUrls[0],
+                images: { deleteMany: {}, create: newUrls.map((url, i) => ({ url, sort: i })) },
+              }
+            : {}),
+        },
       });
     } else {
-      if (boardKey === "gallery" && !thumbUrl)
-        return { ok: false, error: "갤러리 게시판은 이미지를 첨부해야 합니다." };
+      if (boardKey === "gallery" && !hasNewImages)
+        return { ok: false, error: "갤러리 게시판은 이미지를 1장 이상 첨부해야 합니다." };
       await prisma.post.create({
         data: {
           boardKey,
@@ -262,7 +280,8 @@ export async function adminSavePost(formData: FormData): Promise<
           contentHtml,
           authorName,
           memberId: admin.id,
-          thumbUrl: thumbUrl ?? null,
+          thumbUrl: newUrls[0] ?? null,
+          images: { create: newUrls.map((url, i) => ({ url, sort: i })) },
         },
       });
     }

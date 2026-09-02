@@ -17,6 +17,7 @@ type PostData = {
   contentHtml: string;
   authorName: string;
   thumbUrl: string | null;
+  images: string[];
 };
 
 const FIELD =
@@ -116,22 +117,36 @@ export default function AdminPostForm({
         <RichTextEditor name="content" defaultHtml={post?.contentHtml ?? ""} />
       </div>
 
-      {/* 갤러리 이미지 */}
+      {/* 갤러리 이미지 — 최대 5장 */}
       {isGallery && (
         <div>
-          <span className={LABEL}>이미지 {post ? "(새로 선택하면 교체)" : "(필수)"}</span>
-          {post?.thumbUrl && (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              src={post.thumbUrl}
-              alt="현재 이미지"
-              className="mb-2 h-32 rounded border border-ink-200 object-cover"
-            />
+          <span className={LABEL}>
+            이미지 (최대 5장){post ? " — 새로 선택하면 전체 교체" : " · 필수"}
+          </span>
+          {/* 현재 저장된 이미지들 */}
+          {post && (post.images.length > 0 || post.thumbUrl) && (
+            <div className="mb-2 flex flex-wrap gap-2">
+              {(post.images.length > 0
+                ? post.images
+                : post.thumbUrl
+                  ? [post.thumbUrl]
+                  : []
+              ).map((url, i) => (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  key={i}
+                  src={url}
+                  alt={`현재 이미지 ${i + 1}`}
+                  className="h-24 w-24 rounded border border-ink-200 object-cover"
+                />
+              ))}
+            </div>
           )}
           <input
             type="file"
             name="file"
             accept="image/jpeg,image/png,image/webp,image/gif"
+            multiple
             className="block cursor-pointer text-[13px] text-ink-500 file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-ink-300 file:bg-white file:px-4 file:py-2 file:text-[13px] file:text-ink-700 hover:file:border-brand-600 hover:file:text-brand-600"
           />
         </div>

@@ -112,16 +112,29 @@ model Post {
   memberId   Int?    @map("member_id")
   member     Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
 
-  thumbUrl  String?  @map("thumb_url") // 갤러리 썸네일 (Vercel Blob URL)
+  thumbUrl  String?  @map("thumb_url") // 갤러리 대표 썸네일 (목록용, images[0])
   secret    Boolean  @default(false) // 비밀글 (고객의 소리 전용, 작성자+관리자만 열람)
   hit       Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   comments Comment[]
+  images   PostImage[] // 갤러리 첨부 이미지 (최대 5장)
 
   @@index([boardKey, createdAt])
   @@map("posts")
+}
+
+// 갤러리 게시글의 이미지 (앨범형 — 글 하나에 최대 5장)
+model PostImage {
+  id     Int    @id @default(autoincrement())
+  postId Int    @map("post_id")
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  url    String
+  sort   Int    @default(0) // 표시 순서
+
+  @@index([postId])
+  @@map("post_images")
 }
 
 model Comment {

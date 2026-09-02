@@ -36,7 +36,6 @@ export const BOARD_META: Record<BoardKey, BoardMeta> = {
       "홈페이지 관련공지",
       "SNS 관련공지",
       "신청서",
-      "다운로드 파일 및 신청서",
     ],
     perPage: 15,
     writable: false,

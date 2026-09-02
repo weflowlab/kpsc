@@ -67,19 +67,26 @@ export default async function GalleryViewPage(
           </Link>
         </div>
 
-        {/* 이미지 + 본문 */}
+        {/* 이미지(최대 5장) + 본문 */}
         <article className="mt-[30px] mb-[100px] w-full">
-          {post.thumbUrl && (
+          {/* images 가 있으면 전체를, 없으면 예전 단일 thumbUrl 을 표시 */}
+          {(post.images.length > 0
+            ? post.images.map((img) => img.url)
+            : post.thumbUrl
+              ? [post.thumbUrl]
+              : []
+          ).map((url, i) => (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
-              src={post.thumbUrl}
-              alt={post.title}
-              className="mx-auto mb-8 h-auto max-w-full"
+              key={i}
+              src={url}
+              alt={`${post.title} ${i + 1}`}
+              className="mx-auto mb-6 h-auto max-w-full"
             />
-          )}
+          ))}
           {post.contentHtml && (
             <div
-              className="text-[13.5px] leading-[1.8] text-ink-700 [&_a]:underline"
+              className="mt-4 text-[13.5px] leading-[1.8] text-ink-700 [&_a]:underline"
               dangerouslySetInnerHTML={{ __html: post.contentHtml }}
             />
           )}

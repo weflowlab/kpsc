@@ -20,13 +20,6 @@ export type CommentItem = {
   createdAt: string; // "yyyy.mm.dd hh:mm"
 };
 
-/* 원본 이모티콘 gif 18종 대응 문자 이모티콘 */
-const EMOTICONS = [
-  "^^", "^0^", "ㅠ_ㅠ", "-_-;", "@.@", "?!",
-  "♡", "★", "!!", "OK!", "GOOD", "짱!",
-  "ㅋㅋ", "ㅎㅎ", "휴~", "헉!", "아자!", "화이팅!",
-];
-
 export default function CommentSection({
   postId,
   comments,
@@ -118,31 +111,8 @@ export default function CommentSection({
             </ul>
           )}
 
-          {/* ============ 이모티콘 박스 — 클릭하면 본문에 삽입 ============ */}
-          <div className="mt-[8%] mb-[2%] w-full border border-[#D7D7D7] bg-[#eee] p-2.5 shadow-[2px_2px_2px_0px_#eee]">
-            <div className="inline-flex flex-wrap items-center bg-[#EAF0F4] p-px">
-              {Array.from({ length: 18 }, (_, i) => i + 1).map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  aria-label={`이모티콘 ${n}`}
-                  onClick={() => setContent((v) => v + EMOTICONS[n - 1])}
-                  className="cursor-pointer p-[2px]"
-                >
-                  <Image
-                    src={`/images/board/em/${n}.gif`}
-                    alt=""
-                    width={19}
-                    height={19}
-                    unoptimized
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* ============ 입력 폼 박스 ============ */}
-          <div className="mt-[2%] mb-[4%] w-full border border-[#D7D7D7] bg-[#eee] p-[13px] shadow-[2px_2px_2px_0px_#eee]">
+          <div className="mt-[4%] mb-[4%] w-full border border-[#D7D7D7] bg-[#eee] p-[13px] shadow-[2px_2px_2px_0px_#eee]">
             <textarea
               aria-label="의견 입력"
               rows={4}
