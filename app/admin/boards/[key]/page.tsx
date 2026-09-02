@@ -54,17 +54,19 @@ export default async function AdminBoardPostsPage(
 
   return (
     <div>
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-[20px] font-bold">
           <Link href="/admin/boards" className="text-ink-400 hover:text-brand-600">
             보드관리
           </Link>{" "}
           <span className="text-ink-300">/</span> {meta.name}{" "}
-          <span className="text-[14px] font-normal text-ink-500">전체 {total}개</span>
+          <span className="text-[14px] font-normal whitespace-nowrap text-ink-500">
+            전체 {total}개
+          </span>
         </h1>
         <Link
           href={`/admin/boards/${meta.key}/edit`}
-          className="h-9 rounded-md bg-ink-900 px-4 text-[13px] leading-9 text-white hover:bg-brand-600"
+          className="h-9 shrink-0 rounded-md bg-ink-900 px-4 text-[13px] leading-9 whitespace-nowrap text-white hover:bg-brand-600"
         >
           + 새 글 작성
         </Link>

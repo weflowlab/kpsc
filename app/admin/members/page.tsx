@@ -55,23 +55,23 @@ export default async function AdminMembersPage(
 
   return (
     <div>
-      <div className="mb-5 flex items-center justify-between">
-        <h1 className="text-[20px] font-bold">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-[20px] font-bold whitespace-nowrap">
           회원관리 <span className="text-[14px] font-normal text-ink-500">전체 {members.length}명</span>
         </h1>
 
-        {/* 검색 — 원본 Quick Member 검색 대응 */}
-        <form className="flex gap-2" action="/admin/members">
+        {/* 검색 — 원본 Quick Member 검색 대응. 모바일에서는 전체 폭 */}
+        <form className="flex w-full gap-2 md:w-auto" action="/admin/members">
           <input
             type="text"
             name="q"
             defaultValue={q}
             placeholder="이름 / 아이디 / 이메일 / 연락처"
-            className="h-9 w-[240px] rounded-md border border-ink-200 bg-white px-3 text-[13px] outline-none focus:border-brand-600"
+            className="h-9 min-w-0 flex-1 rounded-md border border-ink-200 bg-white px-3 text-[13px] outline-none focus:border-brand-600 md:w-[240px] md:flex-none"
           />
           <button
             type="submit"
-            className="h-9 rounded-md bg-ink-900 px-4 text-[13px] text-white hover:bg-brand-600"
+            className="h-9 shrink-0 rounded-md bg-ink-900 px-4 text-[13px] text-white hover:bg-brand-600"
           >
             검색
           </button>

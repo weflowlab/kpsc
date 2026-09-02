@@ -210,8 +210,9 @@ function BalanceCard({
         </p>
       )}
 
-      {/* 내역 목록 */}
-      <table className="w-full text-[13px]">
+      {/* 내역 목록 — 모바일에서는 표만 가로 스크롤 */}
+      <div className="overflow-x-auto">
+      <table className="w-full min-w-[480px] text-[13px]">
         <thead>
           <tr className="border-y border-ink-200 bg-ink-50 text-left text-ink-500">
             <th className="p-2.5">번호</th>
@@ -250,6 +251,7 @@ function BalanceCard({
           )}
         </tbody>
       </table>
+      </div>
     </section>
   );
 }
@@ -319,8 +321,9 @@ export default function MemberDetail({
     <div className="space-y-6">
       {/* ================== 개인정보 ================== */}
       <section className={CARD}>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-[15px] font-bold">개인정보에 대해서..</h2>
+        {/* 모바일에서는 제목/정보줄을 위아래로 쌓는다 */}
+        <div className="mb-4 flex flex-col gap-1.5 md:flex-row md:items-center md:justify-between">
+          <h2 className="text-[15px] font-bold whitespace-nowrap">개인정보에 대해서..</h2>
           <p className="text-[12px] text-ink-400">
             {/* 현재 접속 상태 — 원본 상세의 현재: Online/Offline */}
             <span
@@ -460,7 +463,9 @@ export default function MemberDetail({
             ` (최근 ${loginLogs.length}건 표시)`}
         </p>
 
-        <table className="w-full text-[13px]">
+        {/* 접속로그 표 — 모바일에서는 표만 가로 스크롤 */}
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[480px] text-[13px]">
           <thead>
             <tr className="border-y border-ink-200 bg-ink-50 text-left text-ink-500">
               <th className="p-2.5">번호</th>
@@ -489,6 +494,7 @@ export default function MemberDetail({
             )}
           </tbody>
         </table>
+        </div>
       </section>
     </div>
   );

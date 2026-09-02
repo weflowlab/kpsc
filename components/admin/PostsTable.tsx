@@ -136,8 +136,8 @@ export default function PostsTable({
         </table>
       </div>
 
-      <div className="flex items-center gap-2 border-t border-ink-200 bg-ink-50 p-3 text-[13px]">
-        <span className="mr-2 text-ink-500">선택 {checked.size}개 →</span>
+      <div className="flex flex-wrap items-center gap-2 border-t border-ink-200 bg-ink-50 p-3 text-[13px]">
+        <span className="mr-2 whitespace-nowrap text-ink-500">선택 {checked.size}개 →</span>
         <button
           type="button"
           onClick={onDelete}

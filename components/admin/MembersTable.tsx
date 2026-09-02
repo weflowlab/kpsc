@@ -262,8 +262,8 @@ export default function MembersTable({
       </div>
 
       {/* 하단 액션 바 — 원본 삭제(탈퇴)/캐쉬지급/포인트지급 */}
-      <div className="flex items-center gap-2 border-t border-ink-200 bg-ink-50 p-3 text-[13px]">
-        <span className="mr-2 text-ink-500">선택 {checked.size}명 →</span>
+      <div className="flex flex-wrap items-center gap-2 border-t border-ink-200 bg-ink-50 p-3 text-[13px]">
+        <span className="mr-2 whitespace-nowrap text-ink-500">선택 {checked.size}명 →</span>
         <button
           type="button"
           onClick={onDelete}
