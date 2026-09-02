@@ -202,7 +202,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <ul className="hidden items-center gap-4 text-[13px] font-semibold md:flex">
             {member ? (
-              /* 로그인 상태 — 이름 + 로그아웃 */
+              /* 로그인 상태 — 원본처럼 이름 | 정보변경 | 로그아웃 */
               <>
                 <li
                   className={[
@@ -211,6 +211,18 @@ export default function Header() {
                   ].join(" ")}
                 >
                   {member.name}님
+                </li>
+                <li>
+                  <Link
+                    href="/mypage"
+                    onClick={closeAll}
+                    className={[
+                      "transition-colors duration-500 hover:text-[#2E76BC]",
+                      solid ? "text-ink-900" : "text-white/85",
+                    ].join(" ")}
+                  >
+                    정보변경
+                  </Link>
                 </li>
                 <li>
                   <button
@@ -420,6 +432,15 @@ export default function Header() {
             <>
               <li className="border-b border-dotted border-[#ddd] px-5 py-3 text-[14px] font-semibold text-black">
                 {member.name}님
+              </li>
+              <li className="border-b border-dotted border-[#ddd]">
+                <Link
+                  href="/mypage"
+                  onClick={closeAll}
+                  className="block px-5 py-3 text-[14px] text-black hover:bg-[#eee]"
+                >
+                  정보변경
+                </Link>
               </li>
               <li className="border-b border-dotted border-[#ddd]">
                 <button

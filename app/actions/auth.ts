@@ -10,7 +10,7 @@ import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/db";
-import { createSession, deleteSession } from "@/lib/session";
+import { createSession, deleteSession, getSession } from "@/lib/session";
 
 /* 접속로그 기록 — 로그인/가입 성공 시. 실패해도 로그인 흐름은 막지 않는다
    (원본 member.php?query=log 의 접속IP/Agent/접속시간) */
@@ -238,6 +238,78 @@ export async function resetPassword(input: {
   } catch (e) {
     console.error("resetPassword failed:", e);
     return { ok: false, error: "재설정 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." };
+  }
+}
+
+/* --------------------------------------------------------------------------
+   마이페이지 — 회원 정보수정 (원본 mypage.php?query=info)
+   이름/아이디는 변경 불가, 비밀번호는 입력했을 때만 교체
+   -------------------------------------------------------------------------- */
+export async function updateMyInfo(input: {
+  password: string; // 빈 문자열이면 유지
+  passwordConfirm: string;
+  email: string;
+  remail: boolean;
+  phone1: string;
+  phone2: string;
+  phone3: string;
+}): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session)
+    return { ok: false, error: "회원으로 로그인해야 이용하실 수 있습니다." };
+
+  const email = input.email.trim();
+  if (email.length <= 6 || !email.includes("@") || !email.includes("."))
+    return { ok: false, error: "이메일을 정확히 입력해 주세요." };
+  if (
+    !/^01[016789]$/.test(input.phone1) ||
+    !/^\d{3,4}$/.test(input.phone2) ||
+    !/^\d{4}$/.test(input.phone3)
+  )
+    return { ok: false, error: "휴대폰 번호를 정확히 입력해 주세요." };
+
+  let hashed: string | undefined;
+  if (input.password) {
+    if (input.password.length < 4 || input.password.length > 12)
+      return { ok: false, error: "비밀번호는 4자 이상 12자 이하로 입력해 주세요." };
+    if (input.password !== input.passwordConfirm)
+      return { ok: false, error: "비밀번호가 일치하지 않습니다." };
+    hashed = await bcrypt.hash(input.password, 10);
+  }
+
+  try {
+    await prisma.member.update({
+      where: { id: session.memberId },
+      data: {
+        email,
+        remail: input.remail,
+        phone: `${input.phone1}-${input.phone2}-${input.phone3}`,
+        ...(hashed ? { password: hashed } : {}),
+      },
+    });
+    return { ok: true };
+  } catch (e) {
+    console.error("updateMyInfo failed:", e);
+    return { ok: false, error: "정보 수정 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." };
+  }
+}
+
+/* --------------------------------------------------------------------------
+   회원탈퇴 (원본 마이데스크의 회원탈퇴)
+   작성한 글/댓글은 남고 계정만 삭제된다 (작성자 연결 해제)
+   -------------------------------------------------------------------------- */
+export async function deleteMyAccount(): Promise<ActionResult> {
+  const session = await getSession();
+  if (!session)
+    return { ok: false, error: "회원으로 로그인해야 이용하실 수 있습니다." };
+
+  try {
+    await prisma.member.delete({ where: { id: session.memberId } });
+    await deleteSession();
+    return { ok: true };
+  } catch (e) {
+    console.error("deleteMyAccount failed:", e);
+    return { ok: false, error: "탈퇴 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." };
   }
 }
 
