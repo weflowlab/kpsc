@@ -15,6 +15,7 @@
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { createPost } from "@/app/actions/board";
+import RichTextEditor from "@/components/board/RichTextEditor";
 
 /* 입력 공통 — 원본 인라인 스타일 (30px, 1px #E4E4E4) */
 const FIELD =
@@ -26,6 +27,8 @@ export default function BoardWriteForm({
   categoryLabel,
   authorName,
   listHref,
+  allowSecret = false,
+  allowFile = true,
 }: {
   /** 게시판 키 — activities | gallery */
   board: string;
@@ -37,6 +40,10 @@ export default function BoardWriteForm({
   authorName: string | null;
   /** 등록 후 돌아갈 목록 경로 */
   listHref: string;
+  /** 비밀글 체크박스 노출 (고객의 소리만) */
+  allowSecret?: boolean;
+  /** 파일 첨부 노출 (갤러리는 필수, 그 외는 선택) */
+  allowFile?: boolean;
 }) {
   const [fileName, setFileName] = useState("선택된 파일 없음");
   const [notice, setNotice] = useState<string | null>(null);
@@ -92,7 +99,7 @@ export default function BoardWriteForm({
           />
         </div>
 
-        {/* 옵션 — 카테고리 셀렉트 + 비밀글 체크 */}
+        {/* 옵션 — 카테고리 셀렉트 (+ 고객의 소리만 비밀글 체크) */}
         <div className="flex items-center">
           <span className="w-[60px] shrink-0">옵 션</span>
           <div className="flex items-center gap-3">
@@ -109,119 +116,19 @@ export default function BoardWriteForm({
                 </option>
               ))}
             </select>
-            <label className="flex cursor-pointer items-center gap-1">
-              <input type="checkbox" name="secret" />
-              비밀글
-            </label>
+            {allowSecret && (
+              <label className="flex cursor-pointer items-center gap-1">
+                <input type="checkbox" name="secret" />
+                🔒 비밀글 (작성자와 관리자만 볼 수 있어요)
+              </label>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ============ 본문 — 원본 easyEditor 프레임 재현 ============ */}
-      <div className="mt-[10px] border border-[#E4E4E4]">
-        {/* 툴바 (시각 재현 — 동작 없음) */}
-        <div className="flex flex-wrap items-center gap-[3px] border-b border-[#E4E4E4] bg-[#F7F7F7] px-[6px] py-[5px] text-[12px] text-[#333]">
-          {/* 글자체 / 글자크기 드롭다운형 버튼 */}
-          {["글자체", "글자크기"].map((label) => (
-            <button
-              key={label}
-              type="button"
-              className="flex h-[22px] cursor-default items-center gap-1 border border-[#C8C8C8] bg-white px-1.5"
-            >
-              {label}
-              <span aria-hidden className="text-[9px]">
-                ▼
-              </span>
-            </button>
-          ))}
-
-          <span aria-hidden className="w-[6px]" />
-
-          {/* 글자색 / 배경색 */}
-          <button
-            type="button"
-            aria-label="글자색"
-            className="h-[22px] w-[24px] cursor-default border border-[#C8C8C8] bg-white font-bold text-[#FF6600]"
-          >
-            가
-          </button>
-          <button
-            type="button"
-            aria-label="배경색"
-            className="h-[22px] w-[24px] cursor-default border border-[#C8C8C8] bg-[#FF6600] font-bold text-white"
-          >
-            가
-          </button>
-
-          <span aria-hidden className="w-[6px]" />
-
-          {/* 굵게 / 기울임 / 밑줄 / 취소선 */}
-          <button type="button" aria-label="굵게" className="h-[22px] w-[24px] cursor-default border border-[#C8C8C8] bg-white font-bold">
-            가
-          </button>
-          <button type="button" aria-label="기울임" className="h-[22px] w-[24px] cursor-default border border-[#C8C8C8] bg-white italic">
-            가
-          </button>
-          <button type="button" aria-label="밑줄" className="h-[22px] w-[24px] cursor-default border border-[#C8C8C8] bg-white underline">
-            가
-          </button>
-          <button type="button" aria-label="취소선" className="h-[22px] w-[24px] cursor-default border border-[#C8C8C8] bg-white line-through">
-            가
-          </button>
-
-          <span aria-hidden className="w-[6px]" />
-
-          {/* 정렬 4종 — 좌 / 중앙 / 우 / 양쪽 */}
-          {(
-            [
-              ["왼쪽 정렬", [12, 8, 12, 8]],
-              ["가운데 정렬", [12, 8, 12, 8]],
-              ["오른쪽 정렬", [12, 8, 12, 8]],
-              ["양쪽 정렬", [12, 12, 12, 12]],
-            ] as const
-          ).map(([label, widths], i) => (
-            <button
-              key={label}
-              type="button"
-              aria-label={label}
-              className="flex h-[22px] w-[24px] cursor-default flex-col justify-center gap-[2px] border border-[#C8C8C8] bg-white px-[4px]"
-            >
-              {widths.map((w, j) => (
-                <span
-                  key={j}
-                  aria-hidden
-                  className={`block h-[1.5px] bg-[#333] ${
-                    i === 0
-                      ? "self-start"
-                      : i === 2
-                        ? "self-end"
-                        : "self-center"
-                  }`}
-                  style={{ width: w }}
-                />
-              ))}
-            </button>
-          ))}
-
-          <span aria-hidden className="w-[6px]" />
-
-          {/* 구분선 삽입 */}
-          <button type="button" aria-label="구분선" className="h-[22px] w-[24px] cursor-default border border-[#C8C8C8] bg-white">
-            —
-          </button>
-
-          <span aria-hidden className="w-[6px]" />
-
-          <button type="button" className="h-[22px] cursor-default border border-[#C8C8C8] bg-white px-1.5">
-            소스보기
-          </button>
-        </div>
-
-        <textarea
-          name="content"
-          aria-label="본문"
-          className="block h-[300px] w-full resize-y p-2.5 text-[13px] outline-none"
-        />
+      {/* ============ 본문 — 실동작 위지윅 에디터 ============ */}
+      <div className="mt-[10px]">
+        <RichTextEditor name="content" defaultHtml="" />
       </div>
 
       {/* ============ 등록 ============ */}
@@ -246,7 +153,9 @@ export default function BoardWriteForm({
         </p>
       )}
 
-      {/* ============ 파일 업로드 — 원본 .filebox ============ */}
+      {/* ============ 파일 업로드 — 원본 .filebox (갤러리 등에서만) ============ */}
+      {allowFile && (
+      <>
       <div className="mt-[10px] flex items-center text-[12px]">
         <label
           htmlFor="write-file"
@@ -294,6 +203,8 @@ export default function BoardWriteForm({
           </div>
         </div>
       </div>
+      </>
+      )}
     </form>
   );
 }

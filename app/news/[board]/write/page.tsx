@@ -41,6 +41,8 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
           categoryLabel="구분"
           authorName={session?.name ?? null}
           listHref={`/news/${board}`}
+          allowSecret={meta.key === "activities"}
+          allowFile={false}
         />
       </Reveal>
     </SubLayout>

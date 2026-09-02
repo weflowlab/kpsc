@@ -14,16 +14,6 @@ import { uploadImage } from "@/lib/upload";
 
 type ActionResult = { ok: true; uid?: number } | { ok: false; error: string };
 
-/* 본문 텍스트 → 저장용 HTML (줄 단위 <div>, 원본 에디터 저장 형식과 동일 계열) */
-function textToHtml(text: string): string {
-  const esc = (s: string) =>
-    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return text
-    .split("\n")
-    .map((line) => (line.trim() === "" ? "<div><br></div>" : `<div>${esc(line)}</div>`))
-    .join("");
-}
-
 /* --------------------------------------------------------------------------
    글 등록 — activities / gallery (일반 회원 글쓰기 허용 게시판)
    -------------------------------------------------------------------------- */
@@ -40,6 +30,8 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
   const title = String(formData.get("subject") ?? "").trim();
   const category = String(formData.get("category") ?? "");
   const content = String(formData.get("content") ?? "").trim();
+  /* 비밀글 — 고객의 소리에서만 허용 (작성자+관리자만 열람) */
+  const secret = boardKey === "activities" && formData.get("secret") === "on";
 
   if (!title) return { ok: false, error: "제목을 입력해 주세요." };
   if (!meta.categories.includes(category))
@@ -63,10 +55,11 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
         boardKey,
         category,
         title,
-        contentHtml: textToHtml(content),
+        contentHtml: content,
         authorName: session.name,
         memberId: session.memberId,
         thumbUrl,
+        secret,
       },
       select: { id: true },
     });

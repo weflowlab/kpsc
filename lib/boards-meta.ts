@@ -79,6 +79,10 @@ export type BoardRow = {
   author: string;
   hit: number;
   thumbUrl?: string | null;
+  /** 비밀글 여부 */
+  secret?: boolean;
+  /** 작성자 회원 id (비밀글 열람 판정용) */
+  memberId?: number | null;
 };
 
 /** 검색 셀렉트 옵션 — 원본 bbs.php 값 그대로 */

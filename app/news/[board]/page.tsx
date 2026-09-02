@@ -22,7 +22,7 @@ import BoardList from "@/components/board/BoardList";
 import CategoryTabs from "@/components/board/CategoryTabs";
 import CountUp from "@/components/board/CountUp";
 import { getBoardMeta } from "@/lib/boards-meta";
-import { getBoardPage } from "@/lib/boards";
+import { getBoardPage, getViewer } from "@/lib/boards";
 
 /* --------------------------------------------------------------------------
    메타데이터
@@ -57,12 +57,15 @@ export default async function BoardListPage(props: PageProps<"/news/[board]">) {
   const keyword = typeof search?.keyword === "string" ? search.keyword : undefined;
 
   const requestedPage = Math.max(1, Number(search?.p ?? 1) || 1);
-  const { posts, total, page, totalPages } = await getBoardPage(meta.key, {
-    category,
-    page: requestedPage,
-    where,
-    keyword,
-  });
+  const [{ posts, total, page, totalPages }, viewer] = await Promise.all([
+    getBoardPage(meta.key, {
+      category,
+      page: requestedPage,
+      where,
+      keyword,
+    }),
+    getViewer(),
+  ]);
 
   /* 페이지 링크에 현재 필터를 유지한다 */
   const params = new URLSearchParams();
@@ -136,6 +139,8 @@ export default async function BoardListPage(props: PageProps<"/news/[board]">) {
           page={page}
           totalPages={totalPages}
           pageHrefBase={pageHrefBase}
+          viewerId={viewer?.id ?? null}
+          viewerIsAdmin={viewer?.isAdmin ?? false}
         />
 
         {/* ================================================================

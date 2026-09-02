@@ -113,6 +113,7 @@ model Post {
   member     Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
 
   thumbUrl  String?  @map("thumb_url") // 갤러리 썸네일 (Vercel Blob URL)
+  secret    Boolean  @default(false) // 비밀글 (고객의 소리 전용, 작성자+관리자만 열람)
   hit       Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

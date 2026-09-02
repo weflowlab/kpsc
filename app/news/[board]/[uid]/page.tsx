@@ -13,7 +13,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
 import BoardList from "@/components/board/BoardList";
@@ -22,7 +22,7 @@ import CategoryTabs from "@/components/board/CategoryTabs";
 import CommentSection from "@/components/board/CommentSection";
 import CountUp from "@/components/board/CountUp";
 import { getBoardMeta } from "@/lib/boards-meta";
-import { getBoardPage, getPost, incrementHit } from "@/lib/boards";
+import { getBoardPage, getPost, getViewer, incrementHit } from "@/lib/boards";
 import { getSession } from "@/lib/session";
 import { kstDateDot, kstDateTime } from "@/lib/datetime";
 
@@ -47,12 +47,22 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
   const post = await getPost(meta.key, Number(uid));
   if (!post) notFound();
 
-  /* 조회수 증가 + 하단 목록/세션 병렬 조회 */
-  const [, listData, session] = await Promise.all([
-    incrementHit(post.id),
+  /* 하단 목록/세션/열람자 조회 */
+  const [listData, session, viewer] = await Promise.all([
     getBoardPage(meta.key, { page: 1 }),
     getSession(),
+    getViewer(),
   ]);
+
+  /* 비밀글 접근 제어 — 작성자 본인 또는 관리자만. 그 외는 목록으로 돌려보낸다 */
+  const canView =
+    !post.secret ||
+    viewer?.isAdmin ||
+    (viewer != null && post.memberId === viewer.id);
+  if (!canView) redirect(`/news/${board}`);
+
+  /* 조회수 증가 (열람 가능할 때만) */
+  await incrementHit(post.id);
 
   const categories = ["전체", ...meta.categories];
   const fullDate = kstDateDot(post.createdAt);
@@ -184,6 +194,8 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
           totalPages={listData.totalPages}
           pageHrefBase={`/news/${board}?`}
           currentUid={post.id}
+          viewerId={viewer?.id ?? null}
+          viewerIsAdmin={viewer?.isAdmin ?? false}
         />
 
         <BoardSearch basePath={`/news/${board}`} />

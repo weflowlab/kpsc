@@ -74,6 +74,8 @@ export async function getBoardPage(boardKey: BoardKey, query: BoardQuery = {}) {
         hit: true,
         createdAt: true,
         thumbUrl: true,
+        secret: true,
+        memberId: true,
       },
     }),
   ]);
@@ -88,6 +90,8 @@ export async function getBoardPage(boardKey: BoardKey, query: BoardQuery = {}) {
     author: r.authorName,
     hit: r.hit,
     thumbUrl: r.thumbUrl,
+    secret: r.secret,
+    memberId: r.memberId,
   }));
 
   return { meta, posts, total, page, totalPages };
@@ -105,6 +109,18 @@ export async function getPost(boardKey: BoardKey, uid: number) {
     },
   });
   return post;
+}
+
+/* 현재 열람자 정보 — 비밀글 열람 판정용 (회원 id + 관리자 여부) */
+export async function getViewer(): Promise<{ id: number; isAdmin: boolean } | null> {
+  const { getSession } = await import("@/lib/session");
+  const session = await getSession();
+  if (!session) return null;
+  const member = await prisma.member.findUnique({
+    where: { id: session.memberId },
+    select: { grade: true },
+  });
+  return { id: session.memberId, isAdmin: member?.grade === "ADMIN" };
 }
 
 export async function incrementHit(id: number) {

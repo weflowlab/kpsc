@@ -28,6 +28,10 @@ type BoardListProps = {
   pageHrefBase: string;
   /** 상세 페이지 하단 목록에서 현재 보고 있는 글 — 번호 대신 ico_now.gif */
   currentUid?: number;
+  /** 현재 로그인 회원 id (비밀글 열람 판정) */
+  viewerId?: number | null;
+  /** 현재 회원이 관리자인지 (비밀글 전체 열람) */
+  viewerIsAdmin?: boolean;
 };
 
 export default function BoardList({
@@ -37,7 +41,12 @@ export default function BoardList({
   totalPages,
   pageHrefBase,
   currentUid,
+  viewerId = null,
+  viewerIsAdmin = false,
 }: BoardListProps) {
+  /* 비밀글을 열람할 수 있는지 — 작성자 본인 또는 관리자 */
+  const canView = (post: BoardRow) =>
+    !post.secret || viewerIsAdmin || (viewerId != null && post.memberId === viewerId);
   const [checked, setChecked] = useState<Set<number>>(new Set());
 
   /* 원본 스킨별 컬럼 순서 차이
@@ -140,13 +149,21 @@ export default function BoardList({
                   [{post.category}]
                 </span>
 
-                {/* 제목 — 좌측 정렬, 원본처럼 제목만 링크 */}
-                <Link
-                  href={`/news/${board}/${post.uid}`}
-                  className="truncate px-1 text-left text-[13px] sm:px-2 sm:text-[14px]"
-                >
-                  {post.title}
-                </Link>
+                {/* 제목 — 좌측 정렬, 원본처럼 제목만 링크.
+                    비밀글은 열람 권한이 없으면 자물쇠+"비밀글"로 가린다 */}
+                {canView(post) ? (
+                  <Link
+                    href={`/news/${board}/${post.uid}`}
+                    className="truncate px-1 text-left text-[13px] sm:px-2 sm:text-[14px]"
+                  >
+                    {post.secret && <span aria-hidden>🔒 </span>}
+                    {post.title}
+                  </Link>
+                ) : (
+                  <span className="truncate px-1 text-left text-[13px] text-ink-400 sm:px-2 sm:text-[14px]">
+                    🔒 비밀글입니다.
+                  </span>
+                )}
 
                 {isNotice ? (
                   <>

@@ -28,6 +28,7 @@ export default async function GalleryWritePage() {
           categoryLabel="갤러리"
           authorName={session?.name ?? null}
           listHref="/organization/gallery"
+          allowFile
         />
       </Reveal>
     </SubLayout>

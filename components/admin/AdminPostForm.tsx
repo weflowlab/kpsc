@@ -8,7 +8,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { adminSavePost } from "@/app/actions/admin";
-import RichTextEditor from "@/components/admin/RichTextEditor";
+import RichTextEditor from "@/components/board/RichTextEditor";
 
 type PostData = {
   id: number;
