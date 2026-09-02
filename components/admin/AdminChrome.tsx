@@ -86,7 +86,64 @@ const MENUS = [
   { href: "/admin/settings", label: "환경설정", Icon: SettingsIcon },
 ];
 
-const ITEM = "flex items-center gap-3 rounded-md px-3 py-2.5 text-[14px] transition-colors";
+const ITEM =
+  "flex items-center gap-3 rounded-md px-3 py-2.5 text-[14px] leading-none transition-colors";
+
+/* 메뉴 목록 (드로어/사이드바 공통) — 모듈 레벨 컴포넌트로 두어야
+   부모 렌더마다 재마운트되지 않는다 (재마운트 시 첫 탭이 씹히는 버그 방지) */
+function NavList({
+  pathname,
+  showLabel,
+  onLogout,
+}: {
+  pathname: string;
+  showLabel: boolean;
+  onLogout: () => void;
+}) {
+  return (
+    <nav className="flex h-full flex-col">
+      <ul className="py-3">
+        {MENUS.map(({ href, label, Icon }) => {
+          const active = pathname.startsWith(href);
+          return (
+            <li key={href} className="px-2">
+              <Link
+                href={href}
+                className={`${ITEM} ${
+                  active ? "bg-ink-900 font-semibold text-white" : "text-ink-700 hover:bg-ink-50"
+                }`}
+              >
+                <span className="flex shrink-0 items-center">
+                  <Icon />
+                </span>
+                <span className={showLabel ? "" : "hidden md:inline"}>{label}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-auto border-t border-ink-100 px-2 py-3">
+        <Link href="/" className={`${ITEM} text-ink-500 hover:bg-ink-50`}>
+          <span className="flex shrink-0 items-center">
+            <BackIcon />
+          </span>
+          <span className={showLabel ? "" : "hidden md:inline"}>사이트로 돌아가기</span>
+        </Link>
+        <button
+          type="button"
+          onClick={onLogout}
+          className={`${ITEM} w-full text-left text-ink-500 hover:bg-ink-50 hover:text-board-tag`}
+        >
+          <span className="flex shrink-0 items-center">
+            <LogoutIcon />
+          </span>
+          <span className={showLabel ? "" : "hidden md:inline"}>로그아웃</span>
+        </button>
+      </div>
+    </nav>
+  );
+}
 
 export default function AdminChrome({
   admin,
@@ -112,45 +169,6 @@ export default function AdminChrome({
     await logout();
     window.location.href = "/";
   };
-
-  /* 메뉴 목록 (드로어/사이드바 공통) */
-  const NavList = ({ showLabel }: { showLabel: boolean }) => (
-    <nav className="flex h-full flex-col">
-      <ul className="py-3">
-        {MENUS.map(({ href, label, Icon }) => {
-          const active = pathname.startsWith(href);
-          return (
-            <li key={href} className="px-2">
-              <Link
-                href={href}
-                className={`${ITEM} ${
-                  active ? "bg-ink-900 font-semibold text-white" : "text-ink-700 hover:bg-ink-50"
-                }`}
-              >
-                <Icon />
-                <span className={showLabel ? "" : "hidden md:inline"}>{label}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-
-      <div className="mt-auto border-t border-ink-100 px-2 py-3">
-        <Link href="/" className={`${ITEM} text-ink-500 hover:bg-ink-50`}>
-          <BackIcon />
-          <span className={showLabel ? "" : "hidden md:inline"}>사이트로 돌아가기</span>
-        </Link>
-        <button
-          type="button"
-          onClick={onLogout}
-          className={`${ITEM} w-full text-left text-ink-500 hover:bg-ink-50 hover:text-board-tag`}
-        >
-          <LogoutIcon />
-          <span className={showLabel ? "" : "hidden md:inline"}>로그아웃</span>
-        </button>
-      </div>
-    </nav>
-  );
 
   /* 팝업 창에서는 크롬 없이 콘텐츠만 */
   if (isPopup) {
@@ -188,7 +206,7 @@ export default function AdminChrome({
       <div className="flex flex-1 md:min-h-0">
         {/* 데스크톱 사이드바 (고정) */}
         <aside className="hidden shrink-0 overflow-y-auto border-r border-ink-200 bg-white md:block md:w-[200px]">
-          <NavList showLabel={false} />
+          <NavList pathname={pathname} showLabel={false} onLogout={onLogout} />
         </aside>
 
         {/* 모바일 드로어 */}
@@ -217,7 +235,7 @@ export default function AdminChrome({
                 </button>
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto">
-                <NavList showLabel />
+                <NavList pathname={pathname} showLabel onLogout={onLogout} />
               </div>
             </div>
           </div>
@@ -226,7 +244,7 @@ export default function AdminChrome({
         {/* 콘텐츠
             - 모바일: 일반 문서 흐름 + 하단 여백(pb)으로 마지막 내용이 안 잘리게
             - 데스크톱: 이 영역만 내부 세로 스크롤 */}
-        <main className="min-w-0 flex-1 overflow-x-hidden bg-[#F4F5F7] p-5 pb-24 md:overflow-y-auto md:overscroll-contain md:p-8 md:pb-8">
+        <main className="min-w-0 flex-1 overflow-x-hidden bg-[#F4F5F7] p-5 pb-14 md:overflow-y-auto md:overscroll-contain md:p-8 md:pb-8">
           {children}
         </main>
       </div>
