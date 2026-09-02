@@ -13,15 +13,17 @@ import { deletePost } from "@/app/actions/board";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 export default function PostActions({
-  board,
   uid,
   listHref,
+  writeHref,
   canReply,
   canEdit,
 }: {
-  board: string;
   uid: number;
+  /** 목록 경로 */
   listHref: string;
+  /** 글쓰기 경로 (답글/수정 시 ?reply=/?edit= 를 붙인다) */
+  writeHref: string;
   canReply: boolean;
   canEdit: boolean;
 }) {
@@ -53,7 +55,7 @@ export default function PostActions({
       {canReply && (
         <button
           type="button"
-          onClick={() => router.push(`/news/${board}/write?reply=${uid}`)}
+          onClick={() => router.push(`${writeHref}?reply=${uid}`)}
           className={btn}
         >
           답글
@@ -63,7 +65,7 @@ export default function PostActions({
         <>
           <button
             type="button"
-            onClick={() => router.push(`/news/${board}/write?edit=${uid}`)}
+            onClick={() => router.push(`${writeHref}?edit=${uid}`)}
             className={btn}
           >
             수정

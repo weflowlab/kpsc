@@ -55,11 +55,19 @@ export default async function AdminBoardPostsPage(
   return (
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-[20px] font-bold">
-          <Link href="/admin/boards" className="text-ink-400 hover:text-brand-600">
-            보드관리
-          </Link>{" "}
-          <span className="text-ink-300">/</span> {meta.name}{" "}
+        <h1 className="flex items-center gap-2 text-[20px] font-bold">
+          {/* 뒤로가기 — 보드관리 목록으로 (메뉴 안 열어도 되게) */}
+          <Link
+            href="/admin/boards"
+            aria-label="보드관리로 돌아가기"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-ink-200 text-ink-500 hover:border-brand-600 hover:text-brand-600"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M19 12H5" />
+              <path d="m12 19-7-7 7-7" />
+            </svg>
+          </Link>
+          {meta.name}{" "}
           <span className="text-[14px] font-normal whitespace-nowrap text-ink-500">
             전체 {total}개
           </span>

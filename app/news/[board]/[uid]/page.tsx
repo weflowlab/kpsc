@@ -107,9 +107,9 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
             답글: 로그인 회원 · 수정/삭제: 작성자 본인 또는 관리자
             ================================================================ */}
         <PostActions
-          board={board}
           uid={post.id}
           listHref={`/news/${board}`}
+          writeHref={`/news/${board}/write`}
           canReply={meta.writable && viewer != null}
           canEdit={
             (viewer != null && post.memberId === viewer.id) ||

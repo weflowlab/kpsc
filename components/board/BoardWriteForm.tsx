@@ -85,7 +85,8 @@ export default function BoardWriteForm({
       setNotice("회원으로 로그인해야 이용하실 수 있습니다.");
       return;
     }
-    if (allowFile && files.length === 0) {
+    /* 새 글일 때만 이미지 필수 (수정은 기존 이미지 유지 가능) */
+    if (allowFile && !editUid && files.length === 0) {
       setNotice("이미지를 1장 이상 첨부해 주세요.");
       return;
     }
@@ -255,6 +256,7 @@ export default function BoardWriteForm({
         <p className="mt-1.5 text-[12px] text-[#999]">
           jpg · png · webp · gif / 최대 {MAX_IMAGES}장 · 첫 번째 사진이 목록
           대표로 표시됩니다. 업로드 시 자동 최적화됩니다.
+          {editUid && " (수정 시 새로 첨부하면 기존 사진이 교체됩니다. 비워두면 그대로 유지)"}
         </p>
       </div>
       )}

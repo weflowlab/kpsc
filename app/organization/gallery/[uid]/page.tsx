@@ -5,11 +5,11 @@
 
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
-import { getPost, incrementHit } from "@/lib/boards";
+import PostActions from "@/components/board/PostActions";
+import { getPost, getViewer, incrementHit } from "@/lib/boards";
 import { kstDateDot } from "@/lib/datetime";
 
 export async function generateMetadata(
@@ -27,9 +27,12 @@ export default async function GalleryViewPage(
   const post = await getPost("gallery", Number(uid));
   if (!post) notFound();
 
+  const viewer = await getViewer();
   await incrementHit(post.id);
 
   const fullDate = kstDateDot(post.createdAt);
+  const canEdit =
+    (viewer != null && post.memberId === viewer.id) || (viewer?.isAdmin ?? false);
 
   return (
     <SubLayout
@@ -60,12 +63,14 @@ export default async function GalleryViewPage(
           </span>
         </div>
 
-        {/* 목록보기 버튼 */}
-        <div className="mt-4 flex justify-center gap-1">
-          <Link href="/organization/gallery" aria-label="목록보기">
-            <Image src="/images/board/vlist.gif" alt="목록보기" width={52} height={20} unoptimized />
-          </Link>
-        </div>
+        {/* 목록보기 / 수정 / 삭제 (답글 없음) — 수정·삭제는 작성자·관리자만 */}
+        <PostActions
+          uid={post.id}
+          listHref="/organization/gallery"
+          writeHref="/organization/gallery/write"
+          canReply={false}
+          canEdit={canEdit}
+        />
 
         {/* 이미지(최대 5장) + 본문 */}
         <article className="mt-[30px] mb-[100px] w-full">

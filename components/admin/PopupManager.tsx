@@ -23,7 +23,7 @@ export type PopupRow = {
 };
 
 const FIELD =
-  "w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-[13px] outline-none focus:border-brand-600";
+  "w-full min-w-0 rounded-md border border-ink-200 bg-white px-3 py-2 text-[13px] outline-none focus:border-brand-600";
 const LABEL = "mb-1.5 block text-[13px] font-semibold text-ink-700";
 
 export default function PopupManager({
@@ -224,17 +224,18 @@ export default function PopupManager({
           {popups.map((p) => (
             <li
               key={p.id}
-              className="flex flex-wrap items-center gap-4 border-b border-ink-100 p-4 last:border-0"
+              className="flex items-center gap-3 border-b border-ink-100 p-4 last:border-0"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={p.pcImage}
                 alt={p.title}
-                className="h-16 w-28 rounded border border-ink-200 object-cover"
+                className="h-16 w-24 shrink-0 rounded border border-ink-200 object-cover"
               />
               <div className="min-w-0 flex-1">
-                <p className="flex items-center gap-2 text-[14px] font-semibold">
-                  {p.title}
+                {/* 제목 + 노출여부 — 제목이 길면 노출여부가 아래로 내려간다 */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[14px] font-semibold">{p.title}</span>
                   {isActive(p) ? (
                     <span className="rounded bg-green-100 px-1.5 py-0.5 text-[11px] text-green-700">
                       노출 중
@@ -244,28 +245,35 @@ export default function PopupManager({
                       {today < p.start ? "대기" : "종료"}
                     </span>
                   )}
-                </p>
-                <p className="mt-0.5 text-[12px] text-ink-400">
+                </div>
+                {/* 날짜 — 한 줄 (문자 단위로 깨지지 않게) */}
+                <p className="mt-1 text-[12px] whitespace-nowrap text-ink-400">
                   {p.start} ~ {p.end}
-                  {p.linkUrl && ` · ${p.linkUrl}`}
-                  {p.mobImage && " · 모바일 이미지 있음"}
                 </p>
-              </div>
-              <div className="flex gap-2 text-[12px]">
-                <button
-                  type="button"
-                  onClick={() => startEdit(p)}
-                  className="rounded border border-ink-200 px-3 py-1.5 hover:border-brand-600 hover:text-brand-600"
-                >
-                  수정
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onDelete(p)}
-                  className="rounded border border-board-tag px-3 py-1.5 text-board-tag hover:bg-board-tag hover:text-white"
-                >
-                  삭제
-                </button>
+                {(p.linkUrl || p.mobImage) && (
+                  <p className="mt-0.5 truncate text-[12px] text-ink-400">
+                    {p.linkUrl}
+                    {p.linkUrl && p.mobImage && " · "}
+                    {p.mobImage && "모바일 이미지 있음"}
+                  </p>
+                )}
+                {/* 수정 / 삭제 */}
+                <div className="mt-2 flex gap-2 text-[12px]">
+                  <button
+                    type="button"
+                    onClick={() => startEdit(p)}
+                    className="rounded border border-ink-200 px-3 py-1.5 hover:border-brand-600 hover:text-brand-600"
+                  >
+                    수정
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDelete(p)}
+                    className="rounded border border-board-tag px-3 py-1.5 text-board-tag hover:bg-board-tag hover:text-white"
+                  >
+                    삭제
+                  </button>
+                </div>
               </div>
             </li>
           ))}
