@@ -158,9 +158,11 @@ export default function AdminChrome({
   }
 
   return (
-    <div className="flex h-screen flex-col bg-[#F4F5F7] text-ink-900">
-      {/* 상단 바 */}
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-ink-200 bg-white px-3 md:px-5">
+    /* 모바일: 일반 문서 스크롤(min-h-screen) + 헤더 sticky
+       데스크톱: 화면 고정(h-screen) + 콘텐츠만 내부 스크롤 */
+    <div className="flex min-h-screen flex-col bg-[#F4F5F7] text-ink-900 md:h-screen">
+      {/* 상단 바 — 모바일에서 스크롤해도 상단에 고정(sticky) */}
+      <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b border-ink-200 bg-white px-3 md:px-5">
         <div className="flex items-center gap-2">
           {/* 햄버거 — 모바일에서만 (KPSC 관리자 로고 왼쪽) */}
           <button
@@ -183,7 +185,7 @@ export default function AdminChrome({
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1">
+      <div className="flex flex-1 md:min-h-0">
         {/* 데스크톱 사이드바 (고정) */}
         <aside className="hidden shrink-0 overflow-y-auto border-r border-ink-200 bg-white md:block md:w-[200px]">
           <NavList showLabel={false} />
@@ -221,8 +223,10 @@ export default function AdminChrome({
           </div>
         )}
 
-        {/* 콘텐츠 — 이 영역만 세로 스크롤 */}
-        <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain bg-[#F4F5F7] p-5 md:p-8">
+        {/* 콘텐츠
+            - 모바일: 일반 문서 흐름 + 하단 여백(pb)으로 마지막 내용이 안 잘리게
+            - 데스크톱: 이 영역만 내부 세로 스크롤 */}
+        <main className="min-w-0 flex-1 overflow-x-hidden bg-[#F4F5F7] p-5 pb-24 md:overflow-y-auto md:overscroll-contain md:p-8 md:pb-8">
           {children}
         </main>
       </div>
