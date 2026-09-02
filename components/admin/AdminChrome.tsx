@@ -87,7 +87,7 @@ const MENUS = [
 ];
 
 const ITEM =
-  "flex items-center gap-3 rounded-md px-3 py-2.5 text-[14px] leading-none transition-colors";
+  "flex items-center gap-3 rounded-md px-3 py-3.5 text-[14px] leading-none transition-colors";
 
 /* 메뉴 목록 (드로어/사이드바 공통) — 모듈 레벨 컴포넌트로 두어야
    부모 렌더마다 재마운트되지 않는다 (재마운트 시 첫 탭이 씹히는 버그 방지) */
@@ -116,7 +116,9 @@ function NavList({
                 <span className="flex shrink-0 items-center">
                   <Icon />
                 </span>
-                <span className={showLabel ? "" : "hidden md:inline"}>{label}</span>
+                <span className={`flex items-center ${showLabel ? "" : "hidden md:flex"}`}>
+                  {label}
+                </span>
               </Link>
             </li>
           );
@@ -128,7 +130,9 @@ function NavList({
           <span className="flex shrink-0 items-center">
             <BackIcon />
           </span>
-          <span className={showLabel ? "" : "hidden md:inline"}>사이트로 돌아가기</span>
+          <span className={`flex items-center ${showLabel ? "" : "hidden md:flex"}`}>
+            사이트로 돌아가기
+          </span>
         </Link>
         <button
           type="button"
@@ -138,7 +142,9 @@ function NavList({
           <span className="flex shrink-0 items-center">
             <LogoutIcon />
           </span>
-          <span className={showLabel ? "" : "hidden md:inline"}>로그아웃</span>
+          <span className={`flex items-center ${showLabel ? "" : "hidden md:flex"}`}>
+            로그아웃
+          </span>
         </button>
       </div>
     </nav>
