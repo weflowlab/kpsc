@@ -110,7 +110,6 @@ export const KAKAO_CHANNELS = [
    -------------------------------------------------------------------------- */
 export const CONTACT_EMAILS = [
   { label: "대표 메일", email: "skytravegroupoffice@naver.com" },
-  { label: "비서실", email: "lg01024067432@gmail.com" },
   { label: "섭외 문의", email: "4534q@kakao.com" },
 ] as const;
 

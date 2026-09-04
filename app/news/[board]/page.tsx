@@ -112,8 +112,8 @@ export default async function BoardListPage(props: PageProps<"/news/[board]">) {
             Total : <b><CountUp value={total} /></b>개 Page :{" "}
             <b><CountUp value={page} /></b>/{totalPages}
           </p>
-          {/* 글쓰기 버튼 — 원본은 activities 게시판에서만 노출 */}
-          {meta.writable && (
+          {/* 글쓰기 버튼 — activities 는 회원, notice 는 최고관리자만 노출 */}
+          {(meta.writable || viewer?.isAdmin) && (
             <Link href={`/news/${board}/write`} aria-label="글쓰기">
               <Image
                 src="/images/board/write.gif"

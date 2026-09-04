@@ -13,7 +13,7 @@ import Reveal from "@/components/common/Reveal";
 import BoardWriteForm from "@/components/board/BoardWriteForm";
 import { getBoardMeta } from "@/lib/boards-meta";
 import { getSession } from "@/lib/session";
-import { getPost } from "@/lib/boards";
+import { getPost, getViewer } from "@/lib/boards";
 
 export async function generateMetadata(
   props: PageProps<"/news/[board]/write">
@@ -28,10 +28,15 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
   const { board } = await props.params;
   const search = await props.searchParams;
   const meta = getBoardMeta(board);
-  if (!meta || !meta.writable || board === "gallery") notFound();
+  if (!meta || board === "gallery") notFound();
 
   const session = await getSession();
   if (!session) redirect("/login");
+
+  /* 공지처럼 일반 글쓰기가 막힌 게시판은 최고관리자만 작성 가능 */
+  const viewer = await getViewer();
+  const isAdmin = viewer?.isAdmin ?? false;
+  if (!meta.writable && !isAdmin) notFound();
 
   /* 답글 / 수정 대상 글 */
   const replyUid = Number(search?.reply) || null;
@@ -45,8 +50,9 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
   if (editUid) {
     const post = await getPost(meta.key, editUid);
     if (!post) notFound();
-    /* 본인 글만 수정 가능 */
-    if (post.memberId !== session.memberId) redirect(`/news/${board}/${editUid}`);
+    /* 본인 글 또는 관리자만 수정 가능 */
+    if (post.memberId !== session.memberId && !isAdmin)
+      redirect(`/news/${board}/${editUid}`);
     initialTitle = post.title;
     initialCategory = post.category;
     initialContent = post.contentHtml;

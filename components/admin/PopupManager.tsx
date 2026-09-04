@@ -151,7 +151,7 @@ export default function PopupManager({
               id="popup-url"
               name="linkUrl"
               type="text"
-              placeholder="예) https://www.sitehouse.co.kr"
+              placeholder="예) https://www.helpus.kr"
               defaultValue={editing?.linkUrl ?? ""}
               className={FIELD}
             />

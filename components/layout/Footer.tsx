@@ -184,12 +184,45 @@ export default function Footer() {
         </nav>
 
         {/* ================================================================
-            카피라이트 — 모바일에서는 바로가기 버튼 아래,
+            카피라이트 + 소속 표기 — 모바일에서는 바로가기 버튼 아래,
             PC 에서는 두 열 아래 전체 폭에 놓인다 (그리드 마지막 행)
             ================================================================ */}
-        <p className="text-[0.8rem] text-[#4B515D] lg:col-span-2 lg:-mt-6">
-          {COMPANY.copyright}
-        </p>
+        <div className="flex flex-col gap-4 lg:col-span-2 lg:-mt-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-1 text-[0.8rem] text-[#4B515D]">
+            <p className="flex items-center gap-1.5 font-semibold text-[#B0B3B8]">
+              <span aria-hidden className="relative top-[1px] leading-none">❀</span>
+              <span>Save the Children 소속 파트너</span>
+            </p>
+            <p>{COMPANY.copyright}</p>
+          </div>
+
+          {/* 제작사 표기 — 흰색 알약, 호버 시 배경 제거 */}
+          <a
+            href="https://weflowlab.kr"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group inline-flex w-fit items-center gap-2.5 rounded-full border border-white/30 bg-white/10 px-7 py-3.5 text-[0.95rem] text-white transition-colors hover:bg-transparent"
+          >
+            <span>홈페이지 제작</span>
+            <span className="font-bold tracking-wide">WEFLOW</span>
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+              className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            >
+              <path d="M15 3h6v6" />
+              <path d="M10 14 21 3" />
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+            </svg>
+          </a>
+        </div>
       </div>
     </footer>
   );

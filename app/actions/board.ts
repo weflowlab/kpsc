@@ -24,7 +24,15 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
 
   const boardKey = String(formData.get("board") ?? "");
   const meta = getBoardMeta(boardKey);
-  if (!meta || !meta.writable)
+  if (!meta) return { ok: false, error: "올바르지 않은 게시판입니다." };
+
+  /* 일반 글쓰기가 막힌 게시판(공지)은 최고관리자만 작성 가능 */
+  const me = await prisma.member.findUnique({
+    where: { id: session.memberId },
+    select: { grade: true },
+  });
+  const isAdmin = me?.grade === "ADMIN";
+  if (!meta.writable && !isAdmin)
     return { ok: false, error: "글쓰기가 허용되지 않은 게시판입니다." };
 
   const title = String(formData.get("subject") ?? "").trim();
@@ -72,7 +80,7 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
       });
       if (!existing || existing.boardKey !== boardKey)
         return { ok: false, error: "글을 찾을 수 없습니다." };
-      if (existing.memberId !== session.memberId)
+      if (existing.memberId !== session.memberId && !isAdmin)
         return { ok: false, error: "본인 글만 수정할 수 있습니다." };
 
       await prisma.post.update({

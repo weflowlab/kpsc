@@ -177,7 +177,7 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
             Total : <b><CountUp value={listData.total} /></b>개 Page :{" "}
             <b><CountUp value={1} /></b>/{listData.totalPages}
           </p>
-          {meta.writable && (
+          {(meta.writable || viewer?.isAdmin) && (
             <Link href={`/news/${board}/write`} aria-label="글쓰기">
               <Image
                 src="/images/board/write.gif"
