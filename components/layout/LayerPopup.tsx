@@ -85,14 +85,16 @@ export default function LayerPopup() {
 
   const img = (
     <>
-      {/* PC 이미지 — 모바일 이미지가 있으면 768px 미만에서 교체 */}
+      {/* PC 이미지 — 모바일 이미지가 있으면 768px 미만에서 교체.
+          가로는 최대 720px, 세로는 화면의 78% 를 넘지 않게 비율 유지.
+          (가로형은 폭에, 세로/정사각형은 높이에 맞춰 자동 축소) */}
       <Image
         src={popup.pcImage}
         alt={popup.title}
         width={1408}
         height={768}
         sizes="(max-width: 768px) 100vw, 720px"
-        className={`h-auto w-full ${popup.mobImage ? "hidden md:block" : ""}`}
+        className={`block h-auto max-h-[78vh] w-auto max-w-full object-contain ${popup.mobImage ? "hidden md:block" : ""}`}
         priority
         unoptimized
       />
@@ -103,7 +105,7 @@ export default function LayerPopup() {
           width={768}
           height={1024}
           sizes="100vw"
-          className="h-auto w-full md:hidden"
+          className="block h-auto max-h-[78vh] w-auto max-w-full object-contain md:hidden"
           priority
           unoptimized
         />
@@ -126,8 +128,8 @@ export default function LayerPopup() {
         className="absolute inset-0 bg-black/70"
       />
 
-      {/* 팝업 본체 */}
-      <div className="relative w-full max-w-[720px] overflow-hidden rounded-xl bg-white shadow-2xl">
+      {/* 팝업 본체 — 이미지 크기에 맞춰 폭이 줄어든다 (w-fit) */}
+      <div className="relative w-fit max-w-[min(720px,90vw)] overflow-hidden rounded-xl bg-white shadow-2xl">
         {/* 클릭 시 이동 URL 이 있으면 링크로 감싼다 */}
         {popup.linkUrl ? (
           <a
