@@ -42,21 +42,24 @@ export default function Reveal({
        한 번이라도 화면 안에 들어와 있으면 그대로 노출한다. */
     const check = () => {
       const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) show();
+      /* 화면 안에 조금이라도 들어와 있으면 바로 노출 */
+      if (rect.top < window.innerHeight && rect.bottom > 0) show();
     };
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) show();
       },
-      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0, rootMargin: "0px 0px 0px 0px" }
     );
 
     observer.observe(el);
     window.addEventListener("scroll", check, { passive: true });
     window.addEventListener("resize", check);
-    /* 하이드레이션 직후 레이아웃이 잡힌 뒤 초기 위치를 한 번 보정 */
-    const timer = window.setTimeout(check, 400);
+    /* 첫 페인트 직후 즉시 검사 — 처음부터 화면에 보이는 요소는 지연 없이 노출 */
+    const raf = requestAnimationFrame(check);
+    /* 하이드레이션/레이아웃 확정 후 한 번 더 보정 */
+    const timer = window.setTimeout(check, 300);
 
     function show() {
       if (done) return;
@@ -70,6 +73,7 @@ export default function Reveal({
       window.removeEventListener("scroll", check);
       window.removeEventListener("resize", check);
       window.clearTimeout(timer);
+      cancelAnimationFrame(raf);
     }
 
     return cleanup;
