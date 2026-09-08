@@ -16,20 +16,27 @@ export type HeroSlide = {
   description: string;
   /** 서브 카피 아래 한 줄 더 (있는 슬라이드만) */
   descriptionSub?: string;
+  /** 밝은(흰) 배경 슬라이드 — 글자를 어두운 색으로, 딤을 연하게 처리 */
+  lightBg?: boolean;
 };
 
 export const HERO_SLIDES: HeroSlide[] = [
   {
     badge: "Innovation & Future",
     title: ["미래 에너지를 선도하며,", "지속 가능한 생태계를 구축합니다."],
-    description: "단순 발전을 넘어, 친환경 전환으로 대한민국 에너지 자립을 이끕니다.",
+    description: "단순 발전을 넘어,||친환경 전환으로 대한민국 에너지 자립을 이끕니다.",
     descriptionSub:
       "KPSC 그룹브랜드는 여행 서비스 제공 및 여러 파트너와 협력하여 여러분에게 더 나은 서비스를 제공하겠습니다.",
   },
   {
-    badge: "Social Value",
-    title: ["이익을 넘어 가치를 나누며,", "지역사회와 함께 상생합니다."],
-    description: "에너지 복지를 실현하며 어려운 이웃과 온기를 나눕니다.",
+    badge: "KPSC",
+    title: ["믿음과 신뢰로 성장하는||성장형 브랜드 KPSC", "여러분과 함께 달려 온 10년"],
+    // "||" = 모바일에서만 줄바꿈(PC 는 한 줄), "\n" = 항상 줄바꿈
+    description:
+      "여러 브랜드와 위플로우가 있어||한 걸음 더 성장하고 발전하고 있습니다.",
+    descriptionSub:
+      "저희 KPSC와 함께한 파트너 분들과||위플로우에 진심으로 감사드립니다.\n\n함께 성장하고, 함께 나누는 KPSC그룹브랜드 일동",
+    lightBg: true,
   },
   {
     badge: "Eco-friendly Action",

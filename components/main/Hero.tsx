@@ -8,12 +8,33 @@
    - 페이지네이션/화살표 없음 (원본에 조작 UI 자체가 없음)
    ========================================================================== */
 
+import { Fragment } from "react";
 import Image from "next/image";
 import { HERO_SLIDES } from "@/lib/content/main";
 import { HERO_IMAGES } from "@/lib/images";
 
 /* 슬라이드별 애니메이션 위상차 — 원본 0s / -10s / -5s */
 const DELAYS = ["0s", "-10s", "-5s"];
+
+/* 히어로 카피 렌더 — "\n" 은 항상 줄바꿈, "||" 는 모바일에서만 줄바꿈(PC 는 공백) */
+function renderCopy(text: string) {
+  return text.split("\n").map((line, li) => (
+    <Fragment key={li}>
+      {li > 0 && <br />}
+      {line.split("||").map((seg, si, arr) => (
+        <Fragment key={si}>
+          {seg}
+          {si < arr.length - 1 && (
+            <>
+              <br className="lg:hidden" />
+              <span className="hidden lg:inline"> </span>
+            </>
+          )}
+        </Fragment>
+      ))}
+    </Fragment>
+  ));
+}
 
 export default function Hero() {
   return (
@@ -37,19 +58,22 @@ export default function Hero() {
               priority={i === 0}
               className="object-cover"
             />
+            {/* 딤 오버레이 — 슬라이드별. 어두운 사진은 진하게(흰 글씨),
+                밝은 배경은 아주 연하게(어두운 글씨가 흰 이미지에서 읽히게) */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background: slide.lightBg
+                  ? // 밝은 배경: 상단만 어둡게(흰 헤더 가시성). 본문 영역은 흰색 반투명 막을
+                    // 얹어 배경 로고를 흐리게 → 어두운 글씨가 또렷하게 읽히도록
+                    "linear-gradient(to bottom, rgba(0,0,0,.45) 0%, rgba(0,0,0,.25) 10%, rgba(255,255,255,.35) 20%, rgba(255,255,255,.62) 45%, rgba(255,255,255,.62) 80%, rgba(255,255,255,.5) 100%)"
+                  : "linear-gradient(to bottom, rgba(0,0,0,.4) 0%, rgba(0,0,0,.35) 20%, rgba(0,0,0,.45) 100%)",
+              }}
+            />
           </div>
         ))}
       </div>
-
-      {/* 딤 오버레이 — 원본 rgba(0,0,0,.4) → .35(20%) → .45(100%) 세로 그라데이션 */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-[2]"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,.4) 0%, rgba(0,0,0,.35) 20%, rgba(0,0,0,.45) 100%)",
-        }}
-      />
 
       {/* ================================================================
           텍스트 패널 — grid 겹침 + 부유(±12px, 6초) 애니메이션
@@ -78,34 +102,26 @@ export default function Hero() {
                   ✨ {slide.badge}
                 </span>
 
-                {/* 제목 — stagger +0.5s */}
+                {/* 제목 — stagger +0.5s. 밝은 배경 슬라이드는 어두운 글씨 */}
                 <h2
-                  className="hero-line text-[20px] leading-[30px] font-semibold tracking-[-0.04em] text-white lg:text-[41px] lg:leading-[1.25] lg:tracking-[0.08em]"
+                  className={`hero-line text-[20px] leading-[30px] font-semibold tracking-[-0.04em] lg:text-[41px] lg:leading-[1.25] lg:tracking-[0.08em] ${
+                    slide.lightBg ? "text-ink-900" : "text-white"
+                  }`}
                   style={{ ["--hero-step" as string]: "0.5s" }}
                 >
-                  {slide.title[0]}
+                  {renderCopy(slide.title[0])}
                   <br />
-                  {slide.title[1]}
+                  {renderCopy(slide.title[1])}
                 </h2>
 
-                {/* 설명 — stagger +0.8s */}
-                {/* 모바일에서는 쉼표 뒤에서 줄을 바꿔 두 줄로 읽히게 한다
-                    (PC 는 한 줄 그대로 — 쉼표 뒤 공백만 복원) */}
+                {/* 설명 — stagger +0.8s. "||" 지점에서 모바일만 줄바꿈 */}
                 <p
-                  className="hero-line mt-4 text-[14px] tracking-[-0.02em] text-white/85 lg:mt-6 lg:text-[20px] lg:tracking-[0.04em]"
+                  className={`hero-line mt-4 text-[14px] tracking-[-0.02em] lg:mt-6 lg:text-[20px] lg:tracking-[0.04em] ${
+                    slide.lightBg ? "text-ink-800" : "text-white/85"
+                  }`}
                   style={{ ["--hero-step" as string]: "0.8s" }}
                 >
-                  {slide.description.split(", ").map((part, k, arr) => (
-                    <span key={k}>
-                      {part}
-                      {k < arr.length - 1 && (
-                        <>
-                          ,<br className="lg:hidden" />
-                          <span className="hidden lg:inline"> </span>
-                        </>
-                      )}
-                    </span>
-                  ))}
+                  {renderCopy(slide.description)}
                 </p>
 
                 {/* 보조 설명 — 있는 슬라이드만, stagger +1.1s
@@ -113,13 +129,19 @@ export default function Hero() {
                     그림자를 얹어 배경 사진 위에서도 또렷하게 읽히게 한다. */}
                 {slide.descriptionSub && (
                   <p
-                    className="hero-line mt-3 text-[13px] leading-[1.5] font-semibold tracking-[-0.04em] text-white lg:mt-6 lg:text-[19px] lg:tracking-[0.02em]"
+                    className={`hero-line text-[13px] leading-[1.6] font-semibold tracking-[-0.04em] lg:text-[19px] lg:tracking-[0.02em] ${
+                      slide.lightBg
+                        ? "mt-1 text-ink-900 lg:mt-1.5"
+                        : "mt-3 text-white lg:mt-6"
+                    }`}
                     style={{
                       ["--hero-step" as string]: "1.1s",
-                      textShadow: "0 2px 10px rgba(0,0,0,0.6)",
+                      textShadow: slide.lightBg
+                        ? "none"
+                        : "0 2px 10px rgba(0,0,0,0.6)",
                     }}
                   >
-                    {slide.descriptionSub}
+                    {renderCopy(slide.descriptionSub)}
                   </p>
                 )}
               </div>

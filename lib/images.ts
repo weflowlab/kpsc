@@ -10,7 +10,7 @@
    -------------------------------------------------------------------------- */
 export const HERO_IMAGES = [
   "/images/hero/c_main_1.webp",
-  "/images/hero/c_main_2.webp",
+  "/images/hero/c_main_2.png", // 2번 슬라이드 — 클라이언트 제공 배경 (2026-09)
   "/images/hero/c_main_3.webp",
 ] as const;
 
