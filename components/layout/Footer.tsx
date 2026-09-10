@@ -39,7 +39,16 @@ export default function Footer() {
           <div className="text-[0.825rem] leading-relaxed text-[#B0B3B8] lg:text-[0.95rem]">
             <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
               <InfoRow label="대표자명">{COMPANY.ceo}</InfoRow>
-              <InfoRow label="주소">{COMPANY.address}</InfoRow>
+              <InfoRow label="인터넷 주소">
+                검색 창에{" "}
+                <a
+                  href="https://helplus.kr/"
+                  className="font-semibold text-white underline underline-offset-2 hover:text-brand-300"
+                >
+                  https://helplus.kr/
+                </a>{" "}
+                으로 검색하고 방문하세요
+              </InfoRow>
               <InfoRow label="전화번호">
                 <a href={`tel:${COMPANY.tel}`} className="hover:text-white">
                   {COMPANY.tel}

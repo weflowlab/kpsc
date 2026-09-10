@@ -74,9 +74,9 @@ const TEAMS = [
   {
     no: "03",
     icon: ICON.shield,
-    roleEn: "Security Team",
-    name: "운영진: 경호팀 KPSM",
-    desc: "자산 보호 및 전문 경호 서비스 운영",
+    roleEn: "Privacy Protection Team",
+    name: "운영진: KPSC 개인정보 처리 전담부서",
+    desc: "홈페이지를 이용하시는 모든 분들의 개인정보를 다른 브랜드보다 더 철저하고 확실하게, 신뢰가 가도록 관리하는 전담부서입니다.",
   },
 ];
 
