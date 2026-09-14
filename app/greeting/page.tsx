@@ -33,10 +33,11 @@ export default function GreetingPage() {
               aria-hidden
               className="absolute top-[20px] left-[20px] -right-[20px] -bottom-[20px] border border-[#D1D5DB]"
             />
-            <div className="relative aspect-[3/4] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
+            {/* KPSC·위플로우 캐릭터 일러스트 — 정사각형이라 잘리지 않게 1:1 프레임 */}
+            <div className="relative aspect-square overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]">
               <Image
                 src={CONTENT_IMAGES.greeting}
-                alt="Office Architecture"
+                alt="KPSC & 위플로우"
                 fill
                 sizes="(max-width: 1024px) 100vw, 42vw"
                 className="object-cover"

@@ -54,7 +54,7 @@ export const BOARD_META: Record<BoardKey, BoardMeta> = {
     key: "gallery",
     name: "갤러리",
     description: "KPSC 갤러리",
-    categories: ["미술갤러리", "행사갤러리"],
+    categories: ["행사갤러리"],
     perPage: 16,
     writable: true,
     comments: false,
