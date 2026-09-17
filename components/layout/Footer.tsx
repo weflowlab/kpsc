@@ -202,7 +202,23 @@ export default function Footer() {
               <span aria-hidden className="relative top-[1px] leading-none">❀</span>
               <span>Save the Children 소속 파트너</span>
             </p>
-            <p>{COMPANY.copyright}</p>
+
+            {/* 제작·운영 크레딧 */}
+            <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-[#8A8F98]">
+              {[
+                ["호스팅", "(주)후이즈"],
+                ["홈페이지 유지&보수", "WEFLOW[위플로우]"],
+                ["홈페이지 제작협력사", "KPSC"],
+                ["모니터링", "KPSC 브랜드 KPSC X WEFLOW 본부"],
+              ].map(([label, value]) => (
+                <Fragment key={label}>
+                  <dt className="whitespace-nowrap font-semibold text-[#B0B3B8]">{label}</dt>
+                  <dd className="min-w-0">{value}</dd>
+                </Fragment>
+              ))}
+            </dl>
+
+            <p className="mt-1">{COMPANY.copyright}</p>
           </div>
 
           {/* 제작사 표기 — 흰색 알약, 호버 시 배경 제거 */}
