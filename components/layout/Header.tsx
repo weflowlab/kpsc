@@ -79,18 +79,60 @@ export default function Header() {
   }, []);
 
   /* ------------------------------------------------------------------
-     로그인 상태 조회 — 2분마다 갱신해 서버에 활동 시각(lastSeenAt)을
-     남긴다 (관리자 회원목록의 온라인 표시용 하트비트 겸용)
+     로그인 상태 조회 — 서버에 활동 시각(lastSeenAt)을 남겨 관리자 회원목록의
+     '온라인' 표시로 쓴다.
+
+     예전에는 모든 방문자 화면에서 2분마다 무조건 쳤다. 헤더는 전 페이지에 있으므로
+     탭 하나를 하루 열어두면 720회, 손님이 대부분인 사이트에서 대부분이 비로그인 조회였다.
+     서버 함수 사용량을 방문 수와 무관하게 먹던 자리라 세 가지를 걸었다:
+       1) 화면이 보일 때만 돈다 (다른 창을 보고 있으면 멈추고, 돌아오면 바로 한 번 친다)
+       2) 주기를 2분 → 5분으로 늘린다
+       3) 로그인한 사람만 반복한다 (비로그인은 첫 확인 한 번뿐 —
+          다른 탭에서 로그인해도 이 탭이 화면에 돌아오는 순간 반영된다)
      ------------------------------------------------------------------ */
   useEffect(() => {
+    /* 로그인 상태를 기억해 두고 반복 여부를 정한다 (setMember 는 비동기라 바로 못 읽는다) */
+    let loggedIn = false;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
     const load = () =>
       fetch("/api/me")
         .then((r) => (r.ok ? r.json() : null))
-        .then(setMember)
-        .catch(() => setMember(null));
+        .then((m) => {
+          loggedIn = !!m;
+          setMember(m);
+          /* 로그인 상태가 바뀌면 반복을 켜고 끈다 */
+          if (loggedIn) start();
+          else stop();
+        })
+        .catch(() => {
+          loggedIn = false;
+          setMember(null);
+          stop();
+        });
+
+    const start = () => {
+      if (timer || document.visibilityState !== "visible") return;
+      timer = setInterval(load, 5 * 60 * 1000);
+    };
+    const stop = () => {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = undefined;
+    };
+
+    /* 화면을 떠나면 멈추고, 돌아오면 한 번 치고 다시 돈다 */
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") load();
+      else stop();
+    };
+
     load();
-    const timer = setInterval(load, 2 * 60 * 1000);
-    return () => clearInterval(timer);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   /* 로그아웃 — 세션 삭제 후 홈으로 전체 로드 */
