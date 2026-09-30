@@ -141,7 +141,7 @@ export const BUSINESS_HOURS = [
 export const COMPANY = {
   name: "KPSC",
   fullName: "KPSC",
-  ceo: "이도영",
+  ceo: "이도영, 크림이, 쿠키",
   address: "제주특별자치도 서귀포시 무릉리 651",
   tel: "010-2406-7432",
   email: "kpsckoreaoffice@daum.net",
