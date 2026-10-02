@@ -92,13 +92,13 @@ export const KAKAO_CHANNELS = [
   {
     key: "KPSC",
     name: "KPSC 메인채널",
-    desc: "화 ~ 토 AM 09:00 ~ PM 06:00",
+    desc: "월 ~ 일 AM 09:00 ~ PM 06:00 · 금·공휴일 휴무",
     href: "https://pf.kakao.com/_VqFIX",
   },
   {
     key: "KPSM",
     name: "KPSC 온라인파트너톡(KPSM)",
-    desc: "PM 06:00 이후·일/월/공휴일 문의",
+    desc: "월 ~ 일 AM 09:00 ~ PM 06:00 · 금·공휴일 휴무",
     href: "https://pf.kakao.com/_KmtfX",
   },
 ] as const;
@@ -119,19 +119,8 @@ export const CONTACT_EMAILS = [
 export const BUSINESS_HOURS = [
   {
     brand: "KPSC",
-    rows: [
-      { label: "화요일 ~ 토요일", time: "AM 09:00 ~ PM 06:00" },
-      { label: "점심", time: "AM 11:30 ~ PM 02:00" },
-    ],
-    note: "일요일 · 월요일 · 공휴일 휴무",
-  },
-  {
-    brand: "KPSM",
-    rows: [
-      { label: "매일", time: "PM 06:00 ~ AM 07:00" },
-      { label: "점심", time: "AM 11:30 ~ PM 02:00" },
-    ],
-    note: "공휴일 휴무",
+    rows: [{ label: "월 ~ 일", time: "AM 09:00 ~ PM 06:00" }],
+    note: "금요일 · 공휴일 휴무",
   },
 ] as const;
 
