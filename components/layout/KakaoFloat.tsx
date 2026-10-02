@@ -70,7 +70,7 @@ export default function KakaoFloat() {
               <span className="block text-[13px] font-bold text-ink-900">
                 {ch.name}
               </span>
-              <span className="mt-0.5 block text-[11px] text-ink-500">{ch.desc}</span>
+              <span className="mt-0.5 block whitespace-pre-line text-[11px] text-ink-500">{ch.desc}</span>
             </a>
           ))}
         </div>

@@ -92,13 +92,13 @@ export const KAKAO_CHANNELS = [
   {
     key: "KPSC",
     name: "KPSC 메인채널",
-    desc: "월 ~ 일 AM 09:00 ~ PM 06:00 · 금·공휴일 휴무",
+    desc: "월 ~ 일 AM 09:00 ~ PM 06:00\n금·공휴일 휴무",
     href: "https://pf.kakao.com/_VqFIX",
   },
   {
     key: "KPSM",
     name: "KPSC 온라인파트너톡(KPSM)",
-    desc: "월 ~ 일 AM 09:00 ~ PM 06:00 · 금·공휴일 휴무",
+    desc: "월 ~ 일 AM 09:00 ~ PM 06:00\n금·공휴일 휴무",
     href: "https://pf.kakao.com/_KmtfX",
   },
 ] as const;
