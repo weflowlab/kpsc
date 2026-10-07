@@ -43,7 +43,7 @@ const SNS_LINKS = [
   },
   {
     label: "네이버 블로그",
-    href: "https://blog.naver.com/skytravegroupoffice",
+    href: "https://blog.naver.com/helplus_kr",
     Icon: NaverBlogIcon,
   },
 ];

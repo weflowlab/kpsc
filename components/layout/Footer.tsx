@@ -121,7 +121,7 @@ export default function Footer() {
               </InfoRow>
               <InfoRow label="블로그">
                 <a
-                  href="https://blog.naver.com/skytravegroupoffice"
+                  href="https://blog.naver.com/helplus_kr"
                   target="_blank"
                   rel="noreferrer noopener"
                   className="hover:text-white"

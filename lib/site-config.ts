@@ -109,7 +109,7 @@ export const KAKAO_CHANNELS = [
      (카카오 상담은 위 KAKAO_CHANNELS 링크로 연결)
    -------------------------------------------------------------------------- */
 export const CONTACT_EMAILS = [
-  { label: "대표 메일", email: "skytravegroupoffice@naver.com" },
+  { label: "대표 메일", email: "helplus_kr@naver.com" },
   { label: "섭외 문의", email: "4534q@kakao.com" },
 ] as const;
 
