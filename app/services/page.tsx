@@ -114,6 +114,8 @@ export default function ServicesPage() {
             </h2>
             <p className="mt-3 text-[16px] leading-[1.7] font-light text-[#475569] md:text-[18px]">
               KPSC의 또 다른 브랜드{" "}
+              {/* 모바일에서만 줄바꿈 */}
+              <br className="md:hidden" />
               <b className="font-bold text-[#1e40af]">KPSC그룹여행사</b>가 함께합니다.
             </p>
           </div>
