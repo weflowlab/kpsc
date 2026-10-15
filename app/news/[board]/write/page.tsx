@@ -87,8 +87,14 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
       <Reveal type="fade-up">
         <BoardWriteForm
           board={meta.key}
-          /* 말머리 선택지 — 관리자는 수정 시 모든 카테고리, 그 외에는 쓸 수 있는 등급 카테고리만 */
-          categories={isAdmin ? meta.categories : writableCategories(viewer?.grade, board)}
+          /* 말머리 선택지 —
+             · 관리자가 기존 글을 '수정'할 때만 전체 카테고리 (모더레이션용 재분류)
+             · 그 외(새 글/답글, 관리자 포함)는 자기 등급이 쓸 수 있는 카테고리만 */
+          categories={
+            isAdmin && editing
+              ? meta.categories
+              : writableCategories(viewer?.grade, board)
+          }
           categoryLabel="구분"
           authorName={session.name}
           listHref={editing ? `/news/${board}/${editing}` : `/news/${board}`}
