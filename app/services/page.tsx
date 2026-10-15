@@ -9,6 +9,7 @@
    ========================================================================== */
 
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
@@ -84,6 +85,41 @@ export default function ServicesPage() {
       pathname="/services"
       banner="services"
     >
+      {/* ================================================================
+          0) KPSC그룹여행사 — 사업 및 제공 서비스 소개 (브랜드 섹션)
+          ================================================================ */}
+      <Reveal as="section" className="mx-auto mb-16 max-w-[64rem] md:mb-20">
+        <div className="flex flex-col items-center gap-8 overflow-hidden rounded-3xl border border-[#e2e8f0] bg-gradient-to-br from-[#f0f7ff] to-white p-8 text-center md:flex-row md:gap-12 md:p-12 md:text-left">
+          {/* 로고 */}
+          <div className="shrink-0">
+            <Image
+              src="/images/content/kpsc-group-travel.webp"
+              alt="KPSC그룹여행사 (KPSC GROUP TRAVEL)"
+              width={220}
+              height={220}
+              sizes="(max-width: 768px) 180px, 220px"
+              className="h-[180px] w-[180px] rounded-full shadow-[0_20px_40px_-15px_rgba(30,64,175,0.35)] md:h-[220px] md:w-[220px]"
+              priority
+            />
+          </div>
+
+          {/* 문구 */}
+          <div>
+            <span className="font-mont inline-block rounded bg-[#dbeafe] px-3 py-1 text-[12px] font-extrabold tracking-[0.1em] text-[#1e40af] uppercase">
+              KPSC Group Travel
+            </span>
+            <h2 className="mt-4 text-[22px] leading-[1.5] font-bold text-[#0f172a] md:text-[27px]">
+              함께 성장하고 가치를 나누는
+              <br className="hidden md:block" /> 아름다운 동행의 시작,
+            </h2>
+            <p className="mt-3 text-[16px] leading-[1.7] font-light text-[#475569] md:text-[18px]">
+              KPSC의 또 다른 브랜드{" "}
+              <b className="font-bold text-[#1e40af]">KPSC그룹여행사</b>가 함께합니다.
+            </p>
+          </div>
+        </div>
+      </Reveal>
+
       {/* ================================================================
           1) 히어로 — 원본 .kpsc-hero (max-w 64rem, 좌측 정렬)
           ================================================================ */}

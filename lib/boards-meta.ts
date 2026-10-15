@@ -6,6 +6,10 @@
 
 export type BoardKey = "notice" | "activities" | "gallery";
 
+/** 회원 등급 (prisma MemberGrade 와 동일 — 클라이언트 번들에 prisma 타입을
+    끌고 오지 않으려고 문자열 리터럴로 중복 정의한다) */
+export type Grade = "NORMAL" | "VIP" | "VVIP" | "ADMIN";
+
 export type BoardMeta = {
   key: BoardKey;
   /** 게시판 이름 */
@@ -16,8 +20,15 @@ export type BoardMeta = {
   categories: string[];
   /** 페이지당 게시물 수 */
   perPage: number;
-  /** 일반 회원 글쓰기 허용 여부 (원본: activities/gallery 만) */
+  /** (하위호환) 일반 회원 글쓰기 허용 여부 — 갤러리에서 사용. */
   writable: boolean;
+  /** 게시판 단위 글쓰기 허용 등급 (공지=ADMIN, 갤러리=전 등급).
+      읽기는 등급과 무관하게 누구나(비회원 포함) 가능하다. */
+  writeGrades: Grade[];
+  /** 카테고리(말머리)별 글쓰기·댓글 허용 등급.
+      "고객의 소리"처럼 한 게시판 안에서 카테고리로 등급 권한을 나눌 때 사용한다.
+      지정되면 writeGrades 대신 이 맵이 우선한다. */
+  categoryGrades?: Record<string, Grade[]>;
   /** 댓글 기능 (원본: activities 스킨만) */
   comments: boolean;
 };
@@ -39,15 +50,22 @@ export const BOARD_META: Record<BoardKey, BoardMeta> = {
     ],
     perPage: 15,
     writable: false,
+    writeGrades: ["ADMIN"], // 공지사항은 최고관리자만 게시 가능
     comments: false,
   },
   activities: {
     key: "activities",
     name: "고객의 소리",
-    description: "고객 문의 및 자유수다게시판입니다",
-    categories: ["고객문의", "수다게시판"],
+    description:
+      "등급별 소통 게시판입니다. 열람은 누구나 가능하며, 글쓰기·댓글은 카테고리(등급)별로 권한이 다릅니다.",
+    categories: ["일반·VIP", "VVIP·최고관리자"],
     perPage: 15,
     writable: true,
+    writeGrades: ["NORMAL", "VIP", "VVIP", "ADMIN"], // 카테고리별 세부 권한은 categoryGrades 로 판정
+    categoryGrades: {
+      "일반·VIP": ["NORMAL", "VIP"],
+      "VVIP·최고관리자": ["VVIP", "ADMIN"],
+    },
     comments: true,
   },
   gallery: {
@@ -57,12 +75,59 @@ export const BOARD_META: Record<BoardKey, BoardMeta> = {
     categories: ["행사갤러리"],
     perPage: 16,
     writable: true,
+    writeGrades: ["NORMAL", "VIP", "VVIP", "ADMIN"],
     comments: false,
   },
 };
 
 export function getBoardMeta(key: string): BoardMeta | undefined {
   return BOARD_META[key as BoardKey];
+}
+
+/* --------------------------------------------------------------------------
+   등급별 "새 글/댓글 작성" 권한 판정 — 읽기는 항상 공개이므로 작성에만 쓴다.
+     · categoryGrades 가 있는 게시판(고객의 소리)은 카테고리(말머리)별로 판정
+       - 일반·VIP 카테고리      : NORMAL, VIP
+       - VVIP·최고관리자 카테고리 : VVIP, ADMIN
+     · 그 외 게시판은 writeGrades 로 게시판 단위 판정 (공지=ADMIN, 갤러리=전 등급)
+   ※ 각 등급은 자기 카테고리에만 글·댓글을 남긴다. 최고관리자(ADMIN)도 마찬가지이며,
+     남의 글 수정/삭제 같은 모더레이션만 각 액션에서 isAdmin 으로 따로 허용한다.
+   -------------------------------------------------------------------------- */
+
+/** 특정 카테고리에 글/댓글을 쓸 수 있는 등급 목록 */
+function gradesForCategory(meta: BoardMeta, category: string): Grade[] {
+  return meta.categoryGrades?.[category] ?? meta.writeGrades;
+}
+
+/** 이 등급이 해당 게시판·카테고리에 새 글/댓글을 쓸 수 있는가 */
+export function canWriteCategory(
+  grade: Grade | null | undefined,
+  key: string,
+  category: string
+): boolean {
+  if (!grade) return false;
+  const meta = getBoardMeta(key);
+  if (!meta) return false;
+  return gradesForCategory(meta, category).includes(grade);
+}
+
+/** 이 등급이 해당 게시판에서 쓸 수 있는 카테고리 목록 (글쓰기 폼의 말머리 선택지) */
+export function writableCategories(
+  grade: Grade | null | undefined,
+  key: string
+): string[] {
+  if (!grade) return [];
+  const meta = getBoardMeta(key);
+  if (!meta) return [];
+  return meta.categories.filter((c) => gradesForCategory(meta, c).includes(grade));
+}
+
+/** 이 등급이 해당 게시판에 (어느 카테고리든) 글을 쓸 수 있는가 — 글쓰기 버튼 노출용 */
+export function canWriteAnyCategory(
+  grade: Grade | null | undefined,
+  key: string
+): boolean {
+  return writableCategories(grade, key).length > 0;
 }
 
 /** 목록 행 — 기존 하드코딩 BoardPost 형태를 승계 (클라이언트 컴포넌트 공용) */

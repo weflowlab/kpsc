@@ -134,13 +134,13 @@ export type BoardPreview = {
 
 export const BOARD_PREVIEWS: BoardPreview[] = [
   {
-    title: "KPSC 활동",
+    title: "고객의 소리",
     moreHref: "/news/activities",
     posts: [
       {
-        title: "고객의 소리 [KPSC활동] 게시판 이용안내",
-        date: "2026-06-20",
-        href: "/news/activities/6",
+        title: "등급별 소통 게시판입니다. 열람은 누구나 가능합니다.",
+        date: "",
+        href: "/news/activities",
       },
     ],
   },

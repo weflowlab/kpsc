@@ -21,7 +21,7 @@ import BoardSearch from "@/components/board/BoardSearch";
 import BoardList from "@/components/board/BoardList";
 import CategoryTabs from "@/components/board/CategoryTabs";
 import CountUp from "@/components/board/CountUp";
-import { getBoardMeta } from "@/lib/boards-meta";
+import { getBoardMeta, canWriteAnyCategory } from "@/lib/boards-meta";
 import { getBoardPage, getViewer } from "@/lib/boards";
 
 /* --------------------------------------------------------------------------
@@ -112,8 +112,8 @@ export default async function BoardListPage(props: PageProps<"/news/[board]">) {
             Total : <b><CountUp value={total} /></b>개 Page :{" "}
             <b><CountUp value={page} /></b>/{totalPages}
           </p>
-          {/* 글쓰기 버튼 — activities 는 회원, notice 는 최고관리자만 노출 */}
-          {(meta.writable || viewer?.isAdmin) && (
+          {/* 글쓰기 버튼 — 이 게시판에 (어느 카테고리든) 글쓸 수 있는 등급에게만 노출 */}
+          {canWriteAnyCategory(viewer?.grade, board) && (
             <Link href={`/news/${board}/write`} aria-label="글쓰기">
               <Image
                 src="/images/board/write.gif"

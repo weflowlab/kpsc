@@ -22,7 +22,7 @@ import CategoryTabs from "@/components/board/CategoryTabs";
 import CommentSection from "@/components/board/CommentSection";
 import PostActions from "@/components/board/PostActions";
 import CountUp from "@/components/board/CountUp";
-import { getBoardMeta } from "@/lib/boards-meta";
+import { getBoardMeta, canWriteCategory, canWriteAnyCategory } from "@/lib/boards-meta";
 import { getBoardPage, getPost, getViewer, incrementHit } from "@/lib/boards";
 import { getSession } from "@/lib/session";
 import { kstDateDot, kstDateTime } from "@/lib/datetime";
@@ -67,6 +67,10 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
 
   const categories = ["전체", ...meta.categories];
   const fullDate = kstDateDot(post.createdAt);
+  /* 이 글의 카테고리(등급)에 답글·댓글을 쓸 수 있는 등급인지 (읽기는 누구나 가능) */
+  const canWriteHere = canWriteCategory(viewer?.grade, board, post.category);
+  /* 이 게시판에 (어느 카테고리든) 새 글을 쓸 수 있는지 — 글쓰기 버튼 노출용 */
+  const canWriteNew = canWriteAnyCategory(viewer?.grade, board);
 
   return (
     <SubLayout
@@ -110,7 +114,7 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
           uid={post.id}
           listHref={`/news/${board}`}
           writeHref={`/news/${board}/write`}
-          canReply={meta.writable && viewer != null}
+          canReply={canWriteHere}
           canEdit={
             (viewer != null && post.memberId === viewer.id) ||
             (viewer?.isAdmin ?? false)
@@ -139,6 +143,7 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
           <CommentSection
             postId={post.id}
             me={session?.memberId ?? null}
+            canComment={canWriteHere}
             comments={post.comments.map((c) => ({
               id: c.id,
               content: c.content,
@@ -177,7 +182,7 @@ export default async function BoardViewPage(props: PageProps<"/news/[board]/[uid
             Total : <b><CountUp value={listData.total} /></b>개 Page :{" "}
             <b><CountUp value={1} /></b>/{listData.totalPages}
           </p>
-          {(meta.writable || viewer?.isAdmin) && (
+          {canWriteNew && (
             <Link href={`/news/${board}/write`} aria-label="글쓰기">
               <Image
                 src="/images/board/write.gif"

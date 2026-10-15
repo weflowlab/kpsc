@@ -11,6 +11,7 @@ import {
   getBoardMeta,
   type BoardKey,
   type BoardRow,
+  type Grade,
 } from "@/lib/boards-meta";
 import type { Prisma } from "@/lib/generated/prisma/client";
 
@@ -112,8 +113,13 @@ export async function getPost(boardKey: BoardKey, uid: number) {
   return post;
 }
 
-/* 현재 열람자 정보 — 비밀글 열람 판정용 (회원 id + 관리자 여부) */
-export async function getViewer(): Promise<{ id: number; isAdmin: boolean } | null> {
+/* 현재 열람자 정보 — 비밀글 열람 + 등급별 글쓰기 판정용
+   (회원 id + 등급 + 관리자 여부) */
+export async function getViewer(): Promise<{
+  id: number;
+  grade: Grade;
+  isAdmin: boolean;
+} | null> {
   const { getSession } = await import("@/lib/session");
   const session = await getSession();
   if (!session) return null;
@@ -121,7 +127,8 @@ export async function getViewer(): Promise<{ id: number; isAdmin: boolean } | nu
     where: { id: session.memberId },
     select: { grade: true },
   });
-  return { id: session.memberId, isAdmin: member?.grade === "ADMIN" };
+  const grade = (member?.grade ?? "NORMAL") as Grade;
+  return { id: session.memberId, grade, isAdmin: grade === "ADMIN" };
 }
 
 export async function incrementHit(id: number) {

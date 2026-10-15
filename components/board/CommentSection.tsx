@@ -24,11 +24,14 @@ export default function CommentSection({
   postId,
   comments,
   me,
+  canComment,
 }: {
   postId: number;
   comments: CommentItem[];
   /** 로그인 회원 id — 비로그인이면 null */
   me: number | null;
+  /** 이 게시판에 댓글을 쓸 수 있는 등급인지 (읽기는 누구나 가능) */
+  canComment: boolean;
 }) {
   const [open, setOpen] = useState(true);
   const [content, setContent] = useState("");
@@ -38,6 +41,8 @@ export default function CommentSection({
   const onSubmit = async () => {
     if (pending) return;
     if (!me) return setError("회원으로 로그인해야 이용하실 수 있습니다.");
+    if (!canComment)
+      return setError("이 게시판에 댓글을 남길 수 있는 등급이 아닙니다.");
     if (!content.trim()) return setError("의견을 입력해 주세요.");
     setError(null);
     setPending(true);
@@ -118,8 +123,14 @@ export default function CommentSection({
               rows={4}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder={me ? "" : "회원으로 로그인해야 의견을 남길 수 있습니다."}
-              disabled={!me}
+              placeholder={
+                !me
+                  ? "회원으로 로그인해야 의견을 남길 수 있습니다."
+                  : !canComment
+                    ? "이 게시판에 댓글을 남길 수 있는 등급이 아닙니다. (열람만 가능)"
+                    : ""
+              }
+              disabled={!me || !canComment}
               className="h-[60px] w-full resize-y border border-[#DFDFDF] bg-white p-1.5 text-[13px] outline-none disabled:bg-[#f5f5f5]"
             />
 
@@ -133,7 +144,7 @@ export default function CommentSection({
             <button
               type="button"
               onClick={onSubmit}
-              disabled={pending}
+              disabled={pending || !me || !canComment}
               className="mt-2.5 flex w-full cursor-pointer items-center justify-center gap-1.5 border border-[#676767] bg-[#7A7A7A] text-[14px] leading-[30px] font-bold text-white duration-700 hover:border-[#CECECE] hover:bg-[#E9E9E9] hover:text-black disabled:opacity-60"
             >
               <Image

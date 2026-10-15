@@ -11,7 +11,12 @@ import { notFound, redirect } from "next/navigation";
 import SubLayout from "@/components/sub/SubLayout";
 import Reveal from "@/components/common/Reveal";
 import BoardWriteForm from "@/components/board/BoardWriteForm";
-import { getBoardMeta } from "@/lib/boards-meta";
+import {
+  getBoardMeta,
+  canWriteAnyCategory,
+  canWriteCategory,
+  writableCategories,
+} from "@/lib/boards-meta";
 import { getSession } from "@/lib/session";
 import { getPost, getViewer } from "@/lib/boards";
 
@@ -33,14 +38,17 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
   const session = await getSession();
   if (!session) redirect("/login");
 
-  /* 공지처럼 일반 글쓰기가 막힌 게시판은 최고관리자만 작성 가능 */
   const viewer = await getViewer();
   const isAdmin = viewer?.isAdmin ?? false;
-  if (!meta.writable && !isAdmin) notFound();
 
   /* 답글 / 수정 대상 글 */
   const replyUid = Number(search?.reply) || null;
   const editUid = Number(search?.edit) || null;
+
+  /* 새 글은 이 게시판에 (어느 카테고리든) 쓸 수 있는 등급만 접근 가능.
+     수정(editUid)은 아래에서 작성자 본인/관리자 여부로 판정하므로 등급 제한에서 제외한다.
+     (읽기는 누구나 가능하므로 목록/상세는 열린다) */
+  if (!editUid && !canWriteAnyCategory(viewer?.grade, board)) notFound();
 
   let initialTitle = "";
   let initialCategory = "";
@@ -60,6 +68,9 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
   } else if (replyUid) {
     const post = await getPost(meta.key, replyUid);
     if (post) {
+      /* 답글도 새 글 작성이므로 원글 카테고리에 쓸 수 있는 등급만 허용 */
+      if (!canWriteCategory(viewer?.grade, board, post.category))
+        redirect(`/news/${board}/${replyUid}`);
       initialTitle = post.title.startsWith("RE:") ? post.title : `RE: ${post.title}`;
       initialCategory = post.category;
       /* 원문 인용 — 회색 인용 블록 */
@@ -76,7 +87,8 @@ export default async function BoardWritePage(props: PageProps<"/news/[board]/wri
       <Reveal type="fade-up">
         <BoardWriteForm
           board={meta.key}
-          categories={meta.categories}
+          /* 말머리 선택지 — 관리자는 수정 시 모든 카테고리, 그 외에는 쓸 수 있는 등급 카테고리만 */
+          categories={isAdmin ? meta.categories : writableCategories(viewer?.grade, board)}
           categoryLabel="구분"
           authorName={session.name}
           listHref={editing ? `/news/${board}/${editing}` : `/news/${board}`}

@@ -9,7 +9,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/session";
-import { getBoardMeta } from "@/lib/boards-meta";
+import { getBoardMeta, canWriteCategory, type Grade } from "@/lib/boards-meta";
 import { uploadImage } from "@/lib/upload";
 
 type ActionResult = { ok: true; uid?: number } | { ok: false; error: string };
@@ -26,19 +26,19 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
   const meta = getBoardMeta(boardKey);
   if (!meta) return { ok: false, error: "올바르지 않은 게시판입니다." };
 
-  /* 일반 글쓰기가 막힌 게시판(공지)은 최고관리자만 작성 가능 */
   const me = await prisma.member.findUnique({
     where: { id: session.memberId },
     select: { grade: true },
   });
-  const isAdmin = me?.grade === "ADMIN";
-  if (!meta.writable && !isAdmin)
-    return { ok: false, error: "글쓰기가 허용되지 않은 게시판입니다." };
+  const grade = (me?.grade ?? "NORMAL") as Grade;
+  const isAdmin = grade === "ADMIN";
+  /* 수정 모드 — editUid 가 있으면 기존 글 수정 (작성자 본인 또는 관리자) */
+  const editUid = Number(formData.get("editUid")) || null;
 
   const title = String(formData.get("subject") ?? "").trim();
   const category = String(formData.get("category") ?? "");
   const content = String(formData.get("content") ?? "").trim();
-  /* 비밀글 — 고객의 소리에서만 허용 (작성자+관리자만 열람) */
+  /* 비밀글 — 고객의 소리 게시판에서만 허용 (작성자+관리자만 열람) */
   const secret = boardKey === "activities" && formData.get("secret") === "on";
 
   if (!title) return { ok: false, error: "제목을 입력해 주세요." };
@@ -46,8 +46,15 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
     return { ok: false, error: "카테고리를 선택해 주세요." };
   if (!content) return { ok: false, error: "본문 내용을 입력해 주세요." };
 
-  /* 수정 모드 — editUid 가 있으면 기존 글 수정 (작성자 본인만) */
-  const editUid = Number(formData.get("editUid")) || null;
+  /* 등급별 글쓰기 권한 — 선택한 카테고리(등급)에 쓸 수 있는 등급만.
+     · 새 글: 반드시 쓸 수 있는 카테고리여야 함
+     · 수정: 작성자 본인/관리자 여부는 아래에서 판정. 단, 관리자가 아니면
+       자신이 쓸 수 없는 카테고리로는 옮기지 못하게 막는다. */
+  if (!editUid && !canWriteCategory(grade, boardKey, category))
+    return { ok: false, error: "이 카테고리에 글을 쓸 수 있는 등급이 아닙니다." };
+  if (editUid && !isAdmin && !canWriteCategory(grade, boardKey, category))
+    return { ok: false, error: "이 카테고리에 글을 쓸 수 있는 등급이 아닙니다." };
+
   const listPath =
     boardKey === "gallery" ? "/organization/gallery" : `/news/${boardKey}`;
 
@@ -182,10 +189,20 @@ export async function createComment(input: {
   try {
     const post = await prisma.post.findUnique({
       where: { id: input.postId },
-      select: { boardKey: true },
+      select: { boardKey: true, category: true },
     });
     if (!post || !getBoardMeta(post.boardKey)?.comments)
       return { ok: false, error: "댓글을 쓸 수 없는 게시물입니다." };
+
+    /* 등급별 댓글 권한 — 이 글의 카테고리(등급)에 쓸 수 있는 등급만 */
+    const me = await prisma.member.findUnique({
+      where: { id: session.memberId },
+      select: { grade: true },
+    });
+    if (
+      !canWriteCategory((me?.grade ?? "NORMAL") as Grade, post.boardKey, post.category)
+    )
+      return { ok: false, error: "이 카테고리에 댓글을 남길 수 있는 등급이 아닙니다." };
 
     await prisma.comment.create({
       data: {
