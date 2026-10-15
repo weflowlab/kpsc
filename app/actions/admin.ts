@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { checkAdmin } from "@/lib/admin";
-import { getBoardMeta } from "@/lib/boards-meta";
+import { getBoardMeta, canWriteCategory } from "@/lib/boards-meta";
 import { uploadImage } from "@/lib/upload";
 import type { MemberGrade } from "@/lib/generated/prisma/enums";
 
@@ -235,6 +235,10 @@ export async function adminSavePost(formData: FormData): Promise<
   if (!title) return { ok: false, error: "제목을 입력해 주세요." };
   if (!meta.categories.includes(category))
     return { ok: false, error: "카테고리를 선택해 주세요." };
+  /* 새 글은 관리자(ADMIN)가 쓸 수 있는 카테고리만 (고객의 소리는 VVIP·최고관리자만).
+     기존 글 수정(id 있음)은 재분류 허용 — 모더레이션용 */
+  if (!id && !canWriteCategory("ADMIN", boardKey, category))
+    return { ok: false, error: "이 카테고리에는 새 글을 작성할 수 없습니다." };
 
   /* 갤러리 이미지 — 새로 첨부한 경우만 교체 (앨범형 최대 5장) */
   const MAX_IMAGES = 5;

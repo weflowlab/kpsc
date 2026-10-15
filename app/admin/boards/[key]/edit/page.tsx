@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
-import { getBoardMeta } from "@/lib/boards-meta";
+import { getBoardMeta, writableCategories } from "@/lib/boards-meta";
 import AdminPostForm from "@/components/admin/AdminPostForm";
 
 export const metadata: Metadata = { title: "글 편집" };
@@ -38,7 +38,9 @@ export default async function AdminPostEditPage(
 
       <AdminPostForm
         boardKey={meta.key}
-        categories={meta.categories}
+        /* 분류 드롭다운 — 새 글은 관리자(ADMIN)가 쓸 수 있는 카테고리만
+           (고객의 소리는 VVIP·최고관리자만). 기존 글 수정 시에는 재분류를 위해 전체 노출 */
+        categories={post ? meta.categories : writableCategories("ADMIN", meta.key)}
         isGallery={meta.key === "gallery"}
         defaultAuthor={admin.name}
         post={
