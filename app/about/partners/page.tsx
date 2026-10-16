@@ -245,9 +245,10 @@ export default function PartnersPage() {
           <div className="mt-10">
             <a
               href={`tel:${COMPANY.tel}`}
+              aria-label="파트너 참여하기 전화하기"
               className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-7 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-brand-700"
             >
-              파트너 참여하기 : {COMPANY.tel}
+              파트너 참여하기
             </a>
           </div>
         </div>
