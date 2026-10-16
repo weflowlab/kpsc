@@ -55,7 +55,7 @@ export default function Footer() {
                 {/* 탭하면 전화가 걸리는 버튼형 — 알약 + 전화 아이콘 */}
                 <a
                   href={`tel:${COMPANY.tel}`}
-                  aria-label={`전화 걸기 ${COMPANY.tel}`}
+                  aria-label="전화하기"
                   className="group inline-flex items-center gap-1.5 rounded-full border border-[#4B515D] bg-white/5 px-3.5 py-1.5 font-semibold text-white transition-colors hover:border-[#B0B3B8] hover:bg-white/10"
                 >
                   <svg
@@ -68,7 +68,7 @@ export default function Footer() {
                   >
                     <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .7-.2 1l-2.3 2.2z" />
                   </svg>
-                  {COMPANY.tel}
+                  전화하기
                 </a>
               </InfoRow>
               {/* 메일 3종 — 모바일에서는 한 줄에 다 못 들어가 줄바꿈이 제각각이라
