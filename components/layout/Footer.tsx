@@ -14,8 +14,10 @@ import { BUSINESS_HOURS, COMPANY, CONTACT_EMAILS } from "@/lib/site-config";
 function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <>
-      <dt className="font-semibold whitespace-nowrap text-[#E4E6EB]">{label}</dt>
-      <dd className="min-w-0">{children}</dd>
+      {/* 라벨은 값(버튼 등 높이가 큰 경우 포함)의 세로 중앙에 맞춘다.
+          한 줄짜리 값에서는 시각적 변화가 없다. */}
+      <dt className="flex items-center font-semibold whitespace-nowrap text-[#E4E6EB]">{label}</dt>
+      <dd className="min-w-0 self-center">{children}</dd>
     </>
   );
 }
@@ -50,7 +52,22 @@ export default function Footer() {
                 으로 검색하고 방문하세요
               </InfoRow>
               <InfoRow label="전화번호">
-                <a href={`tel:${COMPANY.tel}`} className="hover:text-white">
+                {/* 탭하면 전화가 걸리는 버튼형 — 알약 + 전화 아이콘 */}
+                <a
+                  href={`tel:${COMPANY.tel}`}
+                  aria-label={`전화 걸기 ${COMPANY.tel}`}
+                  className="group inline-flex items-center gap-1.5 rounded-full border border-[#4B515D] bg-white/5 px-3.5 py-1.5 font-semibold text-white transition-colors hover:border-[#B0B3B8] hover:bg-white/10"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden
+                    className="text-[#FFB200]"
+                  >
+                    <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .7-.2 1l-2.3 2.2z" />
+                  </svg>
                   {COMPANY.tel}
                 </a>
               </InfoRow>
