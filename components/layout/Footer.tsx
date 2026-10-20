@@ -222,7 +222,6 @@ export default function Footer() {
 
             {/* 카피라이트 + 호스팅 표기 */}
             <div className="mt-1 space-y-0.5">
-              <p>Copyright ⓒ 2026 helplus.kr All rights reserved.</p>
               <p>{COMPANY.copyright}</p>
               <p>
                 Hosting by{" "}
