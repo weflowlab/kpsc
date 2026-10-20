@@ -40,7 +40,7 @@ export default function Footer() {
               모든 줄에서 일치하고, gap-y 로 줄 간격도 균일해진다. */}
           <div className="text-[0.825rem] leading-relaxed text-[#B0B3B8] lg:text-[0.95rem]">
             <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
-              <InfoRow label="대표자명">{COMPANY.ceo}</InfoRow>
+              <InfoRow label="홈페이지 운영진">{COMPANY.ceo}</InfoRow>
               <InfoRow label="인터넷 주소">
                 검색 창에{" "}
                 <a
@@ -220,22 +220,22 @@ export default function Footer() {
               <span>Save the Children 소속 파트너</span>
             </p>
 
-            {/* 제작·운영 크레딧 */}
-            <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-[#8A8F98]">
-              {[
-                ["호스팅", "(주)후이즈"],
-                ["홈페이지 유지&보수", "WEFLOW[위플로우]"],
-                ["홈페이지 제작협력사", "KPSC"],
-                ["모니터링", "KPSC 브랜드 KPSC X WEFLOW 본부"],
-              ].map(([label, value]) => (
-                <Fragment key={label}>
-                  <dt className="whitespace-nowrap font-semibold text-[#B0B3B8]">{label}</dt>
-                  <dd className="min-w-0">{value}</dd>
-                </Fragment>
-              ))}
-            </dl>
-
-            <p className="mt-1">{COMPANY.copyright}</p>
+            {/* 카피라이트 + 호스팅 표기 */}
+            <div className="mt-1 space-y-0.5">
+              <p>Copyright ⓒ 2026 helplus.kr All rights reserved.</p>
+              <p>{COMPANY.copyright}</p>
+              <p>
+                Hosting by{" "}
+                <a
+                  href="https://whois.co.kr/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-[#8A8F98] underline underline-offset-2 hover:text-white"
+                >
+                  (주)후이즈[Whois]
+                </a>
+              </p>
+            </div>
           </div>
 
           {/* 제작사 표기 — 흰색 알약, 호버 시 배경 제거 */}
