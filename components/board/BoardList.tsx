@@ -54,10 +54,11 @@ export default function BoardList({
      - notice 스킨: 번호·분류·제목·등록일·작성자·조회수, 아이콘 없음,
        행 사이 점선(line_dot01.gif) 추가 */
   const isNotice = board === "notice";
-  /* 분류 칸은 가장 긴 "[다운로드 파일 및 신청서]" 가 한 줄에 들어가는 폭 */
+  /* 컬럼 폭 — 제목은 1fr 로 남은 폭을 채우고, 조회수/등록일/작성자는 우측에 정렬.
+     (분류 칸은 notice 의 긴 말머리 "[다운로드 파일 및 신청서]" 기준으로 넓게) */
   const gridCols = isNotice
-    ? "sm:grid-cols-[44px_60px_240px_1fr_90px_110px_80px]"
-    : "sm:grid-cols-[44px_60px_130px_1fr_80px_90px_110px]";
+    ? "sm:grid-cols-[44px_60px_240px_1fr_110px_120px_80px]"
+    : "sm:grid-cols-[44px_60px_130px_1fr_80px_110px_150px]";
 
   const toggle = (uid: number) => {
     const next = new Set(checked);
@@ -171,7 +172,7 @@ export default function BoardList({
                     <span className="hidden text-center text-[14px] sm:block">
                       {post.date}
                     </span>
-                    <span className="text-center text-[12px] sm:text-[14px]">
+                    <span className="text-center text-[12px] whitespace-nowrap sm:text-[14px]">
                       {post.author}
                     </span>
                     <span className="hidden text-center text-[14px] sm:block">
@@ -187,7 +188,7 @@ export default function BoardList({
                     <span className="hidden text-center text-[14px] sm:block">
                       {post.date}
                     </span>
-                    <span className="flex items-center justify-center gap-1 text-[12px] sm:text-[14px]">
+                    <span className="flex items-center justify-center gap-1 text-[12px] whitespace-nowrap sm:text-[14px]">
                       <Image
                         src="/images/board/default_icon.gif"
                         alt=""

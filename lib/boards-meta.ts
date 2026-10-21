@@ -57,15 +57,17 @@ export const BOARD_META: Record<BoardKey, BoardMeta> = {
     key: "activities",
     name: "고객의 소리",
     description:
-      "등급별 소통 게시판입니다. 열람은 누구나 가능하며, 글쓰기·댓글은 카테고리(등급)별로 권한이 다릅니다.",
-    categories: ["일반·VIP", "VVIP·최고관리자"],
+      "등급별 소통 게시판입니다. 열람은 누구나 가능하며, 글쓰기·댓글은 등급별 카테고리에 따라 권한이 다릅니다.",
+    categories: ["일반", "VIP", "VVIP"],
     perPage: 15,
     writable: true,
     writeGrades: ["NORMAL", "VIP", "VVIP", "ADMIN"], // 카테고리별 세부 권한은 categoryGrades 로 판정
     categoryGrades: {
-      // 계층형 권한 — 상위 등급은 하위 카테고리에도 글·댓글 작성 가능
-      "일반·VIP": ["NORMAL", "VIP", "VVIP", "ADMIN"],
-      "VVIP·최고관리자": ["VVIP", "ADMIN"],
+      // 등급별 전용 — 각 등급은 자기 등급 카테고리에만 글·댓글 작성 가능.
+      // 최고관리자(ADMIN)는 모든 카테고리에 작성 가능.
+      "일반": ["NORMAL", "ADMIN"],
+      VIP: ["VIP", "ADMIN"],
+      VVIP: ["VVIP", "ADMIN"],
     },
     comments: true,
   },
@@ -87,9 +89,11 @@ export function getBoardMeta(key: string): BoardMeta | undefined {
 
 /* --------------------------------------------------------------------------
    등급별 "새 글/댓글 작성" 권한 판정 — 읽기는 항상 공개이므로 작성에만 쓴다.
-     · categoryGrades 가 있는 게시판(고객의 소리)은 카테고리(말머리)별로 판정 (계층형)
-       - 일반·VIP 카테고리      : NORMAL, VIP, VVIP, ADMIN (상위 등급도 작성 가능)
-       - VVIP·최고관리자 카테고리 : VVIP, ADMIN
+     · categoryGrades 가 있는 게시판(고객의 소리)은 카테고리(말머리)별로 판정 (등급별 전용)
+       - 일반 카테고리 : NORMAL, ADMIN
+       - VIP 카테고리  : VIP, ADMIN
+       - VVIP 카테고리 : VVIP, ADMIN
+       (각 등급은 자기 카테고리에만, 최고관리자는 전 카테고리)
      · 그 외 게시판은 writeGrades 로 게시판 단위 판정 (공지=ADMIN, 갤러리=전 등급)
    ※ 남의 글 수정/삭제 같은 모더레이션은 각 액션에서 isAdmin 으로 따로 허용한다.
    -------------------------------------------------------------------------- */
