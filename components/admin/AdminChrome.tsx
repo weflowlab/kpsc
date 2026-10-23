@@ -5,7 +5,7 @@
    - 데스크톱(md+): 사이드바 고정 노출 (아이콘 + 글씨)
    - 모바일: 사이드바 숨김. 헤더 왼쪽 햄버거로 드로어를 열고 닫는다.
      드로어는 아이콘 + 글씨를 모두 보여준다.
-   - 회원 상세 팝업 창(kpsc-member-detail)에서는 헤더/사이드바를 숨긴다.
+   - 회원 상세(/admin/members/<id>)는 팝업 전용 화면이라 헤더/사이드바를 숨긴다.
    ========================================================================== */
 
 import Link from "next/link";
@@ -160,11 +160,11 @@ export default function AdminChrome({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false); // 모바일 드로어
-  const [isPopup, setIsPopup] = useState(false);
 
-  useEffect(() => {
-    if (window.opener && window.name === "kpsc-member-detail") setIsPopup(true);
-  }, []);
+  /* 회원 상세(/admin/members/<id>)는 ID 클릭 시 팝업 창으로 열리는 전용 화면이라
+     헤더/사이드바 없이 콘텐츠만 보여준다. pathname 으로 판정해 SSR 단계부터 크롬을
+     빼므로, 사이드바가 잠깐 그려졌다 사라지는 깜빡임이 생기지 않는다. */
+  const isPopup = /^\/admin\/members\/[^/]+$/.test(pathname);
 
   /* 경로가 바뀌면 드로어 닫기 */
   useEffect(() => {

@@ -121,8 +121,11 @@ export default function RegisterForm({
         setError(res.error);
         return;
       }
-      /* 가입과 동시에 자동 로그인 — 헤더 상태까지 반영되도록 전체 로드 */
-      window.location.href = "/";
+      /* 승인 대기 가입 — 자동 로그인하지 않고 안내 후 로그인 페이지로 */
+      alert(
+        "회원가입 신청이 완료되었습니다.\n관리자 승인 후 로그인하실 수 있습니다."
+      );
+      window.location.href = "/login";
     } finally {
       setPending(false);
     }

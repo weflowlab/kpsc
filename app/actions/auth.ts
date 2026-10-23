@@ -58,7 +58,8 @@ export async function checkLoginId(
 }
 
 /* --------------------------------------------------------------------------
-   회원가입 — 성공 시 바로 세션을 발급한다(자동 로그인)
+   회원가입 — 승인 대기(PENDING) 상태로 생성한다.
+   자동 로그인하지 않으며, 관리자가 승인(APPROVED)해야 로그인할 수 있다.
    -------------------------------------------------------------------------- */
 export async function register(input: {
   name: string;
@@ -95,7 +96,7 @@ export async function register(input: {
   const hashed = await bcrypt.hash(input.password, 10);
 
   try {
-    const member = await prisma.member.create({
+    await prisma.member.create({
       data: {
         loginId: input.loginId,
         password: hashed,
@@ -103,12 +104,12 @@ export async function register(input: {
         email,
         phone: `${input.phone1}-${input.phone2}-${input.phone3}`,
         remail: input.remail,
+        status: "PENDING", // 관리자 승인 전까지 로그인 불가
       },
-      select: { id: true, name: true },
+      select: { id: true },
     });
 
-    await createSession({ memberId: member.id, name: member.name });
-    await recordLoginLog(member.id);
+    /* 자동 로그인하지 않는다 — 관리자 승인 후 로그인 가능 */
     return { ok: true };
   } catch (e) {
     /* 중복확인과 가입 사이에 같은 아이디가 먼저 등록된 경우 (unique 충돌) */

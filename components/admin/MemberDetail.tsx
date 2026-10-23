@@ -270,7 +270,6 @@ export default function MemberDetail({
   loginLogs: LoginLogRow[];
   isSelf: boolean;
 }) {
-  const router = useRouter();
   const [form, setForm] = useState({
     name: member.name,
     nickname: member.nickname,
@@ -301,8 +300,13 @@ export default function MemberDetail({
         const g = await updateMemberGrade({ memberId: member.id, grade });
         if (!g.ok) return setMessage(g.error);
       }
-      setMessage("저장했습니다.");
-      router.refresh();
+      /* 바깥(관리자 회원관리 목록) 창도 함께 갱신 — 팝업에서 바꾼 상태가
+         목록에도 바로 반영되도록 opener 를 새로고침한다 */
+      try {
+        window.opener?.location?.reload();
+      } catch {}
+      /* 팝업 자신도 전체 새로고침 — 승인상태 등 변경 즉시 반영 */
+      window.location.reload();
     } finally {
       setPending(false);
     }
