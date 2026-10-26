@@ -122,17 +122,22 @@ export default function QuickMenu() {
           <div className="text-[13px] leading-[normal] font-bold text-[#F5F5F5]">
             고객센터
           </div>
-          <div className="mt-[3px] flex items-center gap-1 text-[15px] font-bold text-[#F5F5F5]">
+          {/* 번호는 노출하지 않고, 누르면 전화가 걸리는 버튼형 (푸터와 동일 방식) */}
+          <a
+            href={`tel:${COMPANY.tel}`}
+            aria-label="전화하기"
+            className="mt-[6px] flex items-center justify-center gap-1.5 rounded-full border border-white/30 bg-white/10 py-1.5 text-[14px] font-bold text-[#F5F5F5] transition-colors hover:bg-white/20"
+          >
             {/* TopButton 셰브론과 같은 keyframes — 깜빡임 동기화 */}
             <Image
               src={QUICK_TEL_ICON}
               alt=""
-              width={22}
-              height={22}
+              width={18}
+              height={18}
               className="animate-blink"
             />
-            {COMPANY.tel}
-          </div>
+            전화하기
+          </a>
         </div>
 
         {/* ============ 운영시간 — KPSC / KPSM 두 벌 ============
