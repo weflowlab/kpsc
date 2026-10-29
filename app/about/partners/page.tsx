@@ -25,6 +25,8 @@ type Partner = {
   image: string;
   /** 외부 사이트가 있는 파트너만 지정 — 카드 전체가 새 창 링크가 된다 */
   href?: string;
+  /** 로고처럼 꽉 채우면 안 되는 이미지는 object-contain + 밝은 배경으로 표시 */
+  contain?: boolean;
 };
 
 const PARTNERS: Partner[] = [
@@ -36,9 +38,10 @@ const PARTNERS: Partner[] = [
     href: "http://weflowlab.kr/",
   },
   {
-    title: "여행 관련 파트너 : RETOO[레투코리아]",
-    desc: "KPSC와 함께 미래에너지 혁신과 더 나은 세상을 위한 변화를 실천하는 국내 No.1 여행캐리어 전문업체입니다.",
-    image: CONTENT_IMAGES.partner1,
+    title: "그룹 여행 파트너 : KPSC그룹여행사",
+    desc: "KPSC의 또 다른 브랜드로, 함께 성장하고 가치를 나누는 아름다운 동행을 만들어가는 그룹 여행 전문 브랜드입니다.",
+    image: "/images/content/kpsc-group-travel.webp",
+    contain: true,
   },
   {
     title: "프린트 및 인쇄 디자인 파트너 : 프린트천국",
@@ -103,15 +106,19 @@ function PartnerCardBody({ partner }: { partner: Partner }) {
         />
       )}
 
-      {/* 상단 이미지 */}
-      <div className="h-[220px] overflow-hidden lg:h-[280px]">
+      {/* 상단 이미지 — 로고(contain)는 밝은 배경에 여백을 두고 전체가 보이게 */}
+      <div
+        className={`h-[220px] overflow-hidden lg:h-[280px] ${
+          partner.contain ? "bg-gradient-to-br from-[#f0f7ff] to-white" : ""
+        }`}
+      >
         <div className="relative h-full w-full transition-transform duration-[600ms] group-hover:scale-105">
           <Image
             src={partner.image}
             alt={partner.title}
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
+            className={partner.contain ? "object-contain p-6" : "object-cover"}
           />
         </div>
       </div>
