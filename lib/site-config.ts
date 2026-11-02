@@ -134,7 +134,7 @@ export const COMPANY = {
   address: "제주특별자치도 서귀포시 무릉리 651",
   tel: "010-2406-7432",
   email: "kpsckoreaoffice@daum.net",
-  copyright: "Copyright ⓒ 2017 KPSCGROUPKOREA helplus.kr All rights reserved.",
+  copyright: "Copyright ⓒ 2017 KPSC helplus.kr All rights reserved.",
 } as const;
 
 /* --------------------------------------------------------------------------

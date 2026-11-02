@@ -16,8 +16,7 @@ import { COMPANY } from "@/lib/site-config";
 export const metadata: Metadata = { title: "KPSC와 함께하는 사람들" };
 
 /* --------------------------------------------------------------------------
-   협력 파트너사 — 2026-08 클라이언트 전달 문구 기준 4개사
-   (WEFLOW / 미니미니핸드폰 설명은 전달받지 못해 기존 문구 패턴에 맞춰 작성)
+   협력 파트너사 — WEFLOW / KPSC여행사(자체 브랜드) 2개사
    -------------------------------------------------------------------------- */
 type Partner = {
   title: string;
@@ -38,20 +37,10 @@ const PARTNERS: Partner[] = [
     href: "http://weflowlab.kr/",
   },
   {
-    title: "그룹 여행 파트너 : KPSC그룹여행사",
-    desc: "KPSC의 또 다른 브랜드로, 함께 성장하고 가치를 나누는 아름다운 동행을 만들어가는 그룹 여행 전문 브랜드입니다.",
-    image: "/images/content/kpsc-group-travel.webp",
+    title: "여행 파트너 : KPSC여행사",
+    desc: "KPSC의 또 다른 브랜드로, 함께 성장하고 가치를 나누는 아름다운 동행을 만들어가는 여행 전문 브랜드입니다.",
+    image: "/images/content/kpsc-travel-logo.webp",
     contain: true,
-  },
-  {
-    title: "프린트 및 인쇄 디자인 파트너 : 프린트천국",
-    desc: "KPSC와 함께 미래에너지 혁신과 더 나은 세상을 위한 변화를 실천하는 국내 전문 프린트업체입니다.",
-    image: CONTENT_IMAGES.partner2,
-  },
-  {
-    title: "핸드폰 액세서리 관련 파트너 : 미니미니핸드폰 분당서현점",
-    desc: "KPSC와 함께 미래에너지 혁신과 더 나은 세상을 위한 변화를 실천하는 핸드폰 액세서리 전문 매장입니다.",
-    image: CONTENT_IMAGES.partner4,
   },
 ];
 

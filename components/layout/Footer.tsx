@@ -222,7 +222,16 @@ export default function Footer() {
 
             {/* 카피라이트 + 호스팅 표기 */}
             <div className="mt-1 space-y-0.5">
-              <p>{COMPANY.copyright}</p>
+              <p>
+                Copyright ⓒ 2017 KPSC{" "}
+                <a
+                  href="https://helplus.kr/"
+                  className="text-[#8A8F98] underline underline-offset-2 hover:text-white"
+                >
+                  helplus.kr
+                </a>{" "}
+                All rights reserved.
+              </p>
               <p>
                 Hosting by{" "}
                 <a

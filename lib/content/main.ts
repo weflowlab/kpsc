@@ -26,7 +26,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     title: ["미래 에너지를 선도하며,", "지속 가능한 생태계를 구축합니다."],
     description: "단순 발전을 넘어,||친환경 전환으로 대한민국 에너지 자립을 이끕니다.",
     descriptionSub:
-      "KPSC 그룹브랜드는 여행 서비스 제공 및 여러 파트너와 협력하여 여러분에게 더 나은 서비스를 제공하겠습니다.",
+      "KPSC브랜드는 여행 서비스 제공 및 여러 파트너와 협력하여 여러분에게 더 나은 서비스를 제공하겠습니다.",
   },
   {
     badge: "KPSC",
@@ -35,7 +35,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     description:
       "여러 브랜드와 위플로우가 있어||한 걸음 더 성장하고 발전하고 있습니다.",
     descriptionSub:
-      "저희 KPSC와 함께한 파트너 분들과||위플로우에 진심으로 감사드립니다.\n\n함께 성장하고, 함께 나누는 KPSC그룹브랜드 일동",
+      "저희 KPSC와 함께한 파트너 분들과||위플로우에 진심으로 감사드립니다.\n\n함께 성장하고, 함께 나누는 KPSC브랜드 일동",
     lightBg: true,
   },
   {
