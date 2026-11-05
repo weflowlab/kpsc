@@ -19,7 +19,7 @@ export function BlogMobileBar() {
         className="flex h-14 items-center justify-center gap-2 bg-primary text-base font-bold text-white active:bg-brand-secondary"
       >
         <IconMessageCircle className="size-5 -translate-y-px animate-wiggle motion-reduce:animate-none" style={{ animationDelay: "1s" }} />
-        <span className="relative -top-[2px]">문의하기</span>
+        <span>문의하기</span>
       </a>
     </div>
   );

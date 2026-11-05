@@ -74,7 +74,7 @@ export function BlogHeader() {
                 aria-label="홈페이지 바로가기"
                 className="flex min-w-0 items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white hover:text-primary lg:gap-2 lg:px-6 lg:py-2.5 lg:text-base lg:tracking-[-0.18px]"
               >
-                <span className="min-w-0 truncate">홈페이지 바로가기</span>
+                <span className="relative top-[1.5px] min-w-0 truncate lg:top-0">홈페이지 바로가기</span>
                 <IconArrowRight className="size-2.5 shrink-0 lg:size-[15px]" stroke={2.5} />
               </Link>
             </div>
