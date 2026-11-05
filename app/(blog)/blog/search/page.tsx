@@ -1,0 +1,71 @@
+// 검색 결과 페이지 (/search?q=검색어). 상단 검색 영역(메인 히어로 톤) + 세로 카드 4열 목록 + View more.
+// 검색어가 없으면 전체 글을 최신순으로, 결과가 없으면 "검색 결과가 없습니다" 상태를 보여준다 (레퍼런스 동작).
+import { Suspense } from "react";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { IconArrowRight } from "@tabler/icons-react";
+import { getSiteData, searchPosts } from "@/lib/payload";
+import { SearchHero } from "@/components/blog/posts/SearchHero";
+import { PostListWithMore } from "@/components/blog/posts/PostListWithMore";
+import { EmptyPosts } from "@/components/blog/posts/EmptyPosts";
+
+export const metadata: Metadata = { title: "검색" };
+// 요청 시마다 조회 (빌드 때 DB 조회 안 함)
+export const dynamic = "force-dynamic";
+
+export default async function SearchPage({ searchParams }: PageProps<"/blog/search">) {
+  // 인기 키워드는 사이트 공통 데이터(home 글로벌, 비어 있으면 기본값)
+  const { popularKeywords } = await getSiteData();
+
+  return (
+    <Suspense fallback={<SearchHero query="" keywords={popularKeywords} />}>
+      <SearchContent keywords={popularKeywords} searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function SearchContent({ keywords, searchParams }: { keywords: string[] } & Pick<PageProps<"/blog/search">, "searchParams">) {
+  const { q } = await searchParams;
+  const query = (typeof q === "string" ? q : "").trim();
+
+  // 검색어 없으면 전체 글(최신순), 있으면 제목/요약/태그 부분 일치 결과
+  const results = await searchPosts(query);
+
+  return (
+    <>
+      <SearchHero query={query} keywords={keywords} resultCount={query ? results.length : undefined} />
+
+      {/* 레퍼런스: 결과 영역 py-12 md:py-20 */}
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8 max-w-site-4xl py-12 md:py-20">
+        {results.length > 0 ? (
+          // 다른 목록 페이지와 같은 세로 카드 4열
+          <PostListWithMore key={query} posts={results} initialCount={8} step={8} />
+        ) : query ? (
+          // 결과 없음 상태
+          <div className="flex flex-col items-center gap-7.5 py-12 text-center md:py-20">
+            <div className="flex flex-col gap-1 text-xl font-semibold leading-snug text-neutral-800 md:text-3xl">
+              <p>
+                <span className="text-brand-primary">{query}</span>
+                <span>에 대한 검색 결과가 없습니다.</span>
+              </p>
+              <p>다른 이야기도 살펴볼까요?</p>
+            </div>
+            <Link
+              href="/blog/posts"
+              className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-7 py-3 text-base font-medium text-neutral-800 transition-colors hover:bg-primary hover:text-primary-foreground md:text-lg"
+            >
+              다른 이야기 보러가기
+              <IconArrowRight className="size-5" />
+            </Link>
+          </div>
+        ) : (
+          // 검색어도 글도 없음 (시드 전)
+          <EmptyPosts />
+        )}
+      </div>
+    </>
+  );
+}
+
+// Vercel 서버리스 함수 최대 실행 시간. 한동안 요청이 없다가 처음 들어오면 Payload 초기화 + DB(Neon) 깨어남으로 기본 제한을 넘겨 504 가 날 수 있다
+export const maxDuration = 60;

@@ -73,11 +73,6 @@ export const NAV: NavItem[] = [
       { label: "공지사항 / 뉴스", href: "/news/notice" },
     ],
   },
-  {
-    label: "블로그",
-    labelEn: "Blog",
-    children: [{ label: "블로그", href: "/blog" }],
-  },
 ];
 
 /* --------------------------------------------------------------------------

@@ -1,0 +1,201 @@
+/* ──────────────────────────────────────────────────────────────
+   블로그(/blog) 디자인 토큰. app/globals.css 가 Tailwind 바로 뒤에서 불러온다.
+   블로그 컴포넌트는 Tailwind 유틸리티(bg-primary, text-brand-primary, rounded-m, max-w-site-4xl …)를 쓰고,
+   그 값은 아래 @theme inline 이 이 토큰에 연결한다.
+   홈페이지(CSS Modules)의 --color-primary / --color-accent / --color-border 와 이름이 겹치지 않도록
+   블로그 토큰은 --brand-* / --primary / --border 처럼 다른 이름을 쓰고, @theme 는 inline 이라 홈페이지 변수를 건드리지 않는다.
+   ────────────────────────────────────────────────────────────── */
+:root {
+  --neutral-50: #f7f7f7;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+
+  /* 브랜드 색 = 홈페이지 남색(#152c6b). secondary 는 hover·그라데이션용으로 같은 색상에서 명도만 올린 남색 (흰 글씨 대비 AA 통과) */
+  --brand-primary: #152c6b;
+  --brand-primary-5: #152c6b0d;
+  --brand-primary-10: #152c6b1a;
+  --brand-primary-20: #152c6b33;
+  --brand-secondary: #2b4a9c;
+
+  /* 의미 색 */
+  --background: #fff;
+  --foreground: var(--neutral-900);
+  --card: #fff;
+  --card-foreground: var(--neutral-900);
+  --primary: var(--brand-primary);
+  --primary-foreground: #fff;
+  --secondary: var(--brand-secondary);
+  --secondary-foreground: #fff;
+  --muted: var(--neutral-100);
+  --muted-foreground: var(--neutral-500);
+  --accent: var(--neutral-100);
+  --accent-foreground: var(--neutral-900);
+  --destructive: #e40014;
+  --border: var(--neutral-200);
+  --input: var(--neutral-200);
+  --ring: var(--brand-primary);
+
+  /* 둥근 모서리 단계 */
+  --radius: 1.5rem;
+  --radius-none: 0;
+  --radius-2xs: 0.25rem;
+  --radius-xs: 0.5rem;
+  --radius-s: 1rem;
+  --radius-ms: 1.25rem;
+  --radius-m: 1.5rem;
+  --radius-l: 2.5rem;
+  --radius-xl: 3rem;
+  --radius-2xl: 4rem;
+  --radius-3xl: 5rem;
+  --radius-full: 9999px;
+
+  /* 사이트 컨테이너 폭 (max-w-site-* 로 사용) */
+  --container-sm: 23.4375rem;
+  --container-md: 48rem;
+  --container-lg: 64rem;
+  --container-xl: 80rem;
+  --container-2xl: 90rem;
+  --container-3xl: 100rem;
+  --container-4xl: 110rem;
+  --container-full: 120rem;
+}
+
+/* Tailwind 유틸리티에 토큰 연결 (예: bg-primary, text-brand-primary, rounded-m) */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+
+  --radius-none: var(--radius-none);
+  --radius-2xs: var(--radius-2xs);
+  --radius-xs: var(--radius-xs);
+  --radius-s: var(--radius-s);
+  --radius-ms: var(--radius-ms);
+  --radius-m: var(--radius-m);
+  --radius-l: var(--radius-l);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
+  --radius-full: var(--radius-full);
+
+  /* 애니메이션 (animate-* 로 사용) */
+  --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
+  --animate-float-y: float-y 5s ease-in-out infinite;
+  --animate-reveal-up: reveal-up 0.6s ease-out backwards;
+  --animate-fade-slide-up: fade-slide-up 0.6s ease-out backwards;
+  --animate-icon-enter: icon-enter 0.6s ease-out backwards;
+  --animate-cta-ripple: cta-ripple 3s cubic-bezier(0.25, 0.6, 0.4, 1) infinite;
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-wiggle: wiggle 3.6s ease-in-out infinite;
+
+  @keyframes pulse-ring {
+    0% { opacity: 1; transform: scale(0.96); }
+    80% { opacity: 0; transform: scale(1.04); }
+    to { opacity: 0; transform: scale(1.04); }
+  }
+  @keyframes float-y {
+    0%, to { transform: translateY(-8px); }
+    50% { transform: translateY(8px); }
+  }
+  @keyframes reveal-up {
+    0% { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes fade-slide-up {
+    0% { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes icon-enter {
+    0% { opacity: 0; transform: scale(0.6); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes cta-ripple {
+    0% { opacity: 0.3; transform: scale(1); }
+    to { opacity: 0; transform: scale(1.4); }
+  }
+  @keyframes accordion-down {
+    0% { height: 0; }
+    to { height: var(--accordion-panel-height, auto); }
+  }
+  @keyframes wiggle {
+    0%, 30%, 100% { transform: rotate(0); }
+    5% { transform: rotate(-14deg); }
+    10% { transform: rotate(12deg); }
+    15% { transform: rotate(-10deg); }
+    20% { transform: rotate(8deg); }
+    25% { transform: rotate(-4deg); }
+  }
+  @keyframes accordion-up {
+    0% { height: var(--accordion-panel-height, auto); }
+    to { height: 0; }
+  }
+}
+
+/* 사이트 컨테이너 폭 유틸리티 */
+@utility max-w-site-sm { max-width: var(--container-sm); }
+@utility max-w-site-md { max-width: var(--container-md); }
+@utility max-w-site-lg { max-width: var(--container-lg); }
+@utility max-w-site-xl { max-width: var(--container-xl); }
+@utility max-w-site-2xl { max-width: var(--container-2xl); }
+@utility max-w-site-3xl { max-width: var(--container-3xl); }
+@utility max-w-site-4xl { max-width: var(--container-4xl); }
+@utility max-w-site-full { max-width: var(--container-full); }
+
+/* 블로그 영역 기본값: 홈페이지 리셋(body line-height 1)과 달리 본문 글은 1.5 줄 간격. 헤더는 블로그 전용(sticky)이라 위 여백 없음 */
+.blog-root {
+  color: var(--foreground);
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--background);
+  /* 홈페이지 리셋의 word-break: keep-all 때문에 "망막질환(비문증·망막박리·…)" 처럼 띄어쓰기 없는 긴 덩어리가 칸을 넘치므로, 넘칠 때만 끊는다 */
+  overflow-wrap: anywhere;
+}
+/* 모바일 하단 고정 바(components/blog/layout/BlogMobileBar, 56px)에 푸터가 가려지지 않게 */
+@media screen and (max-width: 767px) {
+  body:has(.blog-root) { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+}
+
+/* 글 본문(리치텍스트) 스타일. 글 상세의 본문 래퍼에 class="prose-content" */
+.prose-content { color: var(--foreground); line-height: 1.8; }
+.prose-content p:empty::after { content: "\200b"; display: inline-block; }
+.prose-content h1 { color: var(--foreground); margin: 1.5rem 0 0.6rem; scroll-margin-top: 96px; font-size: 1.75rem; font-weight: 700; }
+.prose-content h2 { color: var(--foreground); margin: 1.5rem 0 0.6rem; scroll-margin-top: 96px; font-size: 1.5rem; font-weight: 700; }
+.prose-content h3 { color: var(--foreground); margin: 1.2rem 0 0.5rem; scroll-margin-top: 96px; font-size: 1.2rem; font-weight: 600; }
+.prose-content ul { margin: 0.6rem 0; padding-left: 1.4rem; list-style: disc outside; }
+.prose-content ol { margin: 0.6rem 0; padding-left: 1.4rem; list-style: decimal; }
+.prose-content a { color: var(--primary); text-decoration: underline; }
+.prose-content img { border-radius: var(--radius-m); max-width: 100%; margin: 1rem 0; }
+.prose-content blockquote { border-left: 3px solid var(--border); color: var(--muted-foreground); margin: 0.8rem 0; padding-left: 1rem; }
+/* 표: 머리글 남색 배경, 첫 열 강조. 래퍼(.prose-table)가 모바일 가로 스크롤과 둥근 테두리를 담당 */
+.prose-content table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.95em; }
+.prose-content .prose-table table { margin: 0; }
+.prose-content th, .prose-content td { border: 1px solid var(--border); vertical-align: top; text-align: left; padding: 0.7rem 0.9rem; line-height: 1.65; }
+.prose-content th { background: var(--brand-primary-5); color: var(--primary); font-weight: 700; white-space: nowrap; }
+.prose-content tr > td:first-child { font-weight: 600; background: var(--neutral-50); white-space: nowrap; }
+.prose-content tr > *:first-child { border-left: 0; }
+.prose-content tr > *:last-child { border-right: 0; }
+.prose-content tr:first-child > * { border-top: 0; }
+.prose-content tr:last-child > * { border-bottom: 0; }

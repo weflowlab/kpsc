@@ -67,11 +67,14 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    inquiries: Inquiry;
+    popups: Popup;
     posts: Post;
     categories: Category;
-    authors: Author;
+    doctors: Doctor;
     media: Media;
     users: User;
+    'page-views': PageView;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -79,11 +82,14 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
+    popups: PopupsSelect<false> | PopupsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    doctors: DoctorsSelect<false> | DoctorsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'page-views': PageViewsSelect<false> | PageViewsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -95,11 +101,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     home: Home;
-    brand: Brand;
+    clinic: Clinic;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
-    brand: BrandSelect<false> | BrandSelect<true>;
+    clinic: ClinicSelect<false> | ClinicSelect<true>;
   };
   locale: null;
   widgets: {
@@ -130,6 +136,113 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * 홈페이지 '상담 신청하기' 로 들어온 문의입니다.
+ * 연락 후 상태를 바꿔 두면 목록에서 구분됩니다.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries".
+ */
+export interface Inquiry {
+  id: number;
+  name: string;
+  phone: string;
+  subjects?:
+    | {
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  message?: string | null;
+  status: 'new' | 'done';
+  /**
+   * 통화 내용, 예약 일정 등
+   */
+  memo?: string | null;
+  agreedAt?: string | null;
+  page?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * 홈페이지 첫 화면에 뜨는 안내 팝업입니다.
+ * 여러 개를 켜 두면 팝업 아래 탭으로 넘겨 볼 수 있습니다.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "popups".
+ */
+export interface Popup {
+  id: number;
+  title: string;
+  /**
+   * 가로 1100 × 세로 500 정도의 가로형 이미지. 모바일에서는 4:3 으로 잘려 보입니다.
+   */
+  image: number | Media;
+  /**
+   * 예: /community/notice 또는 https://… . 비우면 이미지만 보여 줍니다.
+   */
+  link?: string | null;
+  active?: boolean | null;
+  startAt?: string | null;
+  endAt?: string | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    content?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
@@ -137,7 +250,7 @@ export interface Post {
   id: number;
   title: string;
   category: number | Category;
-  author: number | Author;
+  author: number | Doctor;
   thumbnail?: (number | null) | Media;
   /**
    * 비우면 게시하는 순간으로 찍힙니다. 미래 시각으로 두면 그 시각까지 사이트에 보이지 않다가 자동으로 공개되고, 지난 시각으로 두면 그 날짜로 바로 발행됩니다(예전 글 옮겨 올 때).
@@ -222,12 +335,12 @@ export interface Category {
   createdAt: string;
 }
 /**
- * 블로그 글 하단 '이 글을 쓴 사람' 카드에 표시되는 작성자(운영진·필진) 정보입니다.
+ * 블로그 글 하단 '이 글을 쓴 의료진' 카드와 블로그 메인 의료진 소개에 표시됩니다. 홈페이지 의료진소개 페이지와는 별개입니다.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors".
+ * via the `definition` "doctors".
  */
-export interface Author {
+export interface Doctor {
   id: number;
   name: string;
   /**
@@ -252,60 +365,6 @@ export interface Author {
   order?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  caption?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    content?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -336,6 +395,27 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-views".
+ */
+export interface PageView {
+  id: number;
+  sessionId: string;
+  path: string;
+  referrer?: string | null;
+  source?: string | null;
+  medium?: string | null;
+  keyword?: string | null;
+  query?: string | null;
+  device?: ('mobile' | 'tablet' | 'desktop') | null;
+  event?: ('view' | 'click') | null;
+  label?: string | null;
+  durationMs?: number | null;
+  maxScroll?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -359,6 +439,14 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'inquiries';
+        value: number | Inquiry;
+      } | null)
+    | ({
+        relationTo: 'popups';
+        value: number | Popup;
+      } | null)
+    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -367,8 +455,8 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
-        relationTo: 'authors';
-        value: number | Author;
+        relationTo: 'doctors';
+        value: number | Doctor;
       } | null)
     | ({
         relationTo: 'media';
@@ -377,6 +465,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'page-views';
+        value: number | PageView;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -419,6 +511,42 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries_select".
+ */
+export interface InquiriesSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  subjects?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  message?: T;
+  status?: T;
+  memo?: T;
+  agreedAt?: T;
+  page?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "popups_select".
+ */
+export interface PopupsSelect<T extends boolean = true> {
+  title?: T;
+  image?: T;
+  link?: T;
+  active?: T;
+  startAt?: T;
+  endAt?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -486,9 +614,9 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors_select".
+ * via the `definition` "doctors_select".
  */
-export interface AuthorsSelect<T extends boolean = true> {
+export interface DoctorsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   title?: T;
@@ -599,6 +727,26 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-views_select".
+ */
+export interface PageViewsSelect<T extends boolean = true> {
+  sessionId?: T;
+  path?: T;
+  referrer?: T;
+  source?: T;
+  medium?: T;
+  keyword?: T;
+  query?: T;
+  device?: T;
+  event?: T;
+  label?: T;
+  durationMs?: T;
+  maxScroll?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -667,23 +815,23 @@ export interface Home {
         id?: string | null;
       }[]
     | null;
-  authorsShow?: boolean | null;
+  doctorsShow?: boolean | null;
   /**
-   * 비우면 제목이 나오지 않습니다
+   * "의료진 소개" 부분은 남색으로 강조됩니다. 비우면 제목이 나오지 않습니다
    */
-  authorsTitle?: string | null;
+  doctorsTitle?: string | null;
   /**
    * "|" 는 모바일에서만 줄바꿈, Enter 는 모든 화면에서 줄바꿈
    */
-  authorsText?: string | null;
+  doctorsText?: string | null;
   /**
    * 비우면 버튼이 나오지 않습니다
    */
-  authorsButton?: string | null;
+  doctorsButton?: string | null;
   /**
-   * 비우면 홈페이지 첫 화면으로 연결됩니다
+   * 비우면 병원 홈페이지 첫 화면으로 연결됩니다
    */
-  authorsLink?: string | null;
+  doctorsLink?: string | null;
   /**
    * "|" 는 모바일에서만 줄바꿈, Enter 는 모든 화면에서 줄바꿈
    */
@@ -712,14 +860,62 @@ export interface Home {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "brand".
+ * via the `definition` "clinic".
  */
-export interface Brand {
+export interface Clinic {
   id: number;
   name: string;
   nameEn?: string | null;
-  homepageUrl?: string | null;
-  phone?: string | null;
+  homepageUrl: string;
+  address: string;
+  phone: string;
+  fax?: string | null;
+  businessNumber?: string | null;
+  representatives?:
+    | {
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  stats?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  statsNote?: string | null;
+  hours?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  directions?: string | null;
+  parking?:
+    | {
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  mapLinks?:
+    | {
+        label: string;
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * "[의료광고 심의 및 안내사항]" 제목과 아래 의료기관 한 줄은 자동으로 붙습니다.
+   */
+  disclaimerText?: string | null;
+  ctaTitle?: string | null;
+  /**
+   * "|" 는 모바일에서만 줄바꿈, Enter 는 모든 화면에서 줄바꿈
+   */
+  ctaText?: string | null;
+  consultUrl: string;
   kakaoChannelUrl?: string | null;
   sns?:
     | {
@@ -728,12 +924,20 @@ export interface Brand {
         id?: string | null;
       }[]
     | null;
-  ctaTitle?: string | null;
-  ctaText?: string | null;
-  /**
-   * 모든 글 맨 아래에 공통으로 붙는 안내문입니다.
-   */
-  disclaimerText?: string | null;
+  legalLinks?:
+    | {
+        label: string;
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  homepageMenu?:
+    | {
+        label: string;
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -760,11 +964,11 @@ export interface HomeSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
-  authorsShow?: T;
-  authorsTitle?: T;
-  authorsText?: T;
-  authorsButton?: T;
-  authorsLink?: T;
+  doctorsShow?: T;
+  doctorsTitle?: T;
+  doctorsText?: T;
+  doctorsButton?: T;
+  doctorsLink?: T;
   summaryTitle?: T;
   summaryText?: T;
   keyPoints?:
@@ -788,13 +992,55 @@ export interface HomeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "brand_select".
+ * via the `definition` "clinic_select".
  */
-export interface BrandSelect<T extends boolean = true> {
+export interface ClinicSelect<T extends boolean = true> {
   name?: T;
   nameEn?: T;
   homepageUrl?: T;
+  address?: T;
   phone?: T;
+  fax?: T;
+  businessNumber?: T;
+  representatives?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  stats?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  statsNote?: T;
+  hours?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  directions?: T;
+  parking?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  mapLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  disclaimerText?: T;
+  ctaTitle?: T;
+  ctaText?: T;
+  consultUrl?: T;
   kakaoChannelUrl?: T;
   sns?:
     | T
@@ -803,9 +1049,20 @@ export interface BrandSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
-  ctaTitle?: T;
-  ctaText?: T;
-  disclaimerText?: T;
+  legalLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  homepageMenu?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
