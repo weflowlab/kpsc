@@ -52,3 +52,8 @@ next-env.d.ts
 
 # 로컬 개발용 업로드 파일 (배포는 Vercel Blob 사용)
 /public/uploads/
+
+# Payload 로컬 개발 DB (운영은 Neon blog 스키마)
+payload.db
+payload.db-journal
+/public/media/

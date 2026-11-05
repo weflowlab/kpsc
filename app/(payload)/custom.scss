@@ -1,0 +1,769 @@
+/* Payload 관리자 UI 브랜드 스타일. 글꼴, 강조색(남색), 버튼, 로고 영역만 손대고 골격은 유지한다. */
+
+:root {
+  /* 글꼴: 기기 시스템 글꼴 (Mac Apple SD Gothic Neo, Windows 맑은 고딕). 관리자 화면은 한글 라벨이 많아 웹폰트를 쓰면 조각 97개·1.6MB 를 받게 되어 뺐다 */
+  --font-body: system-ui, -apple-system, "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic", Roboto, sans-serif;
+
+  /* 강조색(선택·활성·링크·포커스)을 Payload 기본 하늘색에서 푸른안과 남색 계열로 교체 */
+  --color-success-50: #eef3fa;
+  --color-success-100: #dde7f5;
+  --color-success-150: #c6d7ee;
+  --color-success-200: #a9c3e4;
+  --color-success-250: #8aaedb;
+  --color-success-300: #6b98d0;
+  --color-success-350: #4f84c6;
+  --color-success-400: #3471ba;
+  --color-success-450: #1f5fab;
+  --color-success-500: #152c6b;
+  --color-success-550: #00418a;
+  --color-success-600: #003a7c;
+  --color-success-650: #00336d;
+  --color-success-700: #002c5e;
+  --color-success-750: #00254f;
+  --color-success-800: #001e40;
+  --color-success-850: #001732;
+  --color-success-900: #001124;
+  --color-success-950: #000b17;
+
+  /* 모서리를 조금 더 둥글게 */
+  --style-radius-s: 6px;
+  --style-radius-m: 10px;
+  --style-radius-l: 14px;
+}
+
+/* 상단 바 높이: Payload 기본(데스크톱 base×2.8, 태블릿 이하 base×2.4)보다 조금 높게.
+   햄버거 메뉴 서랍의 머리(로고+닫기)와 메뉴 본문 시작 위치도 같은 변수를 쓰므로 함께 커진다 */
+:root {
+  --app-header-height: calc(var(--base) * 3.2);
+  --doc-controls-height: calc(var(--base) * 3.2); /* 글 편집 상단 바. 떠 있는 햄버거(상단 바 높이 기준 중앙)와 세로 중심이 맞게 같은 값 */
+}
+@media (max-width: 1024px) {
+  :root {
+    --app-header-height: calc(var(--base) * 2.9);
+    --doc-controls-height: calc(var(--base) * 2.9);
+  }
+}
+
+/* 글자 크기: Payload 기본 13px → 15px (태블릿 이하 14px).
+   대부분의 글자는 html 에서 상속받고, 간격(--base)도 rem 기준이라 함께 조금 넓어진다.
+   라벨·접이식 제목처럼 13px 로 고정된 것만 상속으로 되돌린다. */
+html {
+  font-size: 15px;
+}
+@media (max-width: 1024px) {
+  html {
+    font-size: 14px;
+  }
+}
+.field-label,
+.collapsible__toggle,
+.array-field__row-header,
+.field-description,
+.pill {
+  font-size: inherit;
+}
+input,
+textarea,
+select,
+button {
+  font-size: inherit;
+}
+
+/* 대시보드 제목 옆 드롭다운("대시보드 편집 / 레이아웃 재설정")은 위젯 배치용이라 병원 운영엔 불필요 → 화살표를 숨기고 눌리지 않게 */
+.dashboard-breadcrumb-select {
+  pointer-events: none;
+}
+.dashboard-breadcrumb-select .rs__indicators,
+.dashboard-breadcrumb-select .rs__dropdown-indicator {
+  display: none;
+}
+
+/* 대시보드 "통계" 묶음 (components/admin/DashboardTrafficLink): Payload 묶음과 같은 마크업을 써서 스타일은 그대로 상속. li 는 카드 폭만 맞춘다 */
+.dashboard-stats-widget .collections__card-list > li {
+  display: contents;
+}
+/* "통계" 글자 위 간격 = 글자와 카드 사이 간격(var(--base)). 앞 위젯 아래 여백 6px 이 이미 있으므로 그만큼 뺀다 */
+.dashboard-stats-widget {
+  padding-top: calc(var(--base) - 6px) !important;
+  /* 대시보드 맨 아래 묶음이라 화면 끝에 붙지 않게 아래 여백 */
+  padding-bottom: calc(var(--base) * 2) !important;
+}
+@media (max-width: 768px) {
+  /* 모바일 대시보드: 위아래 숨 쉴 여백 */
+  .dashboard.gutter {
+    padding-top: 24px;
+    padding-bottom: 48px;
+  }
+  .collections__group {
+    margin-bottom: 28px;
+  }
+}
+
+/* 유입 관리 화면 (components/admin/TrafficView) */
+.traffic__lead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 16px; /* 위(요약 칸)·아래(카드) 간격을 카드 사이 간격 16px 과 같게 */
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: #e6edf7;
+  color: var(--theme-text);
+  font-size: 17px;
+  line-height: 1.5;
+}
+.traffic__lead strong {
+  font-weight: 800;
+  color: #152c6b;
+}
+/* 문장 앞 아이콘: 요약 칸과 같은 둥근 사각형 배지 (반투명 흰 배경) */
+.traffic__lead-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #152c6b;
+  color: #fff;
+  font-style: normal;
+}
+.traffic__br-mobile {
+  display: none; /* 768px 이하에서만 줄바꿈 */
+}
+.traffic__stat em {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.5;
+  font-style: normal;
+  color: var(--theme-elevation-450);
+}
+.traffic__card p.traffic__desc {
+  margin: 4px 0 0;
+  color: var(--theme-elevation-500);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.traffic {
+  padding-top: 24px;
+  padding-bottom: 56px;
+  max-width: 100%;
+  overflow-x: clip; /* 어떤 카드가 넘쳐도 페이지가 옆으로 밀리지 않게 */
+}
+/* 상단 띠: 글 편집 화면의 doc-controls 처럼 반투명 배경으로 따라다닌다 */
+.traffic__sticky {
+  /* 높이는 헤더와 같게: 떠 있는 햄버거 버튼이 헤더 높이 칸 안에서 가운데 정렬되므로,
+     스크롤 전(헤더 옆)·스크롤 후(이 바 옆) 어느 때나 "유입 관리" 글자와 세로 중심이 맞는다 */
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  height: var(--app-header-height);
+  display: flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--theme-bg) 86%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--theme-elevation-100);
+}
+.traffic__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between; /* 왼쪽 제목, 오른쪽 기간 칩 */
+  gap: 12px;
+  width: 100%;
+  padding-top: 0; /* 바 높이(헤더와 같음) 안에서 가운데 정렬 → 위·아래 여백이 저절로 같다 */
+  padding-bottom: 0;
+}
+.traffic__head h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+.traffic__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+/* 구분 칩(전체·홈페이지·웹블로그)은 기간 칩과 세로줄로 나눈다 */
+.traffic__scopes {
+  padding-right: 18px;
+  border-right: 1px solid var(--theme-elevation-200);
+}
+.traffic__periods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.traffic__periods a {
+  padding: 6px 14px;
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 999px;
+  color: var(--theme-elevation-700);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.traffic__periods a.is-on {
+  background: #152c6b;
+  border-color: #152c6b;
+  color: #fff;
+}
+.traffic__note,
+.traffic__hint {
+  color: var(--theme-elevation-500);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.traffic__note {
+  margin: 8px 0 20px;
+}
+.traffic__hint {
+  margin: -4px 0 12px;
+}
+.traffic__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); /* 1fr 만 쓰면 긴 글자가 칸을 화면 밖으로 늘린다 */
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.traffic__stat {
+  padding: 18px 22px;
+  border: 1px solid var(--theme-elevation-150);
+  border-top: 4px solid #152c6b; /* 색은 인라인(borderTopColor) */
+  border-radius: 12px;
+  background: var(--theme-elevation-0);
+}
+.traffic__stat span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--theme-elevation-600);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.traffic__stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-style: normal;
+}
+.traffic__card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #e6edf7;
+  color: #152c6b;
+  font-style: normal;
+}
+.traffic__stat strong {
+  display: block;
+  margin: 8px 0 6px;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #152c6b;
+  letter-spacing: -0.02em;
+}
+.traffic__card {
+  padding: 20px 22px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 12px;
+  background: var(--theme-elevation-0);
+  margin-bottom: 16px;
+}
+.traffic__card h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+.traffic__card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.traffic__card-head > div {
+  min-width: 0;
+}
+.traffic__card--muted {
+  background: var(--theme-elevation-50);
+}
+.traffic__empty-card {
+  text-align: center;
+  color: var(--theme-elevation-500);
+  padding: 32px;
+}
+.traffic__empty {
+  margin: 4px 0 0;
+  color: var(--theme-elevation-400);
+  font-size: 14px;
+}
+.traffic__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+/* 묶음 안 카드는 묶음의 gap 만 쓴다 (카드 여백까지 더해지면 32px 로 벌어져 카드마다 간격이 달라진다) */
+.traffic__grid .traffic__card {
+  margin-bottom: 0;
+}
+.traffic__sub h3 {
+  margin: 12px 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--theme-elevation-600);
+}
+/* 가로 막대 */
+.traffic__bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* 막대 행: weflow 관리자 BarRow 와 같은 모양 (라벨 92px · 18px 높이 각진 막대 · 오른쪽 "2명 (100%)" 굵게, 모든 화면 동일) */
+.traffic__bars li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.traffic__bar-label {
+  flex: 0 1 92px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: var(--theme-elevation-600);
+}
+.traffic__bar-track {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--theme-elevation-100);
+  overflow: hidden;
+}
+.traffic__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: #152c6b;
+}
+.traffic__bar-value {
+  flex: 0 1 92px;
+  min-width: 0;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--theme-elevation-800);
+  font-variant-numeric: tabular-nums;
+}
+.traffic__bar-value small {
+  font-size: inherit;
+  color: inherit;
+}
+/* 전체 글 펼침 목록 */
+.traffic__all {
+  margin-top: 14px;
+  border-top: 1px solid var(--theme-elevation-100);
+  padding-top: 10px;
+}
+.traffic__all summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: #152c6b;
+}
+.traffic__all ol {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: post;
+}
+.traffic__all li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--theme-elevation-100);
+  font-size: 14px;
+}
+.traffic__all li::before {
+  counter-increment: post;
+  content: counter(post) ".";
+  color: var(--theme-elevation-400);
+  min-width: 1.6em;
+}
+.traffic__all li span {
+  flex: 1;
+  min-width: 0;
+}
+.traffic__all li strong {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 14일 세로 막대 */
+.traffic__daily {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 6px;
+  height: 160px;
+  align-items: end;
+}
+.traffic__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 4px;
+}
+.traffic__day-bar {
+  width: 100%;
+  max-width: 28px;
+  border-radius: 6px 6px 2px 2px;
+  background: #152c6b;
+  opacity: 0.85;
+}
+.traffic__day-value {
+  font-size: 11px;
+  font-weight: 700;
+  order: -1;
+  min-height: 14px;
+}
+.traffic__day-label {
+  font-size: 11px;
+  color: var(--theme-elevation-500);
+}
+/* 시간대별 차트: 24칸 막대, 6시간마다 라벨 */
+.traffic__hourly {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 3px;
+  height: 120px;
+  align-items: end;
+}
+.traffic__hour {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+}
+.traffic__hour-bar {
+  width: 100%;
+  border-radius: 3px 3px 1px 1px;
+  background: #152c6b;
+  opacity: 0.85;
+}
+.traffic__hour-label {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--theme-elevation-500);
+  white-space: nowrap;
+}
+.traffic__hourly { margin-bottom: 20px; }
+
+/* 날짜별 차트 가로 스크롤 래퍼. direction: rtl 로 처음부터 오른쪽(최근) 끝이 보이게 하고, 안쪽은 다시 ltr */
+.traffic__daily-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  direction: rtl;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.traffic__daily-scroll .traffic__daily {
+  direction: ltr;
+  min-width: 560px;
+}
+@media (max-width: 1024px) {
+  .traffic__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .traffic__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .traffic__day-label {
+    font-size: 10px;
+  }
+}
+@media (max-width: 768px) {
+  /* 모바일은 상단 바를 고정하지 않고 보통 흐름으로 (헤더 → 제목 10px, 기간 칩 → 요약 칸 20px) */
+  .traffic__sticky {
+    position: static;
+    height: auto;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: 0;
+  }
+  .traffic {
+    padding-top: 20px;
+  }
+  .traffic__head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 10px;
+    padding-bottom: 0;
+  }
+  .traffic__head h1 {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+  /* 기간 칩: 줄바꿈 대신 가로로 밀어 선택 */
+  .traffic__periods {
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .traffic__periods::-webkit-scrollbar {
+    display: none;
+  }
+  .traffic__periods a {
+    flex: 0 0 auto;
+  }
+  .traffic__stats {
+    gap: 16px; /* 카드 사이 간격을 전부 16px 로 통일 */
+  }
+  .traffic__stat {
+    padding: 14px 16px;
+  }
+  .traffic__stat strong {
+    font-size: 24px;
+  }
+  .traffic__stat-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .traffic__lead {
+    font-size: 15px;
+    padding: 14px 16px;
+  }
+  .traffic__br-mobile {
+    display: inline;
+  }
+  .traffic__card {
+    padding: 16px;
+  }
+}
+
+/* 확인 모달(삭제·발행 취소 등): 기본은 흐린 배경 위에 글자만 떠 있어 카드 형태로 */
+.confirmation-modal__wrapper {
+  background: var(--theme-elevation-0);
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 17, 36, 0.18);
+  padding: 32px 36px;
+  width: min(440px, calc(100vw - 32px));
+  gap: 20px;
+}
+.confirmation-modal__content h1 {
+  font-size: 22px;
+  line-height: 1.3;
+}
+.confirmation-modal__content p {
+  color: var(--theme-elevation-600);
+}
+.confirmation-modal__controls {
+  justify-content: flex-end;
+}
+
+/* 모바일(768px 이하) 왼쪽 메뉴: Payload 기본은 화면 전체를 덮고 로그아웃이 아래로 밀려 스크롤해야 보였다.
+   → 화면 왼쪽 80%(최대 340px) 서랍, 상단 로고+닫기, 하단 로그아웃 버튼, 오른쪽은 뒤 화면이 어둡게 비친다 */
+@media (max-width: 768px) {
+  /* 서랍은 그리드 열을 차지하지 않고 위에 떠 있는다. 그리드를 한 칸으로 만들어 본문이 항상 전체 폭을 쓰게 한다
+     (메뉴 칸을 0 으로만 두면 본문이 그 0px 칸에 들어가 좁게 접힌다) */
+  .template-default,
+  .template-default--nav-open,
+  .template-default--nav-hydrated,
+  .template-default--nav-hydrated.template-default--nav-open {
+    grid-template-columns: 1fr;
+  }
+  .template-default .template-default__wrap {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+  }
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: calc(var(--z-modal) + 1);
+    height: 100dvh;
+    width: min(80vw, 340px);
+    background: var(--theme-bg);
+    box-shadow: 0 0 40px rgba(0, 17, 36, 0.25);
+    transform: translateX(-100%);
+    transition:
+      transform 0.2s ease-out,
+      opacity 0.15s ease-out;
+  }
+  .nav--nav-open {
+    transform: none;
+  }
+  /* 뒤 화면 어둡게 (Payload 가 만들어 둔 오버레이 의사요소 재사용) */
+  .template-default--nav-open .template-default__wrap::before {
+    background: #000;
+    opacity: 0.4;
+    visibility: visible;
+    z-index: var(--z-modal);
+  }
+
+  /* 상단: 로고(왼쪽) + 닫기(오른쪽) */
+  .nav__header {
+    left: 0;
+    width: 100%;
+    background: var(--theme-bg);
+    border-bottom: 1px solid var(--theme-elevation-100);
+  }
+  /* 좌우 여백은 아래 메뉴 글자와 같은 --gutter-h (768px 이하 16px) → 로고 왼쪽 끝이 메뉴 글자 시작점과 맞는다 */
+  .nav__header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--gutter-h);
+  }
+  .nav__header-content::before {
+    content: "";
+    width: 140px;
+    height: 44px;
+    background: url("/logo.webp") no-repeat left center / contain;
+  }
+  .nav__mobile-close {
+    padding: 8px 0;
+  }
+  .nav__mobile-close .hamburger {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* 본문: 서랍 높이에 꽉 채워 로그아웃이 스크롤 없이 맨 아래에 보인다 */
+  .nav__scroll {
+    height: 100dvh;
+    padding-top: calc(var(--app-header-height) + 20px);
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .nav__controls {
+    width: 100%;
+    padding-top: 16px;
+    border-top: 1px solid var(--theme-elevation-100);
+  }
+  .nav__controls > :first-child {
+    margin-top: 0;
+  }
+  /* 로그아웃: 아이콘만 있던 링크를 테두리 버튼으로 */
+  .nav__log-out {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    border: 1.5px solid #152c6b;
+    border-radius: 11px;
+    color: #152c6b;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .nav__log-out::after {
+    content: "로그아웃";
+  }
+}
+
+/* 기본(검정) 버튼을 남색 버튼으로 */
+.btn--style-primary {
+  --bg-color: #152c6b;
+  --hover-bg: #2b4a9c;
+  --color: #fff;
+}
+
+/* 왼쪽 메뉴 활성 항목 */
+.nav__link--active,
+.nav__link:hover {
+  color: #152c6b;
+}
+
+/* 로그인 화면: 로고 아래 여백, 폼 폭 */
+.login .graphic-logo {
+  margin-bottom: 1.5rem;
+}
+
+/* 로고 공통 (login / nav) */
+.pureun-logo {
+  display: block;
+  height: auto;
+}
+.pureun-logo--login {
+  width: 220px;
+  margin: 0 auto;
+}
+
+/* 햄버거(메뉴 열고 닫기) 버튼을 상단 바 높이 기준 세로 중앙에 */
+.template-default__nav-toggler-container,
+.app-header__content,
+.app-header__wrapper {
+  height: var(--app-header-height);
+  align-items: center;
+}
+.template-default__nav-toggler {
+  display: flex;
+  align-items: center;
+  height: var(--app-header-height);
+  margin: 0;
+}
+.nav-toggler .hamburger {
+  height: auto;
+}@media (max-width: 768px) {
+  .app-header__mobile-nav-toggler {
+    height: var(--app-header-height);
+    margin: 0;
+  }
+}
+
+/* 상단 바 왼쪽 로고: Payload 기본은 18×18 아이콘 자리라 사이트 헤더 로고 높이(모바일 32px, 데스크톱 40px)에 맞춘다 */
+.step-nav__home {
+  width: auto;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+.pureun-logo--nav {
+  width: auto;
+  height: 40px;
+}
+@media (max-width: 1024px) {
+  .step-nav__home,
+  .pureun-logo--nav {
+    height: 32px;
+  }
+}
+
+/* 컬렉션 설명문(admin.description)의 줄바꿈(\n)을 그대로 표시 */
+.custom-view-description { white-space: pre-line; }

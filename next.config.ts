@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 const nextConfig: NextConfig = {
   /* --------------------------------------------------------------------------
@@ -19,7 +20,10 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "10mb",
     },
+    /* 루트 레이아웃이 여럿((main)·(payload)·(blog))이라, 어느 그룹에도 안 잡히는
+       주소의 404 는 app/global-not-found.tsx 가 맡는다 */
+    globalNotFound: true,
   },
 };
 
-export default nextConfig;
+export default withPayload(nextConfig);
