@@ -4,12 +4,12 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconSearch,
-  IconEye,
-  IconEyeglass,
-  IconEyeCheck,
-  IconDroplet,
-  IconMicroscope,
-  IconStethoscope,
+  IconHeartHandshake,
+  IconPlane,
+  IconWorld,
+  IconGift,
+  IconUsers,
+  IconLeaf,
 } from "@tabler/icons-react";
 
 // 궤도 위를 도는 안과 아이콘. 궤도가 돌면 같이 돌고, 아이콘 자체는 반대로 돌려 항상 똑바로 선다.
@@ -21,8 +21,8 @@ const ORBITS = [
     spin: "animate-[spin_40s_linear_infinite]",
     counter: "animate-[spin_40s_linear_infinite_reverse]",
     icons: [
-      { Icon: IconEye, pos: "left-1/2 top-0" },
-      { Icon: IconDroplet, pos: "left-1/2 top-full" },
+      { Icon: IconHeartHandshake, pos: "left-1/2 top-0" },
+      { Icon: IconGift, pos: "left-1/2 top-full" },
     ],
   },
   {
@@ -31,8 +31,8 @@ const ORBITS = [
     spin: "animate-[spin_70s_linear_infinite_reverse]",
     counter: "animate-[spin_70s_linear_infinite]",
     icons: [
-      { Icon: IconEyeglass, pos: "left-1/2 top-0" },
-      { Icon: IconEyeCheck, pos: "left-1/2 top-full" },
+      { Icon: IconPlane, pos: "left-1/2 top-0" },
+      { Icon: IconWorld, pos: "left-1/2 top-full" },
     ],
   },
   {
@@ -41,8 +41,8 @@ const ORBITS = [
     spin: "animate-[spin_110s_linear_infinite]",
     counter: "animate-[spin_110s_linear_infinite_reverse]",
     icons: [
-      { Icon: IconMicroscope, pos: "left-0 top-1/2" },
-      { Icon: IconStethoscope, pos: "left-full top-1/2" },
+      { Icon: IconUsers, pos: "left-0 top-1/2" },
+      { Icon: IconLeaf, pos: "left-full top-1/2" },
     ],
   },
 ];

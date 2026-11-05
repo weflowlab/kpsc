@@ -7,7 +7,7 @@ import { IconSearch, IconX } from "@tabler/icons-react";
 import { useSite } from "@/components/blog/SiteProvider";
 
 // 패널 제목. 모바일에서 줄바꿈되지 않도록 짧게 유지한다
-const TITLE = "증상·질환 검색";
+const TITLE = "블로그 검색";
 
 type Props = {
   variant?: "hero" | "header"; // 호환용 (현재는 header 패널만 사용)
@@ -71,7 +71,7 @@ export function SearchBox({ showKeywords = true, onClose, autoFocus, className =
                 name="q"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="증상이나 질환명을 검색해 보세요"
+                placeholder="궁금한 주제를 검색해 보세요"
                 aria-label="콘텐츠 검색"
                 className="h-10 w-full min-w-0 bg-transparent pl-4 text-base text-foreground outline-none placeholder:text-neutral-400 md:h-11 md:text-lg"
               />

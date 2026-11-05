@@ -22,7 +22,7 @@ export async function FaqSection({ items }: Props) {
             </h2>
             {/* Noto Sans KR 은 모두의안과 블로그의 Pretendard 보다 글자가 넓어, 같은 문구가 왼쪽 칸(4/12)에서 두 줄에 들어가려면 16px + 자간 살짝 좁힘 */}
             <p className="mt-3 whitespace-pre-line text-base leading-relaxed tracking-[-0.01em] text-neutral-600">
-              {"자주 문의하시는 내용을 모았습니다.\n더 궁금한 점은 오른쪽 아래 퀵메뉴로 문의해 주세요."}
+              {"자주 문의하시는 내용을 모았습니다."}
             </p>
           </div>
           {/* 오른쪽: 아코디언 */}

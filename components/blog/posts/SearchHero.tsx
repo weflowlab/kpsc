@@ -33,7 +33,7 @@ export function SearchHero({ query, keywords, resultCount }: Props) {
                 <span className="text-primary">&lsquo;{query}&rsquo;</span> 검색 결과
               </>
             ) : (
-              "증상·질환 검색"
+              "블로그 검색"
             )}
           </h1>
           {query && resultCount !== undefined && (
@@ -57,7 +57,7 @@ export function SearchHero({ query, keywords, resultCount }: Props) {
                 name="q"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                placeholder="증상이나 질환명을 검색해 보세요"
+                placeholder="궁금한 주제를 검색해 보세요"
                 aria-label="콘텐츠 검색"
                 className="h-11 w-full min-w-0 bg-transparent pl-5 text-base text-foreground outline-none placeholder:text-neutral-400 md:h-13 md:text-lg"
               />

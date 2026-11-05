@@ -20,7 +20,7 @@ export function BlogMenuSheet({ open, onClose }: Props) {
   const blogLinks = [
     { href: "/blog/posts", label: "전체 글", Icon: null },
     ...categories.map((c) => ({ href: `/blog/${c.slug}`, label: c.name, Icon: null })),
-    { href: "/blog/search", label: "증상·질환 검색", Icon: IconSearch },
+    { href: "/blog/search", label: "블로그 검색", Icon: IconSearch },
   ];
 
   const itemCls = (active: boolean) =>
@@ -76,7 +76,7 @@ export function BlogMenuSheet({ open, onClose }: Props) {
           <Link
             href={clinic.consultUrl || "/contact/online"}
             onClick={onClose}
-            className="flex h-12 items-center justify-center gap-2 rounded-[11px] bg-[#edc47c] text-base font-semibold text-[#152c6b]"
+            className="flex h-12 items-center justify-center gap-2 rounded-[11px] bg-[#edc47c] text-base font-semibold text-primary"
           >
             <IconClipboardText className="size-5" />
             상담 신청

@@ -1,7 +1,7 @@
 // 푸른안과(전주) 기본 데이터. 시드(/api/dev-seed)가 Payload 에 넣고, 시드 전에는 프론트 폴백으로도 쓴다.
 // 병원 정보는 lib/site.ts(SITE·HOURS), 의료진은 lib/doctors.ts(DOCTORS) 를 그대로 가져와 블로그 타입으로 바꾼다. 한 곳만 고치면 된다.
 import type { Category, ClinicInfo, Doctor } from "./types";
-import { HOURS, SITE } from "./site";
+import { SITE } from "./site";
 
 export const clinic: ClinicInfo = {
   name: SITE.name,
@@ -13,9 +13,8 @@ export const clinic: ClinicInfo = {
   businessNumber: SITE.bizNo,
   representatives: [SITE.ceo],
   hours: [
-    { label: HOURS.weekday.label, value: HOURS.weekday.time },
-    { label: HOURS.saturday.label, value: HOURS.saturday.time },
-    { label: "휴진", value: "일요일 및 공휴일" },
+    { label: "월 ~ 일", value: "AM 09:00 ~ PM 06:00" },
+    { label: "휴무", value: "금요일 · 공휴일" },
   ],
   directions: "",
   parking: [],
@@ -40,11 +39,11 @@ export const clinic: ClinicInfo = {
 export const categories: Category[] = [
   { slug: "news", name: "KPSC 소식", description: "KPSC의 새로운 소식과 공지를 전합니다." },
   { slug: "share", name: "나눔·사회공헌", description: "Save the Children 파트너로서의 나눔과 사회공헌 활동." },
-  { slug: "travel", name: "여행 이야기", description: "KPSC그룹여행사와 함께하는 여행 이야기." },
+  { slug: "travel", name: "여행 이야기", description: "KPSC여행사와 함께하는 여행 이야기." },
   { slug: "partners", name: "파트너", description: "KPSC와 함께하는 파트너들의 이야기." },
 ];
 
-export const popularKeywords = ["나눔", "여행", "파트너십", "KPSC그룹여행사"]; // 모바일은 앞 2개만 보인다
+export const popularKeywords = ["나눔", "여행", "파트너십", "KPSC여행사"]; // 모바일은 앞 2개만 보인다
 
 // 작성자 (시드 전 폴백 — 관리자에서 추가하기 전에는 비움)
 export const doctors: Doctor[] = [];

@@ -27,9 +27,9 @@ export const SITE = {
 
 /** 진료시간 (기존 홈페이지 기준) */
 export const HOURS = {
-  weekday: { label: "평일", time: "오전 09:00 ~ 12:30 / 오후 14:00 ~ 18:00" },
-  saturday: { label: "토요일", time: "오전 08:30 ~ 12:30" },
-  notes: ["대기자가 많을 경우 접수가 조기 마감됩니다.", "전화 접수는 불가합니다. 양해 부탁드립니다."],
+  weekday: { label: "월 ~ 일", time: "AM 09:00 ~ PM 06:00" },
+  saturday: { label: "휴무", time: "금요일 · 공휴일" },
+  notes: [],
 };
 
 export type MenuPage = { slug: string; label: string; /** 외부 링크면 지정 */ external?: string };

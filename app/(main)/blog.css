@@ -17,12 +17,12 @@
   --neutral-800: #262626;
   --neutral-900: #171717;
 
-  /* 브랜드 색 = 홈페이지 남색(#152c6b). secondary 는 hover·그라데이션용으로 같은 색상에서 명도만 올린 남색 (흰 글씨 대비 AA 통과) */
-  --brand-primary: #152c6b;
-  --brand-primary-5: #152c6b0d;
-  --brand-primary-10: #152c6b1a;
-  --brand-primary-20: #152c6b33;
-  --brand-secondary: #2b4a9c;
+  /* 브랜드 색 = KPSC 푸른색 계열(brand-700 #1d4ed8 — 메인 PRIMARY보다 한 단계 진해 너무 밝지 않게). secondary 는 hover·그라데이션용 blue-800 #1e40af (흰 글씨 대비 AA 통과) */
+  --brand-primary: #1d4ed8;
+  --brand-primary-5: #1d4ed80d;
+  --brand-primary-10: #1d4ed81a;
+  --brand-primary-20: #1d4ed833;
+  --brand-secondary: #1e40af;
 
   /* 의미 색 */
   --background: #fff;
