@@ -1,5 +1,5 @@
-// Payload CMS 설정. 홈페이지와 블로그가 하나의 관리자(/admin)·REST API(/api)를 쓴다.
-// 관리자 메뉴: 홈페이지(상담 문의·팝업) / 블로그(글·카테고리·의료진·블로그 메인) / 공통(이미지·병원 정보) / 설정(관리자 계정) / 통계(유입 관리)
+// Payload CMS 설정. 블로그 전용 관리자(/studio)·REST API(/blog-api). KPSC 본체 관리자(/admin, /api)와는 별개다.
+// 관리자 메뉴: 블로그(글·카테고리·작성자·블로그 메인) / 공통(이미지) / 설정(관리자 계정)
 // DB: 개발은 로컬 SQLite 파일, 운영은 DATABASE_URI 로 Postgres(Neon) 등에 연결.
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,9 +17,6 @@ import { Categories } from "./collections/Categories";
 import { Doctors } from "./collections/Doctors";
 import { Posts } from "./collections/Posts";
 import { PageViews } from "./collections/PageViews";
-import { Inquiries } from "./collections/Inquiries";
-import { Popups } from "./collections/Popups";
-import { Clinic } from "./globals/Clinic";
 import { HomePage } from "./globals/HomePage";
 import { migrations } from "./migrations";
 
@@ -36,6 +33,15 @@ export default buildConfig({
     user: Users.slug,
     theme: "light", // 기기 다크 모드와 무관하게 항상 흰 화면 (계정 메뉴의 테마 선택도 사라진다)
     importMap: { baseDir: path.resolve(dirname) },
+    // KPSC 로고: 상단 바 왼쪽(Icon) · 로그인 화면(Logo). 경로를 바꾸면 `npm run payload:generate` 로 importMap 을 다시 만든다.
+    components: {
+      graphics: {
+        Icon: "@/components/blog/admin/Icon#Icon",
+        Logo: "@/components/blog/admin/Logo#Logo",
+      },
+      // 왼쪽 메뉴 맨 아래(로그아웃 위): KPSC 홈페이지 관리자(/admin)로 가는 버튼
+      afterNavLinks: ["@/components/blog/admin/MainAdminNavLink#MainAdminNavLink"],
+    },
     meta: {
       titleSuffix: `| ${ADMIN_TITLE}`,
       description: `${ADMIN_TITLE}입니다.`,
@@ -75,8 +81,8 @@ export default buildConfig({
       },
     },
   },
-  collections: [Inquiries, Popups, Posts, Categories, Doctors, Media, Users, PageViews],
-  globals: [HomePage, Clinic],
+  collections: [Posts, Categories, Doctors, Media, Users, PageViews],
+  globals: [HomePage], // 브랜드 정보(이름·전화·운영시간 등)는 관리자 없이 코드 고정값을 쓴다 (lib/site.ts, lib/mock.ts)
   editor: lexicalEditor(),
   // 이메일 발송은 쓰지 않는다 (비밀번호 변경은 관리자 계정 메뉴에서, 분실 시 개발자가 재설정).
   // 어댑터를 비워 두면 매 요청마다 경고가 찍히므로 아무것도 보내지 않는 어댑터를 둔다.

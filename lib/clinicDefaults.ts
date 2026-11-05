@@ -1,12 +1,10 @@
-// 글 하단 문구(면책 안내, 상담 블록)의 기본값 단일 출처. 쓰임새는 lib/homeDefaults.ts 와 같다.
-// - 프론트(components/blog/post): 관리자 '병원 정보 → 글 하단 문구' 가 비어 있을 때 이 문구를 보여 준다.
-// - Payload 설정(globals/Clinic.ts): 필드 defaultValue (반드시 함수로, 이유는 globals/HomePage.ts 참고).
-// - 시드: 비어 있는 필드를 이 문구로 채운다.
+// 글 하단 문구(안내 상자, 문의 블록)의 기본값 단일 출처. 쓰임새는 lib/homeDefaults.ts 와 같다.
+// 관리자 '브랜드 정보' 메뉴를 없앴으므로 이 값이 곧 화면 문구다. 바꾸려면 이 파일을 고친다.
 // "|" 는 모바일에서만 줄바꿈(components/blog/ui/MobileBreaks), "\n" 은 모든 화면에서 줄바꿈.
 
-export const DISCLAIMER_TEXT =
-  "본 콘텐츠는 질환에 대한 이해를 돕기 위한 정보 제공 목적으로 작성되었으며, 의학적 진단이나 치료를 대신할 수 없습니다. 검사 결과와 치료 방법은 개인의 눈 상태에 따라 차이가 있을 수 있으며, 치료가 필요한 경우 수술·약물 등 모든 치료에는 부작용이 발생할 수 있으므로 반드시 안과 전문의의 정밀검사 및 충분한 상담 후 결정하시기 바랍니다.";
+// 글 하단 안내 상자: 비워 두면 상자가 보이지 않는다
+export const DISCLAIMER_TEXT = "";
 
-export const CTA_TITLE = "눈의 변화, 미루지 말고 확인하세요";
+export const CTA_TITLE = "KPSC에 궁금한 점이 있으신가요?";
 export const ctaText = (clinicName: string) =>
-  `작은 변화도 검사로 확인하면|치료 시기를 놓치지 않을 수 있습니다.\n${clinicName} 분야별 전문의에게|상담 신청으로 문의하세요.`;
+  `나눔·여행·파트너십 등 궁금한 내용은|카카오톡 채널로 편하게 문의해 주세요.\n${clinicName}가 정성껏 안내해 드리겠습니다.`;

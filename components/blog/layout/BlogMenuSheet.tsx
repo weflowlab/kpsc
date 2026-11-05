@@ -4,9 +4,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconArrowRight, IconClipboardText, IconPhone, IconSearch, IconX } from "@tabler/icons-react";
+import { IconArrowRight, IconMessageCircle, IconPhone, IconSearch, IconX } from "@tabler/icons-react";
 import { useSite } from "@/components/blog/SiteProvider";
 import { Sheet } from "@/components/blog/ui/Sheet";
+import { SITE } from "@/lib/site";
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -15,6 +16,7 @@ export function BlogMenuSheet({ open, onClose }: Props) {
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const tel = `tel:${clinic.phone.replace(/[^0-9+]/g, "")}`;
+  const inquiry = SITE.openChatUrl || SITE.kakaoUrl; // 문의하기 → 카카오채널/오픈채팅
 
   // 블로그 메뉴: 전체 글 + 주제별 + 검색
   const blogLinks = [
@@ -73,14 +75,16 @@ export function BlogMenuSheet({ open, onClose }: Props) {
             <IconPhone className="size-5" />
             바로 전화
           </a>
-          <Link
-            href={clinic.consultUrl || "/contact/online"}
+          <a
+            href={inquiry}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={onClose}
-            className="flex h-12 items-center justify-center gap-2 rounded-[11px] bg-[#edc47c] text-base font-semibold text-primary"
+            className="flex h-12 items-center justify-center gap-2 rounded-[11px] bg-[#FEE500] text-base font-semibold text-[#3C1E1E]"
           >
-            <IconClipboardText className="size-5" />
-            상담 신청
-          </Link>
+            <IconMessageCircle className="size-5" />
+            문의하기
+          </a>
         </div>
       </div>
     </Sheet>

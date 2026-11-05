@@ -67,7 +67,7 @@ export function BlogHeader() {
             {/* 왼쪽: 블로그 로고 + 홈페이지 바로가기 */}
             <div className="flex min-w-0 items-center gap-2 sm:gap-3 lg:gap-6">
               <Link href="/blog" aria-label="웹블로그 홈으로 이동" className="flex shrink-0 items-center">
-                <Image src="/images/logo-white.webp" alt={`${clinic.name} 블로그`} width={188} height={60} loading="eager" className="relative -top-[2px] h-8 w-auto lg:h-10" />
+                <Image src="/images/logo-white.webp" alt={`${clinic.name} 블로그`} width={188} height={60} loading="eager" className="relative -top-[3px] h-8 w-auto lg:-top-[2px] lg:h-10" />
               </Link>
               <Link
                 href={clinic.homepageUrl || "/"}

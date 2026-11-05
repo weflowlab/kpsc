@@ -25,7 +25,7 @@ export const clinic: ClinicInfo = {
   sns: [],
   legalLinks: [{ label: "개인정보처리방침", href: "/privacy" }],
   homepageMenu: [],
-  consultUrl: "/contact/online", // 상담·예약 버튼 → 홈페이지 상담 신청
+  consultUrl: SITE.kakaoUrl, // 문의 버튼 → 카카오채널
   kakaoChannelUrl: "",
   // 소개 문단 아래 수치 (관리자에서 채우기 전에는 비움)
   stats: [],

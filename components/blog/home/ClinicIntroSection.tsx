@@ -28,12 +28,15 @@ export function ClinicIntroSection({ banners: bannersProp }: Props) {
   // 관리자가 배너 이미지를 올리기 전 기본 이미지 (메인 히어로 2번 슬라이드 = c_main_2.png / KPSC여행사)
   const FALLBACKS = ["/images/hero/c_main_2.png", "/images/content/kpsc-travel-logo.webp"];
   const FALLBACK_FIT = ["object-cover", "object-contain p-6"];
+  // 모바일(4:5)은 세로가 길어 로고가 작게 보여, 첫 배너는 중앙에서 살짝 확대한다
+  const FALLBACK_MOBILE_FIT = ["object-cover object-center scale-[1.6] translate-y-[10%]", "object-contain p-6"];
   const FALLBACK_BG = ["bg-white", "bg-[#eaf2fb]"];
 
   // 배너 한 장 (서버 프리렌더 시 첫 장만, 마운트 후 swiper 슬라이드로)
   const renderBanner = (b: Banner, i: number) => {
     const fb = FALLBACKS[i];
     const fbFit = FALLBACK_FIT[i] ?? "object-cover";
+    const fbMobileFit = FALLBACK_MOBILE_FIT[i] ?? (fbFit === "object-cover" ? "object-cover object-top" : fbFit);
     const fbBg = FALLBACK_BG[i] ?? "bg-neutral-700";
     // 처음 두 배너는 KPSC 고정 이미지(fb)를 항상 사용, 그 외 배너만 관리자 업로드 이미지
     const desktop = fb ? null : b.image ?? null;
@@ -57,8 +60,8 @@ export function ClinicIntroSection({ banners: bannersProp }: Props) {
             <MediaImage image={mobile} sizes="(min-width: 768px) 1px, 100vw" priority={i === 0} className="object-top" />
           </div>
         ) : fb ? (
-          <div className={`relative block w-full aspect-[4/5] md:hidden ${fbBg}`}>
-            <img src={fb} alt="" className={`absolute inset-0 h-full w-full opacity-80 ${fbFit === "object-cover" ? "object-cover object-top" : fbFit}`} />
+          <div className={`relative block w-full aspect-[4/5] overflow-hidden md:hidden ${fbBg}`}>
+            <img src={fb} alt="" className={`absolute inset-0 h-full w-full opacity-80 ${fbMobileFit}`} />
           </div>
         ) : (
           <Placeholder label={`배너 ${i + 1} (모바일)`} className="w-full flex md:hidden aspect-[4/5] bg-neutral-700 text-neutral-300" />

@@ -169,36 +169,9 @@ export async function incrementViews(id: number): Promise<void> {
 
 // ── 글로벌 ─────────────────────────────────────────────────
 
-export const getClinic = cache(async (): Promise<ClinicInfo> => {
-  const payload = await getClient();
-  const g = await payload.findGlobal({ slug: "clinic", depth: 0 });
-  if (!g?.name) return fallbackClinic; // 시드 전에는 목 데이터
-  const links = (arr?: { label: string; href: string }[] | null) => (arr ?? []).map(({ label, href }) => ({ label, href }));
-  return {
-    name: g.name,
-    nameEn: g.nameEn ?? "",
-    homepageUrl: g.homepageUrl,
-    address: g.address,
-    phone: g.phone,
-    fax: g.fax ?? "",
-    businessNumber: g.businessNumber ?? "",
-    representatives: (g.representatives ?? []).map((r) => r.value),
-    hours: (g.hours ?? []).map(({ label, value }) => ({ label, value })),
-    directions: g.directions ?? "",
-    parking: (g.parking ?? []).map((p) => p.value),
-    mapLinks: links(g.mapLinks),
-    sns: links(g.sns),
-    legalLinks: links(g.legalLinks),
-    homepageMenu: links(g.homepageMenu),
-    consultUrl: g.consultUrl,
-    kakaoChannelUrl: g.kakaoChannelUrl ?? "",
-    stats: (g.stats ?? []).map(({ label, value }) => ({ label, value })),
-    statsNote: g.statsNote ?? "",
-    disclaimerText: g.disclaimerText ?? "",
-    ctaTitle: g.ctaTitle ?? "",
-    ctaText: g.ctaText ?? "",
-  };
-});
+// 브랜드 정보: 관리자 항목 없이 코드 고정값(lib/mock.ts ← lib/site.ts)을 그대로 쓴다.
+// 호출부(서버 컴포넌트)가 await 로 쓰고 있어 async 모양은 유지한다.
+export const getClinic = cache(async (): Promise<ClinicInfo> => fallbackClinic);
 
 export const getHome = cache(async (): Promise<HomeContent> => {
   const payload = await getClient();

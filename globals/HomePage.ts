@@ -103,7 +103,7 @@ export const HomePage: GlobalConfig = {
                   label: "버튼 링크",
                   type: "text",
                   defaultValue: () => defaults.DOCTORS_LINK,
-                  admin: { description: "비우면 병원 홈페이지 첫 화면으로 연결됩니다" },
+                  admin: { description: "비우면 홈페이지 첫 화면으로 연결됩니다" },
                 },
               ],
             },

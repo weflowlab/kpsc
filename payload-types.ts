@@ -67,8 +67,6 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    inquiries: Inquiry;
-    popups: Popup;
     posts: Post;
     categories: Category;
     doctors: Doctor;
@@ -82,8 +80,6 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
-    popups: PopupsSelect<false> | PopupsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     doctors: DoctorsSelect<false> | DoctorsSelect<true>;
@@ -101,11 +97,9 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     home: Home;
-    clinic: Clinic;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
-    clinic: ClinicSelect<false> | ClinicSelect<true>;
   };
   locale: null;
   widgets: {
@@ -133,113 +127,6 @@ export interface UserAuthOperations {
   unlock: {
     email: string;
     password: string;
-  };
-}
-/**
- * 홈페이지 '상담 신청하기' 로 들어온 문의입니다.
- * 연락 후 상태를 바꿔 두면 목록에서 구분됩니다.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inquiries".
- */
-export interface Inquiry {
-  id: number;
-  name: string;
-  phone: string;
-  subjects?:
-    | {
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  message?: string | null;
-  status: 'new' | 'done';
-  /**
-   * 통화 내용, 예약 일정 등
-   */
-  memo?: string | null;
-  agreedAt?: string | null;
-  page?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * 홈페이지 첫 화면에 뜨는 안내 팝업입니다.
- * 여러 개를 켜 두면 팝업 아래 탭으로 넘겨 볼 수 있습니다.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "popups".
- */
-export interface Popup {
-  id: number;
-  title: string;
-  /**
-   * 가로 1100 × 세로 500 정도의 가로형 이미지. 모바일에서는 4:3 으로 잘려 보입니다.
-   */
-  image: number | Media;
-  /**
-   * 예: /community/notice 또는 https://… . 비우면 이미지만 보여 줍니다.
-   */
-  link?: string | null;
-  active?: boolean | null;
-  startAt?: string | null;
-  endAt?: string | null;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  caption?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    content?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
   };
 }
 /**
@@ -335,7 +222,7 @@ export interface Category {
   createdAt: string;
 }
 /**
- * 블로그 글 하단 '이 글을 쓴 의료진' 카드와 블로그 메인 의료진 소개에 표시됩니다. 홈페이지 의료진소개 페이지와는 별개입니다.
+ * 블로그 글 하단 '이 글을 쓴 작성자' 카드와 블로그 메인 작성자 소개에 표시됩니다. 홈페이지 작성자소개 페이지와는 별개입니다.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "doctors".
@@ -365,6 +252,60 @@ export interface Doctor {
   order?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    content?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -439,14 +380,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'inquiries';
-        value: number | Inquiry;
-      } | null)
-    | ({
-        relationTo: 'popups';
-        value: number | Popup;
-      } | null)
-    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -511,42 +444,6 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inquiries_select".
- */
-export interface InquiriesSelect<T extends boolean = true> {
-  name?: T;
-  phone?: T;
-  subjects?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  message?: T;
-  status?: T;
-  memo?: T;
-  agreedAt?: T;
-  page?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "popups_select".
- */
-export interface PopupsSelect<T extends boolean = true> {
-  title?: T;
-  image?: T;
-  link?: T;
-  active?: T;
-  startAt?: T;
-  endAt?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -817,7 +714,7 @@ export interface Home {
     | null;
   doctorsShow?: boolean | null;
   /**
-   * "의료진 소개" 부분은 남색으로 강조됩니다. 비우면 제목이 나오지 않습니다
+   * "작성자 소개" 부분은 남색으로 강조됩니다. 비우면 제목이 나오지 않습니다
    */
   doctorsTitle?: string | null;
   /**
@@ -829,7 +726,7 @@ export interface Home {
    */
   doctorsButton?: string | null;
   /**
-   * 비우면 병원 홈페이지 첫 화면으로 연결됩니다
+   * 비우면 홈페이지 첫 화면으로 연결됩니다
    */
   doctorsLink?: string | null;
   /**
@@ -855,89 +752,6 @@ export interface Home {
       }[]
     | null;
   _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clinic".
- */
-export interface Clinic {
-  id: number;
-  name: string;
-  nameEn?: string | null;
-  homepageUrl: string;
-  address: string;
-  phone: string;
-  fax?: string | null;
-  businessNumber?: string | null;
-  representatives?:
-    | {
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  stats?:
-    | {
-        label: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  statsNote?: string | null;
-  hours?:
-    | {
-        label: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  directions?: string | null;
-  parking?:
-    | {
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  mapLinks?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * "[의료광고 심의 및 안내사항]" 제목과 아래 의료기관 한 줄은 자동으로 붙습니다.
-   */
-  disclaimerText?: string | null;
-  ctaTitle?: string | null;
-  /**
-   * "|" 는 모바일에서만 줄바꿈, Enter 는 모든 화면에서 줄바꿈
-   */
-  ctaText?: string | null;
-  consultUrl: string;
-  kakaoChannelUrl?: string | null;
-  sns?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  legalLinks?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  homepageMenu?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -986,83 +800,6 @@ export interface HomeSelect<T extends boolean = true> {
         id?: T;
       };
   _status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clinic_select".
- */
-export interface ClinicSelect<T extends boolean = true> {
-  name?: T;
-  nameEn?: T;
-  homepageUrl?: T;
-  address?: T;
-  phone?: T;
-  fax?: T;
-  businessNumber?: T;
-  representatives?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  stats?:
-    | T
-    | {
-        label?: T;
-        value?: T;
-        id?: T;
-      };
-  statsNote?: T;
-  hours?:
-    | T
-    | {
-        label?: T;
-        value?: T;
-        id?: T;
-      };
-  directions?: T;
-  parking?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  mapLinks?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
-  disclaimerText?: T;
-  ctaTitle?: T;
-  ctaText?: T;
-  consultUrl?: T;
-  kakaoChannelUrl?: T;
-  sns?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
-  legalLinks?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
-  homepageMenu?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

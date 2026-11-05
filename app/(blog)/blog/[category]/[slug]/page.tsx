@@ -79,14 +79,14 @@ export default async function PostPage({ params }: PageProps<"/blog/[category]/[
   const jsonLd = [
     {
       "@context": "https://schema.org",
-      "@type": "MedicalWebPage",
+      "@type": "BlogPosting",
       headline: post.title,
       description: post.summary,
       datePublished: post.publishedAt,
       dateModified: post.updatedAt ?? post.publishedAt,
       inLanguage: "ko",
-      author: doctor ? { "@type": "Physician", name: doctor.name, jobTitle: doctor.title } : undefined,
-      publisher: { "@type": "MedicalClinic", name: clinic.name, url: clinic.homepageUrl },
+      author: doctor ? { "@type": "Organization", name: `${doctor.name} ${doctor.title}`.trim() } : undefined,
+      publisher: { "@type": "Organization", name: clinic.name, url: clinic.homepageUrl },
       keywords: post.tags.join(", "),
     },
     // 빵부스러기 (검색 결과의 경로 표시)

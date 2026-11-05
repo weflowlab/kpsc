@@ -12,7 +12,7 @@ const BLOG_TITLE = `${SITE.name} 웹블로그`;
 /** 블로그 메타: 탭 제목은 "화면 이름 | 푸른안과 웹블로그", RSS 는 /blog/rss.xml */
 export const metadata: Metadata = {
   title: { default: BLOG_TITLE, template: `%s | ${BLOG_TITLE}` },
-  description: `${SITE.name} 의료진이 직접 쓰는 안과 질환 정보. 시력교정·백내장·망막 질환의 증상, 검사, 치료 안내.`,
+  description: `${SITE.name}가 전하는 이야기. 소식, 나눔·사회공헌, 여행, 파트너십 이야기를 웹블로그에서 만나보세요.`,
   alternates: { types: { "application/rss+xml": "/blog/rss.xml" } },
   openGraph: { type: "website", siteName: BLOG_TITLE, locale: "ko_KR" },
 };

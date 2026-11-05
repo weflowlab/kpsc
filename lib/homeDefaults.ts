@@ -27,7 +27,7 @@ export const BANNERS: { label: string; text: string }[] = [
 export const doctorsTitle = (clinic: Pick<ClinicInfo, "name">) => `${clinic.name} 작성자 소개`;
 export const DOCTORS_TEXT = "KPSC 운영진·필진이 |직접 이야기를 전합니다.";
 export const DOCTORS_BUTTON = "작성자 소개";
-export const DOCTORS_LINK = "/"; // KPSC 홈페이지
+export const DOCTORS_LINK = "/organization/team"; // KPSC 홈페이지 운영진 소개
 
 // 핵심 요약 (ABOUT)
 export const SUMMARY_TITLE = "함께 성장하고 |가치를 나누는 KPSC";

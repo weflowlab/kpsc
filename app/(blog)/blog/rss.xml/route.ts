@@ -32,7 +32,7 @@ export async function GET(): Promise<Response> {
   <channel>
     <title>${escape(clinic.name)} 웹블로그</title>
     <link>${SITE_URL}/blog</link>
-    <description>${escape(clinic.name)} 의료진이 직접 쓰는 안과 질환 정보</description>
+    <description>${escape(clinic.name)}가 전하는 소식·나눔·여행·파트너십 이야기</description>
     <language>ko</language>
     <atom:link href="${SITE_URL}/blog/rss.xml" rel="self" type="application/rss+xml" />${items}
   </channel>

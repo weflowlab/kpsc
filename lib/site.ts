@@ -17,6 +17,8 @@ export const SITE = {
   bizNo: "",
   since: 2017,
   kakaoUrl: "https://pf.kakao.com/_VqFIX",
+  // 블로그 '문의하기' 버튼 링크. 현재 메인 카카오채널(_VqFIX) 사용 — 비우면 아래 kakaoUrl 로 폴백
+  openChatUrl: "",
   instagramUrl: "https://blog.naver.com/helplus_kr",
   /** 웹블로그 (같은 사이트의 /blog — Payload CMS 로 관리) */
   blogUrl: "/blog",

@@ -14,8 +14,8 @@ import { MediaImage } from "@/components/blog/ui/MediaImage";
 import { Placeholder } from "@/components/blog/ui/Placeholder";
 import { Reveal } from "@/components/blog/ui/Reveal";
 import { MobileBreaks } from "@/components/blog/ui/MobileBreaks";
-import { useSite } from "@/components/blog/SiteProvider";
 import { useMounted } from "@/components/blog/ui/useMounted";
+import { DOCTORS_LINK } from "@/lib/homeDefaults";
 import type { Doctor, HomeContent } from "@/lib/types";
 
 type Props = {
@@ -66,12 +66,11 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
 }
 
 export function DoctorsSection({ doctors, content }: Props) {
-  const { clinic } = useSite();
   const mounted = useMounted();
   // 관리자에서 끄거나 의료진이 없으면 섹션 자체를 숨긴다
   if (content.doctorsShow === false || doctors.length === 0) return null;
 
-  const link = content.doctorsLink || clinic.homepageUrl; // 비우면 병원 홈페이지
+  const link = content.doctorsLink || DOCTORS_LINK; // 비우면 홈페이지 운영진 소개(/organization/team)
   const PER_VIEW = 3; // PC 한 줄 카드 수. 이보다 많으면 슬라이드
   const slider = mounted && doctors.length > PER_VIEW;
 
@@ -81,7 +80,7 @@ export function DoctorsSection({ doctors, content }: Props) {
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
           {/* 왼쪽: 문구 */}
           <div className="lg:col-span-3">
-            <p className="text-sm font-semibold text-primary md:text-base">DOCTORS</p>
+            <p className="text-sm font-semibold text-primary md:text-base">AUTHORS</p>
             {content.doctorsTitle && (
               <Reveal variant="up">
                 <h2 className="mt-1 whitespace-pre-line text-2xl font-bold leading-tight md:text-3xl">
