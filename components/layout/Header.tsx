@@ -352,9 +352,9 @@ export default function Header() {
         {/* 메뉴 바 — 높이 56px 고정, 배경 없음.
             로고 행과 같은 컨테이너를 써서 좌우 여백을 맞춘다. */}
         <div className={MENU_CONTAINER}>
-          {/* 5개 대메뉴를 균등 분할 — 고정폭(250px)을 쓰면 컨테이너를 넘쳐
-              좌우 여백이 어긋나므로 grid 로 같은 폭을 나눠 갖게 한다 */}
-          <ul className="grid grid-cols-5">
+          {/* 6개 대메뉴(원본 5개 + 웹블로그)를 한 줄에 균등 분할 — 고정폭(250px)을 쓰면
+              컨테이너를 넘쳐 좌우 여백이 어긋나므로 grid 로 같은 폭을 나눠 갖게 한다 */}
+          <ul className="grid grid-cols-6">
             {NAV.map((group) => {
               const active = group.children.some((c) => pathname.startsWith(c.href));
               return (
@@ -387,8 +387,8 @@ export default function Header() {
           }}
         >
           <div className={`${MENU_CONTAINER} pt-6`}>
-            {/* 위 메뉴 바와 같은 5분할이라 서브메뉴가 대메뉴 아래로 정렬된다 */}
-            <ul className="grid grid-cols-5">
+            {/* 위 메뉴 바와 같은 6분할이라 서브메뉴가 대메뉴 아래로 정렬된다 */}
+            <ul className="grid grid-cols-6">
               {NAV.map((group) => (
                 <li key={group.label} className="space-y-2 text-center">
                   {group.children.map((child) => (

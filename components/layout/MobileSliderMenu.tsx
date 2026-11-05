@@ -15,8 +15,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { NAV } from "@/lib/site-config";
 
-/* 슬라이더에 노출되는 축약 라벨 — 원본 텍스트 그대로 */
-const SLIDER_LABELS = ["KPSC소개", "인사말", "조직 구성", "사업/서비스", "활동/소식"];
+/* 슬라이더에 노출되는 축약 라벨 — 원본 텍스트 그대로 (+ 웹블로그). NAV 와 순서·개수가 같아야 한다 */
+const SLIDER_LABELS = ["KPSC소개", "인사말", "조직 구성", "사업/서비스", "활동/소식", "웹블로그"];
 
 /* 무한 루프용 복제 벌 수 — 가운데(1번째) 벌에서 시작한다 */
 const COPIES = 3;

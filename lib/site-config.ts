@@ -73,6 +73,16 @@ export const NAV: NavItem[] = [
       { label: "공지사항 / 뉴스", href: "/news/notice" },
     ],
   },
+  /* 웹블로그 — 원본에는 없는 6번째 대메뉴. /blog 는 다른 루트 레이아웃((blog) 그룹)이라
+     이동 시 전체 페이지 로드가 된다 (Next 의 정상 동작) */
+  {
+    label: "웹블로그",
+    labelEn: "Blog",
+    children: [
+      { label: "블로그 홈", href: "/blog" },
+      { label: "전체 글", href: "/blog/posts" },
+    ],
+  },
 ];
 
 /* --------------------------------------------------------------------------
