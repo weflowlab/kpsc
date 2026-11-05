@@ -12,12 +12,9 @@ import {
   HorizontalRuleFeature,
   FixedToolbarFeature,
   EXPERIMENTAL_TableFeature,
-  BlocksFeature,
   defaultEditorFeatures,
 } from "@payloadcms/richtext-lexical";
 import { formatSlug } from "../lib/formatSlug";
-import { postBlocks } from "../lib/postBlocks";
-import { buildPostTemplate } from "../lib/postTemplate";
 
 export const Posts: CollectionConfig = {
   slug: "posts",
@@ -148,17 +145,14 @@ export const Posts: CollectionConfig = {
               label: "본문",
               type: "richText",
               required: true,
-              // 새 글이면 템플릿 뼈대가 미리 들어간다 (함수로 두어 DB DEFAULT 로 들어가지 않게)
-              defaultValue: () => buildPostTemplate(),
               admin: {
                 description:
-                  '새 글에는 뼈대가 미리 들어 있습니다. 괄호 안 안내문을 실제 내용으로 바꾸고, 필요 없는 섹션이나 상자는 지우세요. 섹션 제목(H2)은 자동으로 01, 02 번호가 붙고, "DEFINITION | 제목" 처럼 쓰면 세로줄 앞은 영문 라벨이 됩니다. 강조 박스·단계별 안내·체크리스트·흐름도는 "+" 버튼으로 추가합니다.',
+                  '제목(H2)·소제목(H3), 목록, 인용, 링크, 이미지, 표, 구분선을 쓸 수 있습니다.',
               },
               editor: lexicalEditor({
                 features: () => [
                   ...defaultEditorFeatures,
-                  HeadingFeature({ enabledHeadingSizes: ["h2", "h3"] }), // h2 는 목차 항목이 된다
-                  BlocksFeature({ blocks: postBlocks }),
+                  HeadingFeature({ enabledHeadingSizes: ["h2", "h3"] }),
                   BlockquoteFeature(),
                   OrderedListFeature(),
                   UnorderedListFeature(),

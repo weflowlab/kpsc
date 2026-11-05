@@ -79,6 +79,15 @@ function LogoutIcon() {
   );
 }
 
+function BlogIcon() {
+  return (
+    <svg {...icon}>
+      <path d="M4 4h16v12H5.2L4 17.5z" />
+      <path d="M8 9h8M8 12h5" />
+    </svg>
+  );
+}
+
 const MENUS = [
   { href: "/admin/members", label: "회원관리", Icon: UsersIcon },
   { href: "/admin/boards", label: "보드관리", Icon: BoardIcon },
@@ -123,6 +132,17 @@ function NavList({
             </li>
           );
         })}
+        {/* 웹블로그 — Payload 전용 관리자(/studio)로 전체 페이지 이동 */}
+        <li className="px-2">
+          <a href="/studio" className={`${ITEM} text-ink-700 hover:bg-ink-50`}>
+            <span className="flex shrink-0 items-center">
+              <BlogIcon />
+            </span>
+            <span className={`flex items-center ${showLabel ? "" : "hidden md:flex"}`}>
+              웹블로그
+            </span>
+          </a>
+        </li>
       </ul>
 
       <div className="mt-auto border-t border-ink-100 px-2 py-3">
