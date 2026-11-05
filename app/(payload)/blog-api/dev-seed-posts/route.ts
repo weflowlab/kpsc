@@ -126,8 +126,13 @@ export async function GET(): Promise<Response> {
     log.push("author created: kpsc");
   }
 
-  // 썸네일: 메인페이지 사진(public/images)을 이미지 컬렉션에 올린다
+  // 썸네일: 메인페이지 사진(public/images)을 이미지 컬렉션에 올린다.
+  // 운영 DB(Postgres)에 넣을 때 Blob 토큰이 없으면 파일이 이 컴퓨터의 public/media 에만 저장돼 운영에서 깨진 이미지가 된다 → 건너뛴다
+  // (토큰을 넣고 다시 호출하면 썸네일 없는 글에 채워진다).
+  const canUpload = !process.env.DATABASE_URI?.startsWith("postgres") || !!process.env.BLOB_READ_WRITE_TOKEN;
+  if (!canUpload) log.push("thumbnail skip: BLOB_READ_WRITE_TOKEN 없음 (Postgres 대상)");
   const uploadThumb = async (file: string, alt: string) => {
+    if (!canUpload) return undefined;
     const doc = await payload.create({ collection: "media", data: { alt }, filePath: path.resolve(process.cwd(), "public", file) });
     return doc.id;
   };
@@ -142,6 +147,10 @@ export async function GET(): Promise<Response> {
         continue;
       }
       const thumbnail = await uploadThumb(p.thumb, p.title);
+      if (thumbnail === undefined) {
+        log.push(`post skip (썸네일 없음): ${p.slug}`);
+        continue;
+      }
       await payload.update({ collection: "posts", id: existing.id, data: { thumbnail, _status: "published" } });
       log.push(`post thumbnail added: ${p.slug}`);
       continue;
