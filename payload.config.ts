@@ -14,11 +14,8 @@ import sharp from "sharp";
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Categories } from "./collections/Categories";
-import { Doctors } from "./collections/Doctors";
+import { Authors } from "./collections/Authors";
 import { Posts } from "./collections/Posts";
-import { PageViews } from "./collections/PageViews";
-import { Inquiries } from "./collections/Inquiries";
-import { Popups } from "./collections/Popups";
 import { Clinic } from "./globals/Clinic";
 import { HomePage } from "./globals/HomePage";
 import { migrations } from "./migrations";
@@ -75,7 +72,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Inquiries, Popups, Posts, Categories, Doctors, Media, Users, PageViews],
+  collections: [Posts, Categories, Authors, Media, Users],
   globals: [HomePage, Clinic],
   editor: lexicalEditor(),
   // 이메일 발송은 쓰지 않는다 (비밀번호 변경은 관리자 계정 메뉴에서, 분실 시 개발자가 재설정).

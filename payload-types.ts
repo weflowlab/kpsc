@@ -67,14 +67,11 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    inquiries: Inquiry;
-    popups: Popup;
     posts: Post;
     categories: Category;
-    doctors: Doctor;
+    authors: Author;
     media: Media;
     users: User;
-    'page-views': PageView;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,14 +79,11 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
-    popups: PopupsSelect<false> | PopupsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    doctors: DoctorsSelect<false> | DoctorsSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    'page-views': PageViewsSelect<false> | PageViewsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -136,111 +130,6 @@ export interface UserAuthOperations {
   };
 }
 /**
- * 홈페이지 '상담 신청하기' 로 들어온 문의입니다. 연락 후 상태를 바꿔 두면 목록에서 구분됩니다.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inquiries".
- */
-export interface Inquiry {
-  id: number;
-  name: string;
-  phone: string;
-  subjects?:
-    | {
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  message?: string | null;
-  status: 'new' | 'done';
-  /**
-   * 통화 내용, 예약 일정 등
-   */
-  memo?: string | null;
-  agreedAt?: string | null;
-  page?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * 홈페이지 첫 화면에 뜨는 안내 팝업입니다. 여러 개를 켜 두면 팝업 아래 탭으로 넘겨 볼 수 있습니다.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "popups".
- */
-export interface Popup {
-  id: number;
-  title: string;
-  /**
-   * 가로 1100 × 세로 500 정도의 가로형 이미지. 모바일에서는 4:3 으로 잘려 보입니다.
-   */
-  image: number | Media;
-  /**
-   * 예: /community/notice 또는 https://… . 비우면 이미지만 보여 줍니다.
-   */
-  link?: string | null;
-  active?: boolean | null;
-  startAt?: string | null;
-  endAt?: string | null;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  caption?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    content?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
@@ -248,7 +137,7 @@ export interface Post {
   id: number;
   title: string;
   category: number | Category;
-  author: number | Doctor;
+  author: number | Author;
   thumbnail?: (number | null) | Media;
   /**
    * 비우면 게시하는 순간으로 찍힙니다. 미래 시각으로 두면 그 시각까지 사이트에 보이지 않다가 자동으로 공개되고, 지난 시각으로 두면 그 날짜로 바로 발행됩니다(예전 글 옮겨 올 때).
@@ -333,12 +222,12 @@ export interface Category {
   createdAt: string;
 }
 /**
- * 블로그 글 하단 '이 글을 쓴 의료진' 카드와 블로그 메인 의료진 소개에 표시됩니다. 홈페이지 의료진소개 페이지와는 별개입니다.
+ * 블로그 글 하단 '이 글을 쓴 사람' 카드에 표시되는 작성자(운영진·필진) 정보입니다.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "doctors".
+ * via the `definition` "authors".
  */
-export interface Doctor {
+export interface Author {
   id: number;
   name: string;
   /**
@@ -363,6 +252,60 @@ export interface Doctor {
   order?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    content?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -393,27 +336,6 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-views".
- */
-export interface PageView {
-  id: number;
-  sessionId: string;
-  path: string;
-  referrer?: string | null;
-  source?: string | null;
-  medium?: string | null;
-  keyword?: string | null;
-  query?: string | null;
-  device?: ('mobile' | 'tablet' | 'desktop') | null;
-  event?: ('view' | 'click') | null;
-  label?: string | null;
-  durationMs?: number | null;
-  maxScroll?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -437,14 +359,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'inquiries';
-        value: number | Inquiry;
-      } | null)
-    | ({
-        relationTo: 'popups';
-        value: number | Popup;
-      } | null)
-    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -453,8 +367,8 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
-        relationTo: 'doctors';
-        value: number | Doctor;
+        relationTo: 'authors';
+        value: number | Author;
       } | null)
     | ({
         relationTo: 'media';
@@ -463,10 +377,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
-      } | null)
-    | ({
-        relationTo: 'page-views';
-        value: number | PageView;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -509,42 +419,6 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inquiries_select".
- */
-export interface InquiriesSelect<T extends boolean = true> {
-  name?: T;
-  phone?: T;
-  subjects?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  message?: T;
-  status?: T;
-  memo?: T;
-  agreedAt?: T;
-  page?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "popups_select".
- */
-export interface PopupsSelect<T extends boolean = true> {
-  title?: T;
-  image?: T;
-  link?: T;
-  active?: T;
-  startAt?: T;
-  endAt?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -612,9 +486,9 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "doctors_select".
+ * via the `definition` "authors_select".
  */
-export interface DoctorsSelect<T extends boolean = true> {
+export interface AuthorsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   title?: T;
@@ -722,26 +596,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-views_select".
- */
-export interface PageViewsSelect<T extends boolean = true> {
-  sessionId?: T;
-  path?: T;
-  referrer?: T;
-  source?: T;
-  medium?: T;
-  keyword?: T;
-  query?: T;
-  device?: T;
-  event?: T;
-  label?: T;
-  durationMs?: T;
-  maxScroll?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
