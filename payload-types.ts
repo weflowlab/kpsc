@@ -95,11 +95,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     home: Home;
-    clinic: Clinic;
+    brand: Brand;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
-    clinic: ClinicSelect<false> | ClinicSelect<true>;
+    brand: BrandSelect<false> | BrandSelect<true>;
   };
   locale: null;
   widgets: {
@@ -667,23 +667,23 @@ export interface Home {
         id?: string | null;
       }[]
     | null;
-  doctorsShow?: boolean | null;
+  authorsShow?: boolean | null;
   /**
-   * "의료진 소개" 부분은 남색으로 강조됩니다. 비우면 제목이 나오지 않습니다
+   * 비우면 제목이 나오지 않습니다
    */
-  doctorsTitle?: string | null;
+  authorsTitle?: string | null;
   /**
    * "|" 는 모바일에서만 줄바꿈, Enter 는 모든 화면에서 줄바꿈
    */
-  doctorsText?: string | null;
+  authorsText?: string | null;
   /**
    * 비우면 버튼이 나오지 않습니다
    */
-  doctorsButton?: string | null;
+  authorsButton?: string | null;
   /**
-   * 비우면 병원 홈페이지 첫 화면으로 연결됩니다
+   * 비우면 홈페이지 첫 화면으로 연결됩니다
    */
-  doctorsLink?: string | null;
+  authorsLink?: string | null;
   /**
    * "|" 는 모바일에서만 줄바꿈, Enter 는 모든 화면에서 줄바꿈
    */
@@ -712,62 +712,14 @@ export interface Home {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clinic".
+ * via the `definition` "brand".
  */
-export interface Clinic {
+export interface Brand {
   id: number;
   name: string;
   nameEn?: string | null;
-  homepageUrl: string;
-  address: string;
-  phone: string;
-  fax?: string | null;
-  businessNumber?: string | null;
-  representatives?:
-    | {
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  stats?:
-    | {
-        label: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  statsNote?: string | null;
-  hours?:
-    | {
-        label: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  directions?: string | null;
-  parking?:
-    | {
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  mapLinks?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * "[의료광고 심의 및 안내사항]" 제목과 아래 의료기관 한 줄은 자동으로 붙습니다.
-   */
-  disclaimerText?: string | null;
-  ctaTitle?: string | null;
-  /**
-   * "|" 는 모바일에서만 줄바꿈, Enter 는 모든 화면에서 줄바꿈
-   */
-  ctaText?: string | null;
-  consultUrl: string;
+  homepageUrl?: string | null;
+  phone?: string | null;
   kakaoChannelUrl?: string | null;
   sns?:
     | {
@@ -776,20 +728,12 @@ export interface Clinic {
         id?: string | null;
       }[]
     | null;
-  legalLinks?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
-  homepageMenu?:
-    | {
-        label: string;
-        href: string;
-        id?: string | null;
-      }[]
-    | null;
+  ctaTitle?: string | null;
+  ctaText?: string | null;
+  /**
+   * 모든 글 맨 아래에 공통으로 붙는 안내문입니다.
+   */
+  disclaimerText?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -816,11 +760,11 @@ export interface HomeSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
-  doctorsShow?: T;
-  doctorsTitle?: T;
-  doctorsText?: T;
-  doctorsButton?: T;
-  doctorsLink?: T;
+  authorsShow?: T;
+  authorsTitle?: T;
+  authorsText?: T;
+  authorsButton?: T;
+  authorsLink?: T;
   summaryTitle?: T;
   summaryText?: T;
   keyPoints?:
@@ -844,55 +788,13 @@ export interface HomeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "clinic_select".
+ * via the `definition` "brand_select".
  */
-export interface ClinicSelect<T extends boolean = true> {
+export interface BrandSelect<T extends boolean = true> {
   name?: T;
   nameEn?: T;
   homepageUrl?: T;
-  address?: T;
   phone?: T;
-  fax?: T;
-  businessNumber?: T;
-  representatives?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  stats?:
-    | T
-    | {
-        label?: T;
-        value?: T;
-        id?: T;
-      };
-  statsNote?: T;
-  hours?:
-    | T
-    | {
-        label?: T;
-        value?: T;
-        id?: T;
-      };
-  directions?: T;
-  parking?:
-    | T
-    | {
-        value?: T;
-        id?: T;
-      };
-  mapLinks?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
-  disclaimerText?: T;
-  ctaTitle?: T;
-  ctaText?: T;
-  consultUrl?: T;
   kakaoChannelUrl?: T;
   sns?:
     | T
@@ -901,20 +803,9 @@ export interface ClinicSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
-  legalLinks?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
-  homepageMenu?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        id?: T;
-      };
+  ctaTitle?: T;
+  ctaText?: T;
+  disclaimerText?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
