@@ -11,7 +11,7 @@ export const Doctors: CollectionConfig = {
     useAsTitle: "name",
     defaultColumns: ["name", "title", "order"],
     group: "블로그",
-    description: "블로그 글 하단 '이 글을 쓴 작성자' 카드와 블로그 메인 작성자 소개에 표시됩니다. 홈페이지 작성자소개 페이지와는 별개입니다.",
+    description: "블로그 글 하단 '이 글을 쓴 작성자' 카드와 블로그 메인 작성자 소개에 표시됩니다. 홈페이지의 운영진 소개 페이지와는 별개입니다.",
   },
   fields: [
     { name: "name", label: "이름", type: "text", required: true },

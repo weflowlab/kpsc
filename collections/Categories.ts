@@ -15,7 +15,7 @@ export const Categories: CollectionConfig = {
       type: "text",
       required: true,
       unique: true,
-      admin: { description: "예: retina → /blog/retina" },
+      admin: { description: "예: news → /blog/news" },
       validate: (v: unknown) => (typeof v === "string" && /^[a-z0-9-]+$/.test(v)) || "영문 소문자, 숫자, 하이픈만 가능",
     },
     { name: "description", label: "설명", type: "textarea" },

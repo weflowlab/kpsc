@@ -71,13 +71,13 @@ export const Posts: CollectionConfig = {
       tabs: [
         {
           label: "카테고리",
-          description: "글을 쓰기 전에 먼저 정합니다. 카테고리와 작성자을 고르면 오른쪽 미리보기가 나타납니다.",
+          description: "글을 쓰기 전에 먼저 정합니다. 카테고리와 작성자를 고르면 오른쪽 미리보기가 나타납니다.",
           fields: [
             {
               type: "row",
               fields: [
                 { name: "category", label: "카테고리", type: "relationship", relationTo: "categories", required: true, admin: { width: "50%" } },
-                { name: "author", label: "작성 작성자", type: "relationship", relationTo: "doctors", required: true, admin: { width: "50%" } },
+                { name: "author", label: "작성자", type: "relationship", relationTo: "doctors", required: true, admin: { width: "50%" } },
               ],
             },
             { name: "thumbnail", label: "썸네일 이미지 (목록 카드·공유 미리보기)", type: "upload", relationTo: "media" },
