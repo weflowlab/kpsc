@@ -41,7 +41,7 @@ export const CalloutBlock: Block = {
       required: true,
       defaultValue: "tip",
       options: [
-        { label: "참고·팁 (남색)", value: "tip" },
+        { label: "참고·팁 (파랑)", value: "tip" },
         { label: "주의 (노란색)", value: "caution" },
         { label: "요약 인용 (회색, 왼쪽 강조선)", value: "summary" },
       ],
@@ -56,7 +56,7 @@ export const StepsBlock: Block = {
   slug: "steps",
   labels: { singular: "단계별 안내", plural: "단계별 안내" },
   fields: [
-    { name: "title", label: "묶음 제목 (선택)", type: "text", admin: { description: "예: 검사부터 치료까지 4단계" } },
+    { name: "title", label: "묶음 제목 (선택)", type: "text", admin: { description: "예: 신청부터 참여까지 4단계" } },
     {
       name: "items",
       label: "단계",
@@ -78,7 +78,7 @@ export const ChecklistBlock: Block = {
   slug: "checklist",
   labels: { singular: "체크리스트", plural: "체크리스트" },
   fields: [
-    { name: "title", label: "제목 (선택)", type: "text", admin: { description: "예: 이런 증상이 있다면 검사를 받아 보세요" } },
+    { name: "title", label: "제목 (선택)", type: "text", admin: { description: "예: 이런 분께 추천해요" } },
     {
       name: "items",
       label: "항목",
