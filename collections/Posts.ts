@@ -44,7 +44,9 @@ export const Posts: CollectionConfig = {
         // 새 글은 카테고리나 URL 경로가 아직 없을 수 있다. 그때는 안내 화면을 보여 준다 ("//slug" 같은 깨진 경로 방지)
         if (!categorySlug || !data?.slug) return `${base}/next/preview-pending`;
         const path = `/blog/${categorySlug}/${data.slug}`;
-        return `${base}/next/preview?path=${encodeURIComponent(path)}&previewSecret=${process.env.PREVIEW_SECRET}`;
+        // PREVIEW_SECRET 을 넣어 둔 환경에서만 비밀키를 붙인다 (없으면 /next/preview 가 관리자 로그인만 확인)
+        const secret = process.env.PREVIEW_SECRET ? `&previewSecret=${process.env.PREVIEW_SECRET}` : "";
+        return `${base}/next/preview?path=${encodeURIComponent(path)}${secret}`;
       },
     },
   },

@@ -17,7 +17,8 @@ export const HomePage: GlobalConfig = {
   admin: {
     group: "블로그",
     livePreview: {
-      url: () => `${process.env.NEXT_PUBLIC_SERVER_URL || ""}/next/preview?path=%2Fblog&previewSecret=${process.env.PREVIEW_SECRET}`,
+      url: () =>
+        `${process.env.NEXT_PUBLIC_SERVER_URL || ""}/next/preview?path=%2Fblog${process.env.PREVIEW_SECRET ? `&previewSecret=${process.env.PREVIEW_SECRET}` : ""}`,
     },
   },
   versions: { drafts: { autosave: { interval: 500 } } },

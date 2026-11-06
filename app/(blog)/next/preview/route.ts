@@ -1,0 +1,39 @@
+// 관리자 미리보기 진입점. Payload 미리보기 창(iframe)이 이 주소를 열면
+// 관리자 로그인을 확인한 뒤 draft 모드를 켜고 실제 페이지로 보낸다. draft 모드에서는 발행 전 초안 내용이 그대로 보인다.
+// PREVIEW_SECRET 환경변수를 넣어 두면 주소의 비밀키도 함께 확인한다 (없으면 관리자 로그인만 확인).
+import type { PayloadRequest } from "payload";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import { draftMode } from "next/headers";
+import { redirect } from "next/navigation";
+
+export async function GET(req: Request): Promise<Response> {
+  const { searchParams } = new URL(req.url);
+  const path = searchParams.get("path");
+  const previewSecret = searchParams.get("previewSecret");
+
+  if (process.env.PREVIEW_SECRET && previewSecret !== process.env.PREVIEW_SECRET) {
+    return new Response("미리보기 비밀키가 올바르지 않습니다.", { status: 403 });
+  }
+  // "//host" 는 다른 사이트로 가는 주소가 되므로 막는다 (카테고리가 비어 있을 때 생기던 경로)
+  if (!path || !path.startsWith("/") || path.startsWith("//")) {
+    return new Response("잘못된 경로입니다. 카테고리와 제목을 먼저 입력하세요.", { status: 400 });
+  }
+
+  // 관리자로 로그인된 사용자만 초안을 볼 수 있다
+  const payload = await getPayload({ config });
+  let user = null;
+  try {
+    ({ user } = await payload.auth({ req: req as unknown as PayloadRequest, headers: req.headers }));
+  } catch {
+    user = null;
+  }
+  if (!user) return new Response("관리자 로그인이 필요합니다.", { status: 401 });
+
+  (await draftMode()).enable();
+  // 한글 URL 경로는 Location 헤더에 그대로 넣을 수 없어(ByteString 오류 → 500) 구간별로 다시 인코딩한다
+  redirect(path.split("/").map(encodeURIComponent).join("/"));
+}
+
+// Vercel 서버리스 함수 최대 실행 시간. 한동안 요청이 없다가 처음 들어오면 Payload 초기화 + DB(Neon) 깨어남으로 기본 제한을 넘겨 504 가 날 수 있다
+export const maxDuration = 60;
